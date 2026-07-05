@@ -40,23 +40,24 @@ const features = [
 export default async function HomePage() {
   let isLoggedIn = false;
 
-  try {
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env["NEXT_PUBLIC_SUPABASE_URL"]!,
-      process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!,
-      {
+  const supabaseUrl = process.env["NEXT_PUBLIC_SUPABASE_URL"];
+  const supabaseAnonKey = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
+
+  if (supabaseUrl && supabaseAnonKey) {
+    try {
+      const cookieStore = await cookies();
+      const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
         cookies: {
           getAll() {
             return cookieStore.getAll();
           },
           setAll() {},
         },
-      },
-    );
-    const { data } = await supabase.auth.getUser();
-    isLoggedIn = !!data?.user;
-  } catch {}
+      });
+      const { data } = await supabase.auth.getUser();
+      isLoggedIn = !!data?.user;
+    } catch {}
+  }
 
   return (
     <div className="flex flex-1 flex-col">
