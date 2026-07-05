@@ -4,10 +4,14 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { slugify } from "@/lib/utils";
 
-const SUPABASE_URL = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
-const SUPABASE_ANON_KEY = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
-
 export async function GET(request: NextRequest) {
+  const SUPABASE_URL = process.env["NEXT_PUBLIC_SUPABASE_URL"];
+  const SUPABASE_ANON_KEY = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
+
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return NextResponse.redirect(`${request.nextUrl.origin}/login?error=${encodeURIComponent("Supabase not configured")}`);
+  }
+
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
   const origin = request.nextUrl.origin;
