@@ -3,13 +3,16 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const SITE_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3000";
 const IS_SECURE = SITE_URL.startsWith("https");
-const SUPABASE_URL = process.env["NEXT_PUBLIC_SUPABASE_URL"]!;
-const SUPABASE_ANON_KEY = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"]!;
+const SUPABASE_URL = process.env["NEXT_PUBLIC_SUPABASE_URL"];
+const SUPABASE_ANON_KEY = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"];
 
 // Extract project ref from Supabase URL: https://{ref}.supabase.co
-const PROJECT_REF = SUPABASE_URL.match(/https:\/\/(.+)\.supabase\.co/)?.[1] ?? "unknown";
+const PROJECT_REF = SUPABASE_URL?.match(/https:\/\/(.+)\.supabase\.co/)?.[1] ?? "unknown";
 
 export async function GET(request: NextRequest) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    return NextResponse.redirect(`${SITE_URL}/login?error=${encodeURIComponent("Supabase not configured")}`);
+  }
   const pendingCookies: Array<{ name: string; value: string; options: Record<string, unknown> }> = [];
   let codeVerifier: string | null = null;
 
