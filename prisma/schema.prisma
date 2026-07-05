@@ -129,9 +129,18 @@ enum PaymentMethod {
   CREDIT_CARD
   DEBIT_CARD
   PAYPAL
+  E_TRANSFER
   WISE
   CASH
   CHEQUE
+  OTHER
+}
+
+enum DecisionResult {
+  APPROVED
+  REFUSED
+  WITHDRAWN
+  ABANDONED
   OTHER
 }
 
@@ -162,6 +171,7 @@ model Organization {
   serviceAgreements ServiceAgreement[]
   activityLogs   ActivityLog[]
   payments       Payment[]
+  leads          Lead[]
 
   @@index([slug])
   @@index([ciccRegistrationNumber])
@@ -181,8 +191,11 @@ model User {
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
-  documents    Document[]
-  activityLogs ActivityLog[]
+  documents      Document[]
+  activityLogs   ActivityLog[]
+  assignedCases  Case[]
+  assignedTasks  Task[]
+  notifications  Notification[]
 
   @@index([organizationId])
   @@index([supabaseUserId])
@@ -213,9 +226,12 @@ model Client {
   tags           String[]  @default([])
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  isArchived     Boolean   @default(false)
+  deletedAt      DateTime?
 
   cases     Case[]
   documents Document[]
+  notifications Notification[]
   serviceAgreements ServiceAgreement[]
   payments          Payment[]
 
@@ -228,8 +244,8 @@ model Case {
   id                    String       @id @default(cuid())
   organizationId        String
   organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  clientId              String
-  client                Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId         String
+  client           Client       @relation(fields: [clientId], references: [id], onDelete: Restrict)
   caseType              CaseType
   status                CaseStatus   @default(INTAKE)
   priority              CasePriority @default(NORMAL)
@@ -240,11 +256,15 @@ model Case {
   submissionDate        DateTime?
   aorDate               DateTime?
   decisionDate          DateTime?
-  decisionResult        String?
+  decisionResult        DecisionResult?
+  assignedToId          String?
+  assignedTo            User?             @relation(fields: [assignedToId], references: [id])
   notes                 String?
   deadlineDate          DateTime?
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
+  isArchived            Boolean      @default(false)
+  deletedAt             DateTime?
 
   documents          Document[]
   immFormSubmissions IMMFormSubmission[]
@@ -252,6 +272,7 @@ model Case {
   complianceLogs     ComplianceLog[]
   serviceAgreements ServiceAgreement[]
   payments          Payment[]
+  tasks              Task[]
 
   @@index([organizationId])
   @@index([clientId])
@@ -303,16 +324,17 @@ model IMMFormSubmission {
   caseId      String
   case        Case          @relation(fields: [caseId], references: [id], onDelete: Cascade)
   templateId  String
-  template    IMMFormTemplate @relation(fields: [templateId], references: [id])
-  filledData  Json
-  pdfPath     String?
-  status      IMMFormStatus @default(DRAFT)
-  notes       String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  submittedAt DateTime?
+  template       IMMFormTemplate @relation(fields: [templateId], references: [id])
+  applicantLabel String?
+  filledData     Json
+  pdfPath        String?
+  status         IMMFormStatus @default(DRAFT)
+  notes          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  submittedAt    DateTime?
 
-  @@unique([caseId, templateId])
+  @@unique([caseId, templateId, applicantLabel])
   @@index([caseId])
   @@index([templateId])
 }
@@ -360,6 +382,24 @@ model ComplianceLog {
   @@index([caseId])
 }
 
+model Task {
+  id           String    @id @default(cuid())
+  caseId       String
+  case         Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  assignedToId String?
+  assignedTo   User?     @relation(fields: [assignedToId], references: [id])
+  title        String
+  description  String?
+  dueDate      DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([caseId])
+  @@index([assignedToId])
+  @@index([dueDate])
+}
+
 model ActivityLog {
   id             String    @id @default(cuid())
   organizationId String
@@ -402,14 +442,14 @@ model ServiceAgreement {
   organizationId   String
   organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   clientId         String
-  client           Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client           Client          @relation(fields: [clientId], references: [id], onDelete: Restrict)
   caseId           String?
   case             Case?           @relation(fields: [caseId], references: [id], onDelete: SetNull)
   title            String
   description      String?
   status           AgreementStatus @default(DRAFT)
   serviceType      String
-  feeAmount        Float           @default(0)
+  feeAmount        Decimal         @default(0)
   feeCurrency      String          @default("CAD")
   feeStructure     String?         // e.g. "flat", "hourly", "milestone"
   paymentSchedule  String?         // e.g. "upfront", "monthly", "on_completion"
@@ -447,12 +487,12 @@ model Payment {
   organizationId   String
   organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   clientId         String
-  client           Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client           Client        @relation(fields: [clientId], references: [id], onDelete: Restrict)
   caseId           String?
   case             Case?         @relation(fields: [caseId], references: [id], onDelete: SetNull)
   agreementId      String?
   agreement        ServiceAgreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
-  amount           Float
+  amount           Decimal
   currency         String        @default("CAD")
   paymentMethod    PaymentMethod @default(OTHER)
   paymentDate      DateTime
@@ -492,6 +532,7 @@ model ImmigrationNews {
 model Lead {
   id             String    @id @default(cuid())
   organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   platform       String    // "Reddit", "Facebook", "Quora", etc.
   source         String?   // subreddit, group name, etc.
   author         String    // username e.g. /u/BRAVOas
@@ -513,7 +554,9 @@ model Lead {
 model Notification {
   id        String   @id @default(cuid())
   userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
   title     String
   message   String?
   link      String?

@@ -3,11 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { readFileSync } from "fs";
 import { join } from "path";
 
+const MIGRATION_SECRET = process.env["MIGRATE_SECRET"];
+if (!MIGRATION_SECRET) {
+  throw new Error("MIGRATE_SECRET env var is required — set it in Vercel dashboard");
+}
+
 const MIGRATION_SQL = readFileSync(join(process.cwd(), "prisma", "migration-payment.sql"), "utf-8");
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env["MIGRATE_SECRET"] || "migrate-now"}`) {
+  if (authHeader !== `Bearer ${MIGRATION_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
