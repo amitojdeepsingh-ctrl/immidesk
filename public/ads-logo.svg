@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 310 95" fill="none">
+  <!-- Red horizontal stripe behind everything -->
+  <rect x="8" y="40" width="205" height="8" fill="#E31837"/>
+
+  <!-- Maple leaf (11-point, on top of stripe) -->
+  <g transform="translate(6, 3)">
+    <path d="
+      M 38,2
+      L 41,12
+      L 52,7
+      L 48,19
+      L 60,17
+      L 53,27
+      L 65,31
+      L 53,34
+      L 57,46
+      L 45,40
+      L 45,56
+      L 38,56
+      L 31,56
+      L 31,40
+      L 19,46
+      L 23,34
+      L 11,31
+      L 23,27
+      L 16,17
+      L 28,19
+      L 24,7
+      L 35,12
+      Z
+      M 35,56 L 35,67 L 41,67 L 41,56 Z
+    " fill="#E31837"/>
+  </g>
+
+  <!-- ADS text -->
+  <text x="88" y="57" font-family="'Arial Black', 'Arial Bold', Arial, sans-serif" font-weight="900" font-size="40" fill="#E31837" letter-spacing="-0.5">ADS</text>
+
+  <!-- Immigration Services text -->
+  <text x="155" y="80" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="16" fill="#404040" letter-spacing="0.3">Immigration Services</text>
+</svg>

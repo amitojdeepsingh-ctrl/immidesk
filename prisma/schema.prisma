@@ -1,0 +1,525 @@
+// ??? ImmigDesk ? Prisma Schema ?????????????????????????????????????????????
+// PostgreSQL via Supabase. Prisma 7.x client.
+// 13 models, 9 enums, full relations, indexes, and constraints.
+// Connection URLs live in prisma.config.ts (Prisma 7 convention).
+// ????????????????????????????????????????????????????????????????????????????
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ??? ENUMS ?????????????????????????????????????????????????????????????????
+
+enum UserRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum CaseType {
+  EXPRESS_ENTRY
+  PNP
+  STUDY_PERMIT
+  WORK_PERMIT
+  LMIA_BASED_WORK_PERMIT
+  LMIA_EXEMPT_WORK_PERMIT
+  VISITOR_VISA
+  FAMILY_SPONSORSHIP
+  SPOUSAL_SPONSORSHIP
+  SPOUSAL_OWP
+  SUPER_VISA
+  TRP
+  REFUGEE
+  PRRA
+  HC
+  VULNERABLE_WORKER
+  CITIZENSHIP
+  BUSINESS_INVESTMENT
+  RESTORATION_VISITOR
+  OTHER
+}
+
+enum CaseStatus {
+  INTAKE
+  DOCUMENT_COLLECTION
+  FORM_FILLING
+  READY_TO_SUBMIT
+  SUBMITTED
+  AOR_RECEIVED
+  IN_PROCESS
+  ADDITIONAL_DOCS_REQUESTED
+  DECISION_MADE
+  APPROVED
+  REFUSED
+  CLOSED
+}
+
+enum CasePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum PlanTier {
+  SOLO
+  TEAM
+  FIRM
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum IMMFormStatus {
+  DRAFT
+  COMPLETE
+  SUBMITTED
+}
+
+enum DocumentCategory {
+  PASSPORT
+  EDUCATION
+  LANGUAGE_TEST
+  WORK_EXPERIENCE
+  FINANCIAL
+  MEDICAL
+  POLICE_CERTIFICATE
+  PHOTO
+  MARRIAGE_CERTIFICATE
+  BIRTH_CERTIFICATE
+  INSURANCE
+  INVITATION
+  IDENTITY
+  WORK_PERMIT
+  OTHER
+}
+
+enum ComplianceEventType {
+  CLIENT_INTAKE
+  RETAINER_SIGNED
+  FORM_SUBMITTED
+  DEADLINE_MISSED
+  CLIENT_COMMUNICATION
+  FILE_CLOSED
+  DATA_RETENTION_REVIEW
+}
+
+
+enum AgreementStatus {
+  DRAFT
+  SENT
+  SIGNED
+  EXPIRED
+  VOIDED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  WISE
+  CASH
+  CHEQUE
+  OTHER
+}
+
+// ??? MODELS ????????????????????????????????????????????????????????????????
+
+model Organization {
+  id                     String   @id @default(cuid())
+  name                   String
+  slug                   String   @unique
+  ciccRegistrationNumber String?  @unique
+  addressLine1           String?
+  addressLine2           String?
+  city                   String?
+  province               String?
+  postalCode             String?
+  country                String   @default("CA")
+  phone                  String?
+  logoUrl                String?
+  settings               Json     @default("{}")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  users          User[]
+  clients        Client[]
+  cases          Case[]
+  subscriptions  Subscription[]
+  complianceLogs ComplianceLog[]
+  serviceAgreements ServiceAgreement[]
+  activityLogs   ActivityLog[]
+  payments       Payment[]
+
+  @@index([slug])
+  @@index([ciccRegistrationNumber])
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  phone          String?
+  avatarUrl      String?
+  role           UserRole  @default(MEMBER)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  supabaseUserId String    @unique
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  documents    Document[]
+  activityLogs ActivityLog[]
+
+  @@index([organizationId])
+  @@index([supabaseUserId])
+}
+
+model Client {
+  id             String    @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  firstName      String
+  lastName       String
+  email          String
+  phone          String?
+  dateOfBirth    DateTime?
+  nationality    String?
+  passportNumber String?
+  passportExpiry   DateTime?
+  workPermitExpiry DateTime?
+  maritalStatus  String?
+  spouseName     String?
+  addressLine1   String?
+  addressLine2   String?
+  city           String?
+  province       String?
+  postalCode     String?
+  country        String?
+  notes          String?
+  tags           String[]  @default([])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  cases     Case[]
+  documents Document[]
+  serviceAgreements ServiceAgreement[]
+  payments          Payment[]
+
+  @@unique([organizationId, email])
+  @@index([organizationId])
+  @@index([organizationId, lastName, firstName])
+}
+
+model Case {
+  id                    String       @id @default(cuid())
+  organizationId        String
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clientId              String
+  client                Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  caseType              CaseType
+  status                CaseStatus   @default(INTAKE)
+  priority              CasePriority @default(NORMAL)
+  title                 String
+  description           String?
+  irccApplicationNumber String?
+  uciNumber             String?
+  submissionDate        DateTime?
+  aorDate               DateTime?
+  decisionDate          DateTime?
+  decisionResult        String?
+  notes                 String?
+  deadlineDate          DateTime?
+  createdAt             DateTime     @default(now())
+  updatedAt             DateTime     @updatedAt
+
+  documents          Document[]
+  immFormSubmissions IMMFormSubmission[]
+  crsScores          CRSScore[]
+  complianceLogs     ComplianceLog[]
+  serviceAgreements ServiceAgreement[]
+  payments          Payment[]
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([status])
+  @@index([organizationId, status])
+  @@index([deadlineDate])
+}
+
+model Document {
+  id           String           @id @default(cuid())
+  caseId       String
+  case         Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  clientId     String?
+  client       Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  uploadedById String
+  uploadedBy   User             @relation(fields: [uploadedById], references: [id])
+  name         String
+  storagePath  String
+  mimeType     String
+  sizeBytes    Int
+  category     DocumentCategory @default(OTHER)
+  notes        String?
+  createdAt    DateTime         @default(now())
+
+  @@index([caseId])
+  @@index([clientId])
+  @@index([uploadedById])
+}
+
+model IMMFormTemplate {
+  id              String    @id @default(cuid())
+  formCode        String    @unique
+  formName        String
+  version         String
+  irccLastUpdated DateTime
+  fieldSchema     Json
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  submissions IMMFormSubmission[]
+
+  @@index([formCode, version])
+  @@index([isActive])
+}
+
+model IMMFormSubmission {
+  id          String        @id @default(cuid())
+  caseId      String
+  case        Case          @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  templateId  String
+  template    IMMFormTemplate @relation(fields: [templateId], references: [id])
+  filledData  Json
+  pdfPath     String?
+  status      IMMFormStatus @default(DRAFT)
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  submittedAt DateTime?
+
+  @@unique([caseId, templateId])
+  @@index([caseId])
+  @@index([templateId])
+}
+
+model CRSScore {
+  id           String    @id @default(cuid())
+  caseId       String
+  case         Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  score        Int
+  breakdown    Json
+  notes        String?
+  calculatedAt DateTime  @default(now())
+
+  @@index([caseId])
+  @@index([calculatedAt])
+}
+
+model PNPDraw {
+  id                String   @id @default(cuid())
+  province          String
+  drawDate          DateTime
+  drawType          String
+  stream            String?
+  minimumScore      Int?
+  invitationsIssued Int
+  notes             String?
+  createdAt         DateTime @default(now())
+
+  @@index([province, drawDate])
+  @@index([drawDate])
+}
+
+model ComplianceLog {
+  id             String              @id @default(cuid())
+  organizationId String
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  caseId         String?
+  case           Case?               @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  eventType      ComplianceEventType
+  description    String
+  metadata       Json                @default("{}")
+  timestamp      DateTime            @default(now())
+
+  @@index([organizationId, timestamp])
+  @@index([caseId])
+}
+
+model ActivityLog {
+  id             String    @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  action         String
+  entityType     String
+  entityId       String
+  metadata       Json      @default("{}")
+  timestamp      DateTime  @default(now())
+
+  @@index([organizationId, timestamp])
+  @@index([userId])
+  @@index([entityType, entityId])
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  organizationId       String             @unique
+  organization         Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  stripeCustomerId     String             @unique
+  stripeSubscriptionId String?            @unique
+  planTier             PlanTier           @default(SOLO)
+  status               SubscriptionStatus @default(TRIALING)
+  trialEndsAt          DateTime?
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([stripeCustomerId])
+  @@index([status])
+}
+
+
+model ServiceAgreement {
+  id               String          @id @default(cuid())
+  organizationId   String
+  organization     Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clientId         String
+  client           Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  caseId           String?
+  case             Case?           @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  title            String
+  description      String?
+  status           AgreementStatus @default(DRAFT)
+  serviceType      String
+  feeAmount        Float           @default(0)
+  feeCurrency      String          @default("CAD")
+  feeStructure     String?         // e.g. "flat", "hourly", "milestone"
+  paymentSchedule  String?         // e.g. "upfront", "monthly", "on_completion"
+  startDate        DateTime?
+  endDate          DateTime?
+  terms            Json            @default("{}")
+  pdfStoragePath   String?
+  signatureDataUrl String?
+  signedAt         DateTime?
+  signedByClientIp String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  payments Payment[]
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([caseId])
+  @@index([status])
+  @@index([organizationId, status])
+}
+
+model StripeEvent {
+  id        String   @id
+  type      String
+  data      Json
+  processed Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([processed])
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  organizationId   String
+  organization     Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  clientId         String
+  client           Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  caseId           String?
+  case             Case?         @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  agreementId      String?
+  agreement        ServiceAgreement? @relation(fields: [agreementId], references: [id], onDelete: SetNull)
+  amount           Float
+  currency         String        @default("CAD")
+  paymentMethod    PaymentMethod @default(OTHER)
+  paymentDate      DateTime
+  receiptNumber    String?
+  notes            String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([organizationId])
+  @@index([clientId])
+  @@index([caseId])
+  @@index([agreementId])
+  @@index([paymentDate])
+}
+
+model ImmigrationNews {
+  id          String   @id @default(cuid())
+  title       String
+  summary     String?
+  url         String   @unique
+  source      String   // "canada.ca" | "cicnews" | "canadavisa"
+  category    String   // "EXPRESS_ENTRY" | "PNP" | "NEWS"
+  // Express Entry draw fields
+  drawNumber  Int?
+  crsScore    Int?
+  invitations Int?
+  drawDate    DateTime?
+  // metadata
+  isNew       Boolean  @default(true)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([category])
+  @@index([publishedAt])
+}
+
+model Lead {
+  id             String    @id @default(cuid())
+  organizationId String
+  platform       String    // "Reddit", "Facebook", "Quora", etc.
+  source         String?   // subreddit, group name, etc.
+  author         String    // username e.g. /u/BRAVOas
+  title          String?
+  bodySnippet    String?
+  url            String
+  score          Float     @default(0)
+  intentKeywords String?
+  shortPitch     String?
+  longPitch      String?
+  status         String    @default("pending") // pending | contacted | skipped
+  contactedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  clientId  String?
+  title     String
+  message   String?
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, read])
+}
