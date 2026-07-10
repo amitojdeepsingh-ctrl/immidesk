@@ -75,6 +75,7 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
   const [converting, setConverting] = useState(false);
   const [resending, setResending] = useState(false);
   const [resendMsg, setResendMsg] = useState<string | null>(null);
+  const [showResendPrompt, setShowResendPrompt] = useState(false);
 
   const isLead = (client.tags ?? []).includes("lead");
 
@@ -114,6 +115,7 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
 
     setIsEditing(false);
     router.refresh();
+    setShowResendPrompt(true);
     return { success: true };
   }
 
@@ -306,6 +308,32 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
             : "bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-900/40"
         )}>
           {resendMsg}
+        </div>
+      )}
+
+      {/* Resend prompt after edit */}
+      {showResendPrompt && (
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/40 dark:bg-blue-950/20">
+          <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
+            Client updated. Would you like to resend the portal links?
+          </p>
+          <div className="mt-3 flex items-center gap-2">
+            <button
+              onClick={async () => {
+                setShowResendPrompt(false);
+                await handleResendLinks();
+              }}
+              className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Yes, resend links
+            </button>
+            <button
+              onClick={() => setShowResendPrompt(false)}
+              className="rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+            >
+              No, thanks
+            </button>
+          </div>
         </div>
       )}
 
