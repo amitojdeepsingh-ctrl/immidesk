@@ -57,6 +57,12 @@ export async function POST(req: NextRequest) {
     const supabase = getSupabaseAdmin();
 
     const body = await req.json();
+    // Convert YYYY-MM-DD to full ISO datetime
+    for (const field of ["startDate", "endDate"] as const) {
+      if (body[field] && /^\d{4}-\d{2}-\d{2}$/.test(body[field])) {
+        body[field] = `${body[field]}T00:00:00.000Z`;
+      }
+    }
     const validated = agreementGenerateSchema.parse(body);
 
     // Verify client belongs to this organization

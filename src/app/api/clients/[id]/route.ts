@@ -62,6 +62,12 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
     }
 
     const body = await req.json();
+    // Convert YYYY-MM-DD (from <input type="date">) to full ISO datetime
+    for (const field of ["dateOfBirth", "passportExpiry", "workPermitExpiry"] as const) {
+      if (body[field] && /^\d{4}-\d{2}-\d{2}$/.test(body[field])) {
+        body[field] = `${body[field]}T00:00:00.000Z`;
+      }
+    }
     const validated = clientUpdateSchema.parse(body);
 
     if (validated.email && validated.email !== existing.email) {
