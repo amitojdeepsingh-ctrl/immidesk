@@ -18,3 +18,5 @@ Thumbs.db
 # python
 __pycache__/
 *.pyc
+
+.vercel

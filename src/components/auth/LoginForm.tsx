@@ -35,7 +35,7 @@ export function LoginForm() {
       const result = await res.json();
 
       if (result.success) {
-        window.location.href = "/clients";
+        window.location.assign("/clients");
       } else {
         setServerError(result.error);
         setIsPending(false);

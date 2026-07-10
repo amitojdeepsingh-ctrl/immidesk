@@ -196,6 +196,8 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
 
   const sixMonthsFromNow = new Date();
   sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+  // eslint-disable-next-line react-hooks/purity
+  const nowMs = Date.now();
 
   const expiryAlerts: { label: string; date: string }[] = [];
   if (client.passportExpiry && new Date(client.passportExpiry) <= sixMonthsFromNow) {
@@ -216,7 +218,7 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
           </div>
           <div className="space-y-1">
             {expiryAlerts.map(a => {
-              const daysLeft = Math.ceil((new Date(a.date).getTime() - Date.now()) / 86400000);
+              const daysLeft = Math.ceil((new Date(a.date).getTime() - nowMs) / 86400000);
               return (
                 <p key={a.label} className="text-sm text-amber-700 dark:text-amber-300">
                   <span className="font-medium">{a.label}</span> expires on{" "}

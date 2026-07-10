@@ -172,6 +172,7 @@ model Organization {
   activityLogs   ActivityLog[]
   payments       Payment[]
   leads          Lead[]
+  intakeSubmissions IntakeSubmission[]
 
   @@index([slug])
   @@index([ciccRegistrationNumber])
@@ -549,6 +550,62 @@ model Lead {
 
   @@index([organizationId])
   @@index([organizationId, status])
+}
+
+enum IntakeStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  ARCHIVED
+}
+
+model IntakeSubmission {
+  id               String       @id @default(cuid())
+  organizationId   String?      @map("organization_id")
+  organization     Organization? @relation(fields: [organizationId], references: [id])
+  clientId         String?      @map("client_id")
+
+  firstName        String       @map("first_name")
+  lastName         String       @map("last_name")
+  email            String
+  phone            String?
+  dateOfBirth      String?      @map("date_of_birth")
+  gender           String?
+  nationality      String?
+  passportNumber   String?      @map("passport_number")
+
+  address          String?
+  city             String?
+  province         String?
+  postalCode       String?      @map("postal_code")
+  country          String?
+
+  maritalStatus    String?      @map("marital_status")
+  spouseFirstName  String?      @map("spouse_first_name")
+  spouseLastName   String?      @map("spouse_last_name")
+  spouseDOB        String?      @map("spouse_dob")
+  spouseNationality String?     @map("spouse_nationality")
+  spousePassport   String?      @map("spouse_passport")
+  childrenData     String?      @map("children_data")
+
+  occupation       String?
+  educationLevel   String?      @map("education_level")
+  englishLevel     String?      @map("english_level")
+  frenchLevel      String?      @map("french_level")
+
+  programType      String?      @map("program_type")
+  currentStatus    String?      @map("current_status")
+
+  status           IntakeStatus @default(NEW)
+  notes            String?
+  submittedAt      DateTime     @default(now()) @map("submitted_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+
+  @@map("intake_submissions")
+  @@index([organizationId])
+  @@index([status])
+  @@index([submittedAt])
 }
 
 model Notification {

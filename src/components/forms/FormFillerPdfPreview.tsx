@@ -126,7 +126,6 @@ export function FormFillerPdfPreview({
   const downloadPdf = useCallback(() => {
     if (!previewUrl) {
       generatePreview();
-      setTimeout(() => downloadPdf(), 100);
       return;
     }
     const link = document.createElement("a");

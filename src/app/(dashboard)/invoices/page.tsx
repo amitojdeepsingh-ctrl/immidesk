@@ -389,15 +389,15 @@ export default function InvoicesPage() {
   const [showCreate, setShowCreate] = useState(false);
   const [updating, setUpdating] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  async function load() {
     setLoading(true);
     const res = await fetch("/api/invoices");
     const data = await res.json();
     setInvoices(Array.isArray(data) ? data : []);
     setLoading(false);
-  }, []);
+  }
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(); }, []); // eslint-disable-line react-hooks/set-state-in-effect
 
   async function updateStatus(id: string, status: string) {
     setUpdating(id);

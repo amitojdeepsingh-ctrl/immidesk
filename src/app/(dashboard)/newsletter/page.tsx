@@ -16,11 +16,12 @@ function NewsletterForm() {
   const [result, setResult] = useState<{ sent: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Re-populate if navigated from draws page
+  // Re-populate if navigated from draws page — initial state already reads searchParams
   useEffect(() => {
     const s = searchParams.get("subject");
     const b = searchParams.get("body");
     const c = searchParams.get("caseType");
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (s) setSubject(decodeURIComponent(s));
     if (b) setBody(decodeURIComponent(b));
     if (c) setCaseType(c);
@@ -104,7 +105,7 @@ function NewsletterForm() {
         <ul className="space-y-1 text-xs text-zinc-500">
           <li>• Use **text** to make text <strong>bold</strong> in the email</li>
           <li>• Each client receives a personalized email addressed to their first name</li>
-          <li>• Go to <strong>News & Draws</strong> and click "Send to Clients" on any draw to pre-fill this form</li>
+          <li>• Go to <strong>News &amp; Draws</strong> and click &ldquo;Send to Clients&rdquo; on any draw to pre-fill this form</li>
           <li>• Express Entry draws auto-target Express Entry clients, PNP draws target PNP clients</li>
         </ul>
       </div>

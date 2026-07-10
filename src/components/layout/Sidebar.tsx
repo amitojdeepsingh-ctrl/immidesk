@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
+  LayoutDashboard,
   Users,
   FileSpreadsheet,
   GitBranch,
@@ -13,18 +14,31 @@ import {
   Target,
   Receipt,
   ClipboardList,
+  FilePen,
+  CreditCard,
+  Briefcase,
+  Calendar,
+  Calculator,
+  Inbox,
 } from "lucide-react";
 import { logoutAction } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Clients", href: "/clients", icon: Users },
+  { label: "Cases", href: "/cases", icon: Briefcase },
+  { label: "Tasks", href: "/tasks", icon: Calendar },
+  { label: "Agreements", href: "/agreements", icon: FilePen },
+  { label: "Payments", href: "/payments", icon: CreditCard },
   { label: "LMIA", href: "/lmia", icon: ClipboardList },
   { label: "Newsletter", href: "/newsletter", icon: Send },
   { label: "Leads", href: "/leads", icon: Target },
   { label: "Invoices", href: "/invoices", icon: Receipt },
+  { label: "CRS Calculator", href: "/crs", icon: Calculator },
   { label: "Forms", href: "/forms", icon: FileSpreadsheet },
   { label: "News & Draws", href: "/draws", icon: GitBranch },
+  { label: "Submissions", href: "/submissions", icon: Inbox },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 
@@ -41,7 +55,7 @@ export function Sidebar({
 
   return (
     <aside className="flex w-56 shrink-0 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-      <Link href="/clients" className="flex h-16 items-center justify-center border-b border-zinc-200 px-4 hover:bg-zinc-50 transition-colors dark:border-zinc-800 dark:hover:bg-zinc-800/50">
+      <Link href="/dashboard" className="flex h-16 items-center justify-center border-b border-zinc-200 px-4 hover:bg-zinc-50 transition-colors dark:border-zinc-800 dark:hover:bg-zinc-800/50">
         <Image src="/ads-logo.svg" alt="ADS Immigration Services" width={160} height={48} priority />
       </Link>
 

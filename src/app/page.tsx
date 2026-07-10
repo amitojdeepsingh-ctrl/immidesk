@@ -67,7 +67,7 @@ export default async function HomePage() {
         <nav className="flex items-center gap-4">
           {isLoggedIn ? (
             <Link
-              href="/clients"
+              href="/dashboard"
               className="flex items-center gap-1.5 rounded-md bg-zinc-50 px-3 py-1.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
             >
               Dashboard

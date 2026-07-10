@@ -118,7 +118,7 @@ export default function DrawsPage() {
       ) : items.length === 0 ? (
         <div className="py-16 text-center">
           <Newspaper className="mx-auto mb-3 h-8 w-8 text-zinc-300" />
-          <p className="text-sm text-zinc-500">No news yet. Click "Check for Updates" to fetch the latest.</p>
+          <p className="text-sm text-zinc-500">No news yet. Click &ldquo;Check for Updates&rdquo; to fetch the latest.</p>
         </div>
       ) : (
         <div className="space-y-3">

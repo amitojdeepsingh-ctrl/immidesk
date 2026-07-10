@@ -137,26 +137,26 @@ export function AgreementView({
           </div>
 
           <p className="mb-6">
-            <strong>{clientFullName}</strong>{client.address ? ` of ${client.address}` : ""} (Hereinafter "Applicant") and,{" "}
-            <strong>{rcicName}</strong> (Hereinafter "Consultant"), a Regulated Canadian Immigration Consultant, Member of the
+            <strong>{clientFullName}</strong>{client.address ? ` of ${client.address}` : ""} (Hereinafter &ldquo;Applicant&rdquo;) and,{" "}
+            <strong>{rcicName}</strong> (Hereinafter &ldquo;Consultant&rdquo;), a Regulated Canadian Immigration Consultant, Member of the
             Immigration Consultants of Canada Regulatory Council (ICCRC){rcicNumber ? `, Membership No ${rcicNumber}` : ""} carrying on the
             practice of Immigration Consulting at <strong>{orgName}</strong>{orgAddress ? ` at ${orgAddress}` : ""}.
           </p>
 
           <Section title="A. RCIC Responsibilities & Commitment">
-            <p className="mb-3">The Consultant (RCIC) agrees to act for the "Applicant" &amp; provide services as listed below to the Applicant with respect to <strong>{serviceLabel}</strong>.</p>
+            <p className="mb-3">The Consultant (RCIC) agrees to act for the &ldquo;Applicant&rdquo; &amp; provide services as listed below to the Applicant with respect to <strong>{serviceLabel}</strong>.</p>
             <ol className="list-decimal space-y-2 pl-5">
               <li>To advise Applicant on the Canadian Immigration Act and Regulations and procedures relating to the application.</li>
-              <li>To conduct an assessment on the Applicant's background and qualifications.</li>
+              <li>To conduct an assessment on the Applicant&rsquo;s background and qualifications.</li>
               <li>To prepare and advise the Applicant in writing of options that offers the best chance of a successful application. The decision on how to proceed rests with the Applicant.</li>
               <li>To provide the Applicant with the check list of information and documents required in support of the application.</li>
-              <li>To assist in the preparation of Applicant's application and gathering of relevant supporting documents as required.</li>
+              <li>To assist in the preparation of Applicant&rsquo;s application and gathering of relevant supporting documents as required.</li>
               <li>To advise and to assist the submission of applications of accompanying family members to remit processing fees as required (see Section C, part 1).</li>
               <li>To assist with the preparation, if required, for an interview with CIC or a Visa office in consideration of the application.</li>
               <li>To represent Applicant and family members in respect of the above application before the Minister, Officer, or the Immigration and Refugee Board as necessary to follow up with the processing office to minimize delays and to comply with any additional documentation requests.</li>
               <li>To keep Applicant informed by telephone, fax, email or other means of communication as agreed on the current status of the application.</li>
-              <li>To act with due diligence in the above application and to act within the bounds of Canadian Immigration laws and ICCRC's Rules of Conduct to obtain the best result possible for the Applicant.</li>
-              <li>This agreement is considered closed / RCIC's representation of the Applicant ceases at the time of the issuance of COPR and Immigrant Visa.</li>
+              <li>To act with due diligence in the above application and to act within the bounds of Canadian Immigration laws and ICCRC&rsquo;s Rules of Conduct to obtain the best result possible for the Applicant.</li>
+              <li>This agreement is considered closed / RCIC&rsquo;s representation of the Applicant ceases at the time of the issuance of COPR and Immigrant Visa.</li>
             </ol>
             <p className="mt-3 italic text-zinc-500">The Applicant acknowledges that the Consultant will not provide advice regarding the tax laws of any country, employment or business opportunities.</p>
           </Section>
@@ -171,7 +171,7 @@ export function AgreementView({
               </li>
             </ol>
             <p className="mt-3 text-zinc-600 dark:text-zinc-400">
-              Applicant acknowledges that the above fees paid to the Consultant do not guarantee Applicant's admission to Canada under the category stated above, and that no representation has been made by consultant to the effect that success in the application is guaranteed. The professional services fee is payable in instalment. Government fees, disbursements such as courier fees, police clearance fees, IELTS, credential assessments, health insurance fees, and medical fees are to be paid by the client and subject to change upon mutual agreement of both parties.
+              Applicant acknowledges that the above fees paid to the Consultant do not guarantee Applicant&rsquo;s admission to Canada under the category stated above, and that no representation has been made by consultant to the effect that success in the application is guaranteed. The professional services fee is payable in instalment. Government fees, disbursements such as courier fees, police clearance fees, IELTS, credential assessments, health insurance fees, and medical fees are to be paid by the client and subject to change upon mutual agreement of both parties.
             </p>
             <p className="mt-3 font-medium uppercase tracking-wide text-zinc-500">Apart from the above RCIC fee &amp; miscellaneous fees mentioned above, there are other payments to be borne by the Applicant:</p>
             <p className="mt-2 text-zinc-600 dark:text-zinc-400"><strong>Government Application Fee</strong> — as applicable</p>
@@ -189,7 +189,7 @@ export function AgreementView({
             <ol className="list-decimal space-y-2 pl-5">
               <li>The government of Canada (CIC) imposes non-refundable processing cost recovery fees for the application. The Applicant is responsible for paying all required processing fees e.g., Federal, Provincial, Department of Human Resources, or other government departments, incurred in order to process the application.</li>
               <li>The Applicant will be responsible for all costs related to medical examinations, police certificates, language assessments and other required expenditures.</li>
-              <li>All aforementioned costs are in addition to the Consultant's fees, as stated in Section B.</li>
+              <li>All aforementioned costs are in addition to the Consultant&rsquo;s fees, as stated in Section B.</li>
             </ol>
           </Section>
 
@@ -215,8 +215,8 @@ export function AgreementView({
             <ol className="list-decimal space-y-2 pl-5">
               <li>This Agreement is considered terminated upon completion of tasks identified under section A (1–10) of this agreement.</li>
               <li>This Agreement is considered terminated if material changes occur to the Client(s) application or eligibility, which make it impossible to proceed with services detailed in section A (1–10) of this Agreement.</li>
-              <li><strong>Obligatory Withdrawal</strong> — An Immigration Consultant shall sever the consultant-client relationship or withdraw as representative if: (a) discharged by the Client; (b) instructed by the Client to do something illegal or in contravention to any rules; (c) the Immigration Consultant's continued involvement will place the Immigration Consultant in a conflict of interest; or (d) the Immigration Consultant is not competent to handle the matter.</li>
-              <li><strong>Optional Withdrawal</strong> — An Immigration Consultant may sever the consultant-client relationship if there has been a serious loss of confidence, such as where: (a) the Client has deceived the Immigration Consultant; (b) the Client has refused to give adequate instructions; or (c) the Client has refused to accept and act upon the Consultant's advice on a significant point.</li>
+              <li><strong>Obligatory Withdrawal</strong> — An Immigration Consultant shall sever the consultant-client relationship or withdraw as representative if: (a) discharged by the Client; (b) instructed by the Client to do something illegal or in contravention to any rules; (c) the Immigration Consultant&rsquo;s continued involvement will place the Immigration Consultant in a conflict of interest; or (d) the Immigration Consultant is not competent to handle the matter.</li>
+              <li><strong>Optional Withdrawal</strong> — An Immigration Consultant may sever the consultant-client relationship if there has been a serious loss of confidence, such as where: (a) the Client has deceived the Immigration Consultant; (b) the Client has refused to give adequate instructions; or (c) the Client has refused to accept and act upon the Consultant&rsquo;s advice on a significant point.</li>
               <li><strong>Residual Right to Withdrawal</strong> — In situations not covered by articles F1 and F2, the Consultant may withdraw only if the withdrawal will not be unfair to the Applicant and is not done for an improper purpose.</li>
               <li><strong>Withdrawal for Non-Payment</strong> — After reasonable notice, if the Applicant fails to provide funds on account for disbursements or fees, the Consultant may withdraw unless serious prejudice to the Applicant would result.</li>
               <li>Should the Applicant wish to withdraw the application, notice must be provided to the Consultant in writing, and all fees paid to the Consultant for services already rendered will be forfeited.</li>
@@ -226,11 +226,11 @@ export function AgreementView({
           <Section title="G. Confidentiality">
             <p className="mb-2">All information and documentation reviewed by the RCIC, required by CIC and all other governing bodies, and used for the preparation of the application will not be divulged to any third party, other than agents and employees, without prior consent, except as demanded by law. The RCIC and all agents and employees are also bound by the confidentiality requirements of Article 8.1 and 8.5 of the Code of Professional Ethics.</p>
             <p className="mb-2">The Client(s) agree to the use of electronic communication and storage of confidential information. The RCIC will use his/her best efforts to maintain a high degree of security for electronic communication and information storage.</p>
-            <p>The Applicant acknowledges and agrees that the Consultant may consult about the Applicant's case with other Immigration consultants or persons with specific expertise in immigration law or government affairs, in order to maximise the quality of advice available to the Applicant.</p>
+            <p>The Applicant acknowledges and agrees that the Consultant may consult about the Applicant&rsquo;s case with other Immigration consultants or persons with specific expertise in immigration law or government affairs, in order to maximise the quality of advice available to the Applicant.</p>
           </Section>
 
           <Section title="H. Circumstances Beyond the Control of the Consultant">
-            <p>The Consultant will not be responsible for retroactive changes to any Immigration Act or Regulation, delays by authorities, closure of Visa offices / Consulates / High Commissions / Embassies, change of Federal or Provincial Immigration Regulations, Acts of God and any acts beyond the Consultant's control.</p>
+            <p>The Consultant will not be responsible for retroactive changes to any Immigration Act or Regulation, delays by authorities, closure of Visa offices / Consulates / High Commissions / Embassies, change of Federal or Provincial Immigration Regulations, Acts of God and any acts beyond the Consultant&rsquo;s control.</p>
           </Section>
 
           <Section title="I. Complaints / Disputes">
@@ -244,7 +244,7 @@ export function AgreementView({
           </Section>
 
           <Section title="J. Force Majeure">
-            <p>The RCIC's failure to perform any term of this Retainer Agreement as a result of conditions beyond his/her control such as, but not limited to, governmental restrictions or subsequent legislation, war, strikes, or acts of God, shall not be deemed a breach of this Agreement.</p>
+            <p>The RCIC&rsquo;s failure to perform any term of this Retainer Agreement as a result of conditions beyond his/her control such as, but not limited to, governmental restrictions or subsequent legislation, war, strikes, or acts of God, shall not be deemed a breach of this Agreement.</p>
           </Section>
 
           <Section title="K. Change Policy">

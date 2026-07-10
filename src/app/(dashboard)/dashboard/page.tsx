@@ -22,7 +22,9 @@ export default async function DashboardPage() {
   const supabase = getSupabaseAdmin();
   const orgId = organization.id;
 
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  // eslint-disable-next-line react-hooks/purity
+  const now = Date.now();
+  const sevenDaysAgo = new Date(now - 7 * 86400000).toISOString();
   const sixMonthsFromNow = new Date();
   sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
   const sixMonthsStr = sixMonthsFromNow.toISOString();
@@ -166,7 +168,6 @@ export default async function DashboardPage() {
           </div>
           <div className="divide-y divide-red-100 dark:divide-red-900/30">
             {(expiringClients as Array<{id:string;firstName:string;lastName:string;passportExpiry:string|null;workPermitExpiry:string|null}>).map(c => {
-              const now = Date.now();
               const alerts = [];
               if (c.passportExpiry) alerts.push({ type: "Passport", date: c.passportExpiry, days: Math.ceil((new Date(c.passportExpiry).getTime() - now) / 86400000) });
               if (c.workPermitExpiry) alerts.push({ type: "Work Permit", date: c.workPermitExpiry, days: Math.ceil((new Date(c.workPermitExpiry).getTime() - now) / 86400000) });

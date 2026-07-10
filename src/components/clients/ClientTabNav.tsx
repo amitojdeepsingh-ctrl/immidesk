@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { User, FileText, FilePen, Bell, CreditCard, MessageSquare } from "lucide-react";
+import { User, FileText, FilePen, Bell, CreditCard, MessageSquare, Activity } from "lucide-react";
 
 const tabs = [
   { label: "Overview",   href: "",           icon: User },
+  { label: "Timeline",   href: "/timeline",  icon: Activity },
   { label: "Documents",  href: "/documents", icon: FileText },
   { label: "Agreement",  href: "/agreement", icon: FilePen },
   { label: "Updates",    href: "/updates",   icon: Bell },
