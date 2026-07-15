@@ -245,6 +245,7 @@ model Client {
   notifications Notification[]
   serviceAgreements ServiceAgreement[]
   payments          Payment[]
+  consultations     Consultation[]
 
   @@unique([organizationId, email])
   @@index([organizationId])
