@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
+// deploy-v2-2026-07-15
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ImmigDesk — Immigration Case Management",
+  title: "ImmigDesk v2 — Immigration Case Management",
   description:
     "End-to-end case management for Canadian immigration professionals. Track clients, manage deadlines, generate forms, and scale your practice.",
 };
