@@ -191,7 +191,7 @@ model User {
   name           String
   phone          String?
   avatarUrl      String?
-  role           UserRole  @default(MEMBER)
+  role           UserRole  @default(CONSULTANT)
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   supabaseUserId String    @unique
