@@ -1,4 +1,6 @@
 import { requireAuth } from "@/lib/auth";
+import ConsultationSettings from "./ConsultationSettings";
+import NotificationPreferences from "./NotificationPreferences";
 
 export default async function SettingsPage() {
   const { prismaUser, organization } = await requireAuth();
@@ -63,6 +65,10 @@ export default async function SettingsPage() {
           <Field label="Phone" value={prismaUser.phone ?? "—"} />
         </div>
       </section>
+
+      <ConsultationSettings />
+
+      <NotificationPreferences />
     </div>
   );
 }

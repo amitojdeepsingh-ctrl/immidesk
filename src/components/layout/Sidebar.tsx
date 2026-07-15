@@ -20,6 +20,12 @@ import {
   Calendar,
   Calculator,
   Inbox,
+  Video,
+  BarChart3,
+  Settings2,
+  Brain,
+  Wallet,
+  ListChecks,
 } from "lucide-react";
 import { logoutAction } from "@/lib/auth-actions";
 import { cn } from "@/lib/utils";
@@ -29,16 +35,22 @@ const navItems = [
   { label: "Clients", href: "/clients", icon: Users },
   { label: "Cases", href: "/cases", icon: Briefcase },
   { label: "Tasks", href: "/tasks", icon: Calendar },
+  { label: "Consultations", href: "/consultations", icon: Video },
+  { label: "Reports", href: "/reports", icon: BarChart3 },
+  { label: "Configuration", href: "/configuration", icon: Settings2 },
+  { label: "Audit Log", href: "/audit-log", icon: ClipboardList },
   { label: "Agreements", href: "/agreements", icon: FilePen },
-  { label: "Payments", href: "/payments", icon: CreditCard },
+  { label: "Payments", href: "/payments", icon: Wallet },
   { label: "LMIA", href: "/lmia", icon: ClipboardList },
   { label: "Newsletter", href: "/newsletter", icon: Send },
-  { label: "Leads", href: "/leads", icon: Target },
+  { label: "Prospects", href: "/prospects", icon: ListChecks },
   { label: "Invoices", href: "/invoices", icon: Receipt },
+  { label: "Billing", href: "/billing", icon: CreditCard },
   { label: "CRS Calculator", href: "/crs", icon: Calculator },
   { label: "Forms", href: "/forms", icon: FileSpreadsheet },
   { label: "News & Draws", href: "/draws", icon: GitBranch },
   { label: "Submissions", href: "/submissions", icon: Inbox },
+  { label: "AI Features", href: "/ai", icon: Brain },
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 

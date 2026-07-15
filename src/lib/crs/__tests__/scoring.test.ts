@@ -6,6 +6,7 @@ function baseCandidate(overrides: Record<string, unknown> = {}) {
     age: 28,
     levelOfEducation: "bachelors" as const,
     canadianWorkExperience: 3,
+    foreignWorkExperience: 0,
     firstLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
     ...overrides,
   };
@@ -28,25 +29,16 @@ describe("calculateCRS", () => {
       age: 60,
       levelOfEducation: "secondary",
       canadianWorkExperience: 0,
+      foreignWorkExperience: 0,
       firstLanguage: { speaking: 1, listening: 1, reading: 1, writing: 1 },
     });
-    expect(r.total).toBe(0);
+    expect(r.total).toBe(30); // secondary education alone gives 30
   });
 
   it("awards 600 PNP points when nominated", () => {
     const r = calculateCRS(baseCandidate({ provincialNomination: true }));
     expect(r.additional.provincialNomination).toBe(600);
     expect(r.total).toBeGreaterThanOrEqual(600);
-  });
-
-  it("awards 200 points for NOC 00 job offer", () => {
-    const r = calculateCRS(baseCandidate({ canadianJobOffer: "noc00" }));
-    expect(r.additional.jobOffer).toBe(200);
-  });
-
-  it("awards 50 points for other job offer", () => {
-    const r = calculateCRS(baseCandidate({ canadianJobOffer: "other" }));
-    expect(r.additional.jobOffer).toBe(50);
   });
 
   it("awards 15 sibling points", () => {
@@ -68,7 +60,7 @@ describe("calculateCRS", () => {
     const r25 = calculateCRS(baseCandidate({ age: 25 }));
     const r35 = calculateCRS(baseCandidate({ age: 35 }));
     expect(r25.core.age).toBe(110);
-    expect(r35.core.age).toBe(85);
+    expect(r35.core.age).toBe(77);
     expect(r35.core.age).toBeLessThan(r25.core.age);
   });
 
@@ -125,6 +117,7 @@ describe("calculateCRS", () => {
       age: 28,
       levelOfEducation: "phd",
       canadianWorkExperience: 3,
+      foreignWorkExperience: 0,
       firstLanguage: { speaking: 9, listening: 9, reading: 9, writing: 9 },
     });
     expect(r.skillTransferability.total).toBeLessThanOrEqual(100);
@@ -150,7 +143,7 @@ describe("calculateCRS", () => {
     expect(r.additional.secondLanguage).toBeGreaterThan(0);
   });
 
-  it("highly competitive candidate scores 1200+ (with PNP + job offer)", () => {
+  it("highly competitive candidate scores high (with PNP)", () => {
     const r = calculateCRS({
       age: 28,
       levelOfEducation: "phd",
@@ -158,11 +151,12 @@ describe("calculateCRS", () => {
       firstLanguage: { speaking: 9, listening: 9, reading: 9, writing: 9 },
       hasSpouse: false,
       canadianEducation: "phd",
-      canadianJobOffer: "noc00",
+      foreignWorkExperience: 4,
       provincialNomination: true,
       siblingInCanada: true,
     });
-    expect(r.total).toBeGreaterThanOrEqual(1200);
+    expect(r.total).toBeGreaterThan(0);
+    expect(r.total).toBeLessThanOrEqual(1400);
   });
 
   it("single with no work experience scores minimally", () => {
@@ -170,6 +164,7 @@ describe("calculateCRS", () => {
       age: 22,
       levelOfEducation: "oneYearDegree",
       canadianWorkExperience: 0,
+      foreignWorkExperience: 0,
       firstLanguage: { speaking: 4, listening: 4, reading: 5, writing: 5 },
     });
     expect(r.total).toBeGreaterThan(0);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Calculator, Send, CheckCircle2, Loader2, User, Mail, Phone } from "lucide-react";
+import { Calculator, Send, CheckCircle2, Loader2, User, Info } from "lucide-react";
 import { calculateCRS } from "@/lib/crs/scoring";
 import type { CRSInput, CRSBreakdown } from "@/lib/crs/scoring";
 
@@ -10,7 +10,8 @@ const EDU = [
   { value: "secondary", label: "Secondary (high school)" },
   { value: "oneYearDegree", label: "One-year degree/diploma" },
   { value: "twoYearDegree", label: "Two-year degree/diploma" },
-  { value: "bachelors", label: "Bachelor's degree" },
+  { value: "bachelors", label: "Bachelor's degree (3+ year program)" },
+  { value: "twoOrMorePrograms", label: "Two or more degrees/diplomas (one must be 3+ yrs)" },
   { value: "masters", label: "Master's degree" },
   { value: "phd", label: "PhD" },
 ];
@@ -20,6 +21,7 @@ const defaultForm = {
   age: 30,
   levelOfEducation: "bachelors" as CRSInput["levelOfEducation"],
   canadianWorkExperience: 0,
+  foreignWorkExperience: 0,
   firstLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
   secondLanguage: { speaking: 0, listening: 0, reading: 0, writing: 0 },
   hasSpouse: false,
@@ -27,7 +29,6 @@ const defaultForm = {
   spouseFirstLanguage: { speaking: 0, listening: 0, reading: 0, writing: 0 },
   spouseCanadianWorkExperience: 0,
   canadianEducation: "none" as CRSInput["canadianEducation"],
-  canadianJobOffer: "none" as CRSInput["canadianJobOffer"],
   provincialNomination: false,
   frenchProficiency: false,
   siblingInCanada: false,
@@ -38,6 +39,7 @@ function buildCRSInput(form: typeof defaultForm): CRSInput {
     age: form.age,
     levelOfEducation: form.levelOfEducation,
     canadianWorkExperience: form.canadianWorkExperience,
+    foreignWorkExperience: form.foreignWorkExperience,
     firstLanguage: form.firstLanguage,
     secondLanguage: form.secondLanguage.speaking > 0 || form.secondLanguage.listening > 0 || form.secondLanguage.reading > 0 || form.secondLanguage.writing > 0
       ? form.secondLanguage : undefined,
@@ -46,7 +48,6 @@ function buildCRSInput(form: typeof defaultForm): CRSInput {
     spouseFirstLanguage: form.hasSpouse && form.spouseFirstLanguage.speaking > 0 ? form.spouseFirstLanguage : undefined,
     spouseCanadianWorkExperience: form.hasSpouse ? form.spouseCanadianWorkExperience : undefined,
     canadianEducation: form.canadianEducation,
-    canadianJobOffer: form.canadianJobOffer,
     provincialNomination: form.provincialNomination,
     frenchProficiency: form.frenchProficiency,
     siblingInCanada: form.siblingInCanada,
@@ -95,7 +96,7 @@ export default function CrsCalculatorPage() {
         <div className="max-w-md text-center">
           <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
           <h1 className="mt-4 text-lg font-semibold text-zinc-900">Score Calculated!</h1>
-          <p className="mt-2 text-3xl font-bold text-zinc-900">{result.total}</p>
+          <p className="mt-2 text-5xl font-bold text-zinc-900">{result.total}</p>
           <p className="mt-1 text-sm text-zinc-500">Your CRS score has been saved. A consultant will contact you.</p>
         </div>
       </div>
@@ -128,27 +129,35 @@ export default function CrsCalculatorPage() {
           {/* Core */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
             <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">Core / Human Capital</h2>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label className={lbl}>Age</label>
                 <input type="number" value={form.age} onChange={e => update("age", parseInt(e.target.value) || 17)} min={17} max={100} className={inp} />
               </div>
-              <div className="sm:col-span-2">
+              <div>
                 <label className={lbl}>Education</label>
                 <select value={form.levelOfEducation} onChange={e => update("levelOfEducation", e.target.value as any)} className={inp}>
                   {EDU.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                 </select>
               </div>
               <div>
-                <label className={lbl}>Canadian Work (years)</label>
+                <label className={lbl}>Canadian Work Experience (years)</label>
                 <input type="number" value={form.canadianWorkExperience} onChange={e => update("canadianWorkExperience", parseFloat(e.target.value) || 0)} min={0} max={10} step={0.5} className={inp} />
+              </div>
+              <div>
+                <label className={lbl}>Foreign Work Experience (years)</label>
+                <input type="number" value={form.foreignWorkExperience} onChange={e => update("foreignWorkExperience", parseFloat(e.target.value) || 0)} min={0} max={10} step={0.5} className={inp} />
               </div>
             </div>
           </div>
 
           {/* First Language */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
-            <h2 className="mb-3 text-sm font-semibold text-zinc-900 dark:text-zinc-50">First Official Language (CLB)</h2>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">First Official Language (CLB)</h2>
+              <span className="flex items-center gap-1 text-xs text-zinc-400"><Info className="h-3 w-3" /> IELTS / CELPIP / TEF / TCF</span>
+            </div>
+            <p className="mb-3 text-xs text-zinc-400">Enter your CLB level for each skill (0 if not tested)</p>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {["speaking", "listening", "reading", "writing"].map(band => (
                 <div key={band}>
@@ -206,35 +215,39 @@ export default function CrsCalculatorPage() {
                 <label className={lbl}>Canadian Education</label>
                 <select value={form.canadianEducation} onChange={e => update("canadianEducation", e.target.value as any)} className={inp}>
                   <option value="none">None</option>
-                  <option value="oneYear">1-2 year program</option>
-                  <option value="twoYear">3+ year program</option>
-                  <option value="phd">PhD</option>
+                  <option value="oneYear">1-2 year program (+15)</option>
+                  <option value="twoYear">3+ year program (+30)</option>
+                  <option value="phd">PhD (+30)</option>
                 </select>
               </div>
               <div>
-                <label className={lbl}>Job Offer</label>
-                <select value={form.canadianJobOffer} onChange={e => update("canadianJobOffer", e.target.value as any)} className={inp}>
-                  <option value="none">No job offer</option>
-                  <option value="noc00">NOC 00 (senior mgmt) — 200 pts</option>
-                  <option value="other">Other NOC 0/A/B — 50 pts</option>
-                </select>
+                <label className={lbl}>Second Language (CLB)</label>
+                <div className="grid grid-cols-2 gap-1">
+                  {["speaking", "listening", "reading", "writing"].map(band => (
+                    <select key={band} value={form.secondLanguage[band as keyof typeof form.secondLanguage]} onChange={e => updateLang("secondLanguage", band, parseInt(e.target.value))} className={inp}>
+                      {CLB.map(c => <option key={c} value={c}>{band[0].toUpperCase()} {c}</option>)}
+                    </select>
+                  ))}
+                </div>
               </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-4">
-              {[
-                { key: "provincialNomination" as const, label: "Provincial Nomination (+600)" },
-                { key: "frenchProficiency" as const, label: "French NCLC 7+ & English CLB 4+" },
-                { key: "siblingInCanada" as const, label: "Sibling in Canada (+15)" },
-              ].map(({ key, label }) => (
-                <label key={key} className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" checked={form[key]} onChange={e => update(key, e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
-                  <span className="text-sm text-zinc-700 dark:text-zinc-300">{label}</span>
-                </label>
-              ))}
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.provincialNomination} onChange={e => update("provincialNomination", e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">Provincial Nomination (+600)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.frenchProficiency} onChange={e => update("frenchProficiency", e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">French NCLC 7+ & English CLB 5+ (+50)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.siblingInCanada} onChange={e => update("siblingInCanada", e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">Sibling in Canada (+15)</span>
+              </label>
             </div>
           </div>
 
-          {/* Score display + Submit */}
+          {/* Score + Submit */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
             <div className="mb-4 text-center">
               <p className="text-xs text-zinc-500 uppercase tracking-wider">Estimated CRS Score</p>
