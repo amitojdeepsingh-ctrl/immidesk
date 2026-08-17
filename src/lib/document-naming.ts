@@ -136,10 +136,11 @@ export function sanitizeFileName(raw: string): string {
     extension = "";
   }
 
-  // Sanitize base name
+// Sanitize base name
   baseName = baseName
     .replace(UNSAFE_FILENAME_CHARS, "")
     .replace(FILENAME_SEPARATOR_CHARS, "-")
+    .replace(/[^a-zA-Z0-9._-]+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^[-.]+|[-.]+$/g, "")
     .toLowerCase();
@@ -149,12 +150,15 @@ export function sanitizeFileName(raw: string): string {
     baseName = baseName.substring(0, MAX_FILENAME_LENGTH).replace(/-+$/, "");
   }
 
-  // Fallback
+// Fallback
   if (baseName.length === 0) {
     baseName = "document";
   }
 
-  return baseName + extension;
+  // Extension must also be path-safe (letters/digits/dots only).
+  const safeExtension = extension.replace(/[^a-zA-Z0-9.]+/g, "").toLowerCase();
+
+  return baseName + safeExtension;
 }
 
 // ─── Unique Filename Generation ────────────────────────────────────────────
