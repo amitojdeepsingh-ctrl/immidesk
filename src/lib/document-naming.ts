@@ -14,6 +14,9 @@ import { DocumentCategory as DocCat } from "@/types";
 /** Characters stripped from filenames for safety. */
 const UNSAFE_FILENAME_CHARS = /[<>:"/\\|?*\x00-\x1f]/g;
 
+/** Characters allowed in a full storage path (dirs + filename). Slash is valid here. */
+const UNSAFE_PATH_CHARS = /[^A-Za-z0-9._/-]/;
+
 /** Characters replaced with hyphens in filenames. */
 const FILENAME_SEPARATOR_CHARS = /[\s_]+/g;
 
@@ -372,7 +375,7 @@ export function validateStoragePath(path: string): {
     return { valid: false, reason: "Path contains directory traversal (..)" };
   }
 
-  if (UNSAFE_FILENAME_CHARS.test(path)) {
+if (UNSAFE_PATH_CHARS.test(path)) {
     return { valid: false, reason: "Path contains unsafe characters" };
   }
 

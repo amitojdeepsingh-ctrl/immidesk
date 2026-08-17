@@ -114,13 +114,13 @@ const portalUploadSchema = z.object({
     .nativeEnum(DocumentCategory)
     .optional()
     .default(DocumentCategory.OTHER),
-  notes: z.string().max(1000).optional().default(""),
+  notes: z.string().max(1000).nullish().default(""),
   applicantLabel: z
     .string()
     .max(40)
-    .optional()
+    .nullish()
     .default("")
-    .transform((v) => v.trim().toUpperCase()),
+    .transform((v) => (v ?? "").trim().toUpperCase()),
 });
 
 // ─── Constants ─────────────────────────────────────────────────────────────
