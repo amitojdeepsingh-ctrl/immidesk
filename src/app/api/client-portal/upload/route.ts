@@ -388,8 +388,17 @@ export async function POST(req: NextRequest) {
         .eq("organizationId", portalToken.organizationId)
         .limit(5);
 
-      const appUrl = process.env["NEXT_PUBLIC_APP_URL"] ?? "https://mqh56s7s-47hx.vercel.app";
-      const caseUrl = `${appUrl}/cases/${portalToken.caseId}`;
+      let appUrl: string | undefined;
+      if (req.url) {
+        try {
+          appUrl = new URL(req.url).origin;
+        } catch {
+          appUrl = undefined;
+        }
+      }
+      if (!appUrl) appUrl = process.env["NEXT_PUBLIC_APP_URL"];
+      // Case detail lives under the client page — /cases/[id] has no page.
+      const caseUrl = `${appUrl ?? "https://immidesk.vercel.app"}/clients/${portalToken.clientId}`;
       const clientDisplayName = clientLabel ?? "Your client";
 
       const html = `
