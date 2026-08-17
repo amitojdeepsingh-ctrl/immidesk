@@ -70,6 +70,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
         caseTitle: caseInfo?.title ?? "",
         caseId: caseInfo?.id ?? "",
         uploadedByName: uploaderInfo?.name ?? "",
+        applicantLabel: (doc.applicantLabel as string | null) ?? null,
         downloadUrl,
       };
     }),

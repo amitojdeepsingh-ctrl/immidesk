@@ -95,6 +95,7 @@ export const DocumentCategory = {
   INVITATION: "INVITATION",
   IDENTITY: "IDENTITY",
   WORK_PERMIT: "WORK_PERMIT",
+  IMMIGRATION_FORM: "IMMIGRATION_FORM",
   OTHER: "OTHER",
 } as const;
 export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCategory];
@@ -166,6 +167,7 @@ export const DocumentCategoryLabel: Record<DocumentCategory, string> = {
   INVITATION: "Invitation",
   IDENTITY: "Identity",
   WORK_PERMIT: "Work Permit",
+  IMMIGRATION_FORM: "Immigration Form",
   OTHER: "Other",
 };
 

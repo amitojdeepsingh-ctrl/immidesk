@@ -39,6 +39,29 @@ export default async function ClientDetailPage({ params }: PageProps) {
     .order("createdAt", { ascending: false })
     .limit(10);
 
+  // Family & Intake — per-applicant PIS submissions across the client's cases
+  const { data: submissions } = await supabase
+    .from("IMMFormSubmission")
+    .select("id, applicantLabel, status, filledData, createdAt, case:Case!inner(id, title)")
+    .eq("case.clientId", id)
+    .order("createdAt", { ascending: false });
+
+  const familyIntake = (submissions ?? []).map((s: Record<string, unknown>) => {
+    const caseInfo = s.case as Record<string, unknown> | undefined;
+    return {
+      id: s.id as string,
+      applicantLabel: (s.applicantLabel as string) || "PRIMARY",
+      status: s.status as string,
+      filledData: (s.filledData ?? {}) as Record<string, unknown>,
+      createdAt:
+        typeof s.createdAt === "string"
+          ? s.createdAt
+          : new Date(s.createdAt as Date).toISOString(),
+      caseTitle: (caseInfo?.title as string) ?? "",
+      caseId: (caseInfo?.id as string) ?? "",
+    };
+  });
+
   const serialized = {
     ...client,
     _count: { cases: caseCount ?? 0, documents: documentCount ?? 0 },
@@ -51,6 +74,7 @@ export default async function ClientDetailPage({ params }: PageProps) {
       ...c,
       createdAt: typeof c.createdAt === "string" ? c.createdAt : new Date(c.createdAt as Date).toISOString(),
     })),
+    familyIntake,
   };
 
   return <ClientDetailView client={serialized} />;

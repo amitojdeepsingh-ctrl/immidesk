@@ -7,7 +7,7 @@ function baseCandidate(overrides: Record<string, unknown> = {}) {
     levelOfEducation: "bachelors" as const,
     canadianWorkExperience: 3,
     foreignWorkExperience: 0,
-    firstLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
+    englishTest: { speaking: 7, listening: 7, reading: 7, writing: 7 },
     ...overrides,
   };
 }
@@ -30,7 +30,7 @@ describe("calculateCRS", () => {
       levelOfEducation: "secondary",
       canadianWorkExperience: 0,
       foreignWorkExperience: 0,
-      firstLanguage: { speaking: 1, listening: 1, reading: 1, writing: 1 },
+      englishTest: { speaking: 1, listening: 1, reading: 1, writing: 1 },
     });
     expect(r.total).toBe(30); // secondary education alone gives 30
   });
@@ -88,7 +88,7 @@ describe("calculateCRS", () => {
     const r = calculateCRS(baseCandidate({
       hasSpouse: true,
       spouseLevelOfEducation: "bachelors",
-      spouseFirstLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
+      spouseEnglishTest: { speaking: 7, listening: 7, reading: 7, writing: 7 },
       spouseCanadianWorkExperience: 1,
     }));
     expect(r.spouse.education).toBeGreaterThan(0);
@@ -118,27 +118,45 @@ describe("calculateCRS", () => {
       levelOfEducation: "phd",
       canadianWorkExperience: 3,
       foreignWorkExperience: 0,
-      firstLanguage: { speaking: 9, listening: 9, reading: 9, writing: 9 },
+      englishTest: { speaking: 9, listening: 9, reading: 9, writing: 9 },
     });
     expect(r.skillTransferability.total).toBeLessThanOrEqual(100);
   });
 
-  it("french bonus awards 50 points with CLB 7+ french and CLB 5+ english", () => {
+  it("french bonus awards 50 points with NCLC 7+ french and CLB 5+ english", () => {
     const r = calculateCRS(baseCandidate({
-      frenchProficiency: true,
-      secondLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
+      frenchTest: { speaking: 7, listening: 7, reading: 7, writing: 7 },
     }));
     expect(r.additional.french).toBe(50);
   });
 
-  it("french bonus gives 0 if french is false", () => {
-    const r = calculateCRS(baseCandidate({ frenchProficiency: false }));
+  it("french bonus gives 0 if french test is not taken", () => {
+    const r = calculateCRS(baseCandidate({ frenchTest: undefined }));
     expect(r.additional.french).toBe(0);
   });
 
-  it("Second language points for CLB 5+", () => {
+  it("french bonus gives 0 if french NCLC is below 7", () => {
     const r = calculateCRS(baseCandidate({
-      secondLanguage: { speaking: 5, listening: 5, reading: 5, writing: 5 },
+      frenchTest: { speaking: 6, listening: 6, reading: 6, writing: 6 },
+    }));
+    expect(r.additional.french).toBe(0);
+  });
+
+  it("french bonus awards 25 points with NCLC 7+ french and CLB 4 english", () => {
+    const r = calculateCRS({
+      age: 28,
+      levelOfEducation: "bachelors",
+      canadianWorkExperience: 3,
+      foreignWorkExperience: 0,
+      englishTest: { speaking: 4, listening: 4, reading: 4, writing: 4 },
+      frenchTest: { speaking: 7, listening: 7, reading: 7, writing: 7 },
+    });
+    expect(r.additional.french).toBe(25);
+  });
+
+  it("Second language points for CLB 5+ (via french test)", () => {
+    const r = calculateCRS(baseCandidate({
+      frenchTest: { speaking: 5, listening: 5, reading: 5, writing: 5 },
     }));
     expect(r.additional.secondLanguage).toBeGreaterThan(0);
   });
@@ -148,7 +166,7 @@ describe("calculateCRS", () => {
       age: 28,
       levelOfEducation: "phd",
       canadianWorkExperience: 4,
-      firstLanguage: { speaking: 9, listening: 9, reading: 9, writing: 9 },
+      englishTest: { speaking: 9, listening: 9, reading: 9, writing: 9 },
       hasSpouse: false,
       canadianEducation: "phd",
       foreignWorkExperience: 4,
@@ -165,7 +183,7 @@ describe("calculateCRS", () => {
       levelOfEducation: "oneYearDegree",
       canadianWorkExperience: 0,
       foreignWorkExperience: 0,
-      firstLanguage: { speaking: 4, listening: 4, reading: 5, writing: 5 },
+      englishTest: { speaking: 4, listening: 4, reading: 5, writing: 5 },
     });
     expect(r.total).toBeGreaterThan(0);
     expect(r.total).toBeLessThan(300);

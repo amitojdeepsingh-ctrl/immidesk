@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator, Save, Info } from "lucide-react";
+import { Calculator, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CrsBreakdown {
@@ -12,20 +12,24 @@ interface CrsBreakdown {
   total: number;
 }
 
+type ClbScores = { speaking: number; listening: number; reading: number; writing: number };
+
+const defaultClb: ClbScores = { speaking: 0, listening: 0, reading: 0, writing: 0 };
+
 const defaultForm = {
   age: 30,
   levelOfEducation: "bachelors",
   canadianWorkExperience: 0,
   foreignWorkExperience: 0,
-  firstLanguage: { speaking: 7, listening: 7, reading: 7, writing: 7 },
-  secondLanguage: { speaking: 0, listening: 0, reading: 0, writing: 0 },
+  englishTest: { speaking: 7, listening: 7, reading: 7, writing: 7 },
+  frenchTest: undefined as ClbScores | undefined,
   hasSpouse: false,
   spouseLevelOfEducation: "secondary",
-  spouseFirstLanguage: { speaking: 0, listening: 0, reading: 0, writing: 0 },
+  spouseEnglishTest: undefined as ClbScores | undefined,
+  spouseFrenchTest: undefined as ClbScores | undefined,
   spouseCanadianWorkExperience: 0,
   canadianEducation: "none",
   provincialNomination: false,
-  frenchProficiency: false,
   siblingInCanada: false,
 };
 
@@ -40,18 +44,26 @@ const EDU = [
   { value: "phd", label: "PhD" },
 ];
 
+const BANDS = ["speaking", "listening", "reading", "writing"] as const;
+
 export default function CrsPage() {
   const [form, setForm] = useState(defaultForm);
   const [result, setResult] = useState<CrsBreakdown | null>(null);
   const [calculating, setCalculating] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("");
 
   const update = <K extends keyof typeof form>(key: K, val: (typeof form)[K]) =>
     setForm(prev => ({ ...prev, [key]: val }));
 
-  const updateLang = (parent: "firstLanguage" | "secondLanguage" | "spouseFirstLanguage", field: string, val: number) =>
-    setForm(prev => ({ ...prev, [parent]: { ...prev[parent], [field]: val } }));
+  const updateClb = (obj: keyof typeof form, field: string, val: number) => {
+    setForm(prev => {
+      const current = prev[obj] as ClbScores | undefined;
+      return { ...prev, [obj]: { ...current, [field]: val } as ClbScores };
+    });
+  };
+
+  const toggleFrench = (on: boolean) => {
+    setForm(prev => ({ ...prev, frenchTest: on ? { speaking: 7, listening: 7, reading: 7, writing: 7 } : undefined }));
+  };
 
   const calculate = async () => {
     setCalculating(true);
@@ -70,6 +82,19 @@ export default function CrsPage() {
 
   const inp = "w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50";
   const lbl = "text-xs font-medium text-zinc-500";
+
+  const ClbGrid = ({ value, onChange }: { value: ClbScores; onChange: (field: string, val: number) => void }) => (
+    <div className="grid grid-cols-2 gap-3">
+      {BANDS.map(band => (
+        <div key={band}>
+          <label className={lbl + " capitalize"}>{band}</label>
+          <select value={value[band]} onChange={e => onChange(band, parseInt(e.target.value))} className={"mt-1 " + inp}>
+            {CLB.map(c => <option key={c} value={c}>{c === 0 ? "—" : c}</option>)}
+          </select>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="space-y-5 max-w-4xl mx-auto">
@@ -105,23 +130,30 @@ export default function CrsPage() {
             </div>
           </div>
 
-          {/* First Language */}
+          {/* English Test */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">First Official Language</h2>
-              <span className="flex items-center gap-1 text-xs text-zinc-400"><Info className="h-3 w-3" /> IELTS / CELPIP / TEF / TCF</span>
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">English Test (IELTS / CELPIP)</h2>
+              <span className="flex items-center gap-1 text-xs text-zinc-400"><Info className="h-3 w-3" /> Enter CLB level</span>
             </div>
-            <p className="text-xs text-zinc-400 mb-3">Enter CLB level for each band</p>
-            <div className="grid grid-cols-2 gap-3">
-              {["speaking", "listening", "reading", "writing"].map(band => (
-                <div key={band}>
-                  <label className={lbl + " capitalize"}>{band}</label>
-                  <select value={form.firstLanguage[band as keyof typeof form.firstLanguage]} onChange={e => updateLang("firstLanguage", band, parseInt(e.target.value))} className={"mt-1 " + inp}>
-                    {CLB.map(c => <option key={c} value={c}>{c === 0 ? "—" : c}</option>)}
-                  </select>
-                </div>
-              ))}
+            <ClbGrid value={form.englishTest} onChange={(field, val) => updateClb("englishTest", field, val)} />
+          </div>
+
+          {/* French Test */}
+          <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">French Test (TEF / TCF)</h2>
+              <button onClick={() => toggleFrench(!form.frenchTest)}
+                className={cn("rounded-md border px-3 py-1 text-xs font-medium", form.frenchTest ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500")}>
+                {form.frenchTest ? "Included" : "Not included"}
+              </button>
             </div>
+            {form.frenchTest && (
+              <>
+                <p className="text-xs text-zinc-400 mb-3">Enter French NCLC (CLB equivalent) for each band. NCLC 7+ in all bands + English CLB 5+ in all bands = +50 points.</p>
+                <ClbGrid value={form.frenchTest} onChange={(field, val) => updateClb("frenchTest", field, val)} />
+              </>
+            )}
           </div>
 
           {/* Spouse */}
@@ -134,7 +166,7 @@ export default function CrsPage() {
               </button>
             </div>
             {form.hasSpouse && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
                   <label className={lbl}>Education</label>
                   <select value={form.spouseLevelOfEducation} onChange={e => update("spouseLevelOfEducation", e.target.value)} className={"mt-1 " + inp}>
@@ -145,15 +177,29 @@ export default function CrsPage() {
                   <label className={lbl}>Canadian Work Experience (years)</label>
                   <input type="number" value={form.spouseCanadianWorkExperience} onChange={e => update("spouseCanadianWorkExperience", parseFloat(e.target.value) || 0)} min={0} max={10} step={0.5} className={"mt-1 " + inp} />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  {["speaking", "listening", "reading", "writing"].map(band => (
-                    <div key={band}>
-                      <label className={lbl + " capitalize"}>{band}</label>
-                      <select value={form.spouseFirstLanguage[band as keyof typeof form.spouseFirstLanguage]} onChange={e => updateLang("spouseFirstLanguage", band, parseInt(e.target.value))} className={"mt-1 " + inp}>
-                        {CLB.map(c => <option key={c} value={c}>{c === 0 ? "—" : c}</option>)}
-                      </select>
-                    </div>
-                  ))}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className={lbl}>English Test</label>
+                    <button onClick={() => update("spouseEnglishTest", form.spouseEnglishTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
+                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseEnglishTest ? "bg-zinc-900 text-white" : "text-zinc-500")}>
+                      {form.spouseEnglishTest ? "Included" : "Not included"}
+                    </button>
+                  </div>
+                  {form.spouseEnglishTest && (
+                    <ClbGrid value={form.spouseEnglishTest} onChange={(field, val) => updateClb("spouseEnglishTest", field, val)} />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className={lbl}>French Test</label>
+                    <button onClick={() => update("spouseFrenchTest", form.spouseFrenchTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
+                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseFrenchTest ? "bg-zinc-900 text-white" : "text-zinc-500")}>
+                      {form.spouseFrenchTest ? "Included" : "Not included"}
+                    </button>
+                  </div>
+                  {form.spouseFrenchTest && (
+                    <ClbGrid value={form.spouseFrenchTest} onChange={(field, val) => updateClb("spouseFrenchTest", field, val)} />
+                  )}
                 </div>
               </div>
             )}
@@ -161,7 +207,7 @@ export default function CrsPage() {
         </div>
 
         <div className="space-y-4">
-          {/* Additional */}
+          {/* Additional Points */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
             <h2 className="text-sm font-semibold text-zinc-900 mb-3 dark:text-zinc-50">Additional Points</h2>
             <div className="space-y-3">
@@ -174,26 +220,15 @@ export default function CrsPage() {
                   <option value="phd">PhD (+30)</option>
                 </select>
               </div>
-              <div>
-                <label className={lbl}>Second Language (CLB)</label>
-                <div className="grid grid-cols-2 gap-2 mt-1">
-                  {["speaking", "listening", "reading", "writing"].map(band => (
-                    <select key={band} value={form.secondLanguage[band as keyof typeof form.secondLanguage]} onChange={e => updateLang("secondLanguage", band, parseInt(e.target.value))}
-                      className="rounded-md border border-zinc-200 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50">
-                      {CLB.map(c => <option key={c} value={c}>{band[0].toUpperCase()} {c}</option>)}
-                    </select>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
 
+          {/* Bonus Points */}
           <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
             <h2 className="text-sm font-semibold text-zinc-900 mb-3 dark:text-zinc-50">Bonus Points</h2>
             <div className="space-y-3">
               {[
                 { key: "provincialNomination" as const, label: "Provincial Nomination (+600)" },
-                { key: "frenchProficiency" as const, label: "French NCLC 7+ & English CLB 5+ (+50)" },
                 { key: "siblingInCanada" as const, label: "Sibling in Canada (+15)" },
               ].map(({ key, label }) => (
                 <label key={key} className="flex items-center gap-2.5 cursor-pointer">

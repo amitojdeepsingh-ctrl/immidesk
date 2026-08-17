@@ -39,6 +39,7 @@ export interface DocumentItem {
   caseTitle?: string;
   caseId?: string;
   uploadedByName?: string;
+  applicantLabel?: string | null;
   downloadUrl?: string;
 }
 
@@ -92,6 +93,17 @@ function getMimeIcon(mimeType: string) {
   return File;
 }
 
+function applicantLabelDisplay(label?: string | null): string | null {
+  if (!label) return null;
+  if (label === "PRIMARY") return "Main applicant";
+  if (label === "SPOUSE") return "Spouse";
+  if (label.startsWith("CHILD#")) {
+    const n = label.split("#")[1];
+    return `Child ${n}`;
+  }
+  return label;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────
 
 export function DocumentList({
@@ -111,8 +123,10 @@ export function DocumentList({
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const hasCaseData =
+const hasCaseData =
     showCase ?? documents.some((d) => d.caseTitle);
+  const hasApplicant =
+    documents.some((d) => d.applicantLabel);
 
   // ─── Filter & sort ────────────────────────────────────────────────────
 
@@ -242,12 +256,17 @@ export function DocumentList({
                   onSort={handleSort}
                   sortIcon={<SortIcon field="name" sortField={sortField} sortDir={sortDir} />}
                 />
-                <Th
+<Th
                   label="Category"
                   field="category"
                   onSort={handleSort}
                   sortIcon={<SortIcon field="category" sortField={sortField} sortDir={sortDir} />}
                 />
+                {hasApplicant && (
+                  <th className="px-4 py-2.5 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Applicant
+                  </th>
+                )}
                 {hasCaseData && (
                   <th className="px-4 py-2.5 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400">
                     Case
@@ -299,6 +318,19 @@ export function DocumentList({
                         {DocumentCategoryLabel[doc.category]}
                       </span>
                     </td>
+
+{/* Applicant */}
+                    {hasApplicant && (
+                      <td className="px-4 py-2.5">
+                        {applicantLabelDisplay(doc.applicantLabel) ? (
+                          <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+                            {applicantLabelDisplay(doc.applicantLabel)}
+                          </span>
+                        ) : (
+                          <span className="text-zinc-400">—</span>
+                        )}
+                      </td>
+                    )}
 
                     {/* Case */}
                     {hasCaseData && (

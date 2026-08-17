@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Briefcase, Search, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
+import { MarkSubmittedButton } from "./case-actions";
 
 interface PageProps {
   searchParams: Promise<{
@@ -134,7 +135,7 @@ export default async function CasesPage({ searchParams }: PageProps) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                {["Title", "Client", "Type", "Status", "Priority", "Deadline", "Created", ""].map(h => (
+                {["Title", "Client", "Type", "Status", "Priority", "Deadline", "Created", "Action"].map(h => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-zinc-500">{h}</th>
                 ))}
               </tr>
@@ -167,10 +168,14 @@ export default async function CasesPage({ searchParams }: PageProps) {
                     </td>
                     <td className="px-4 py-3 text-zinc-500 text-xs">{fmtDate(typeof c.createdAt === "string" ? c.createdAt : new Date(c.createdAt as Date).toISOString())}</td>
                     <td className="px-4 py-3">
-                      <Link href={`/clients/${c.clientId}`}
-                        className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300">
-                        View <ArrowRight className="h-3 w-3" />
-                      </Link>
+                      {c.status === "SUBMITTED" || c.status === "APPROVED" || c.status === "REFUSED" || c.status === "CLOSED" ? (
+                        <Link href={`/clients/${c.clientId}`}
+                          className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300">
+                          View <ArrowRight className="h-3 w-3" />
+                        </Link>
+                      ) : (
+                        <MarkSubmittedButton caseId={c.id} />
+                      )}
                     </td>
                   </tr>
                 );

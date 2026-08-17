@@ -99,6 +99,7 @@ export const DocumentCategoryLabel: Record<DocumentCategory, string> = {
   [DocCat.INSURANCE]: "Insurance",
   [DocCat.INVITATION]: "Invitation",
   [DocCat.IDENTITY]: "Identity",
+  [DocCat.IMMIGRATION_FORM]: "Immigration Form",
   [DocCat.OTHER]: "Other",
 };
 

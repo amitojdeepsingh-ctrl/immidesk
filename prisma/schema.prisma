@@ -104,6 +104,7 @@ enum DocumentCategory {
   INVITATION
   IDENTITY
   WORK_PERMIT
+  IMMIGRATION_FORM
   OTHER
 }
 
@@ -294,24 +295,26 @@ model Case {
 }
 
 model Document {
-  id           String           @id @default(cuid())
-  caseId       String
-  case         Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
-  clientId     String?
-  client       Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  uploadedById String
-  uploadedBy   User             @relation(fields: [uploadedById], references: [id])
-  name         String
-  storagePath  String
-  mimeType     String
-  sizeBytes    Int
-  category     DocumentCategory @default(OTHER)
-  notes        String?
-  createdAt    DateTime         @default(now())
+  id             String           @id @default(cuid())
+  caseId         String
+  case           Case             @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  clientId       String?
+  client         Client?          @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  uploadedById   String
+  uploadedBy     User             @relation(fields: [uploadedById], references: [id])
+  name           String
+  storagePath    String
+  mimeType       String
+  sizeBytes      Int
+  category       DocumentCategory @default(OTHER)
+  notes          String?
+  applicantLabel String? // PRIMARY | SPOUSE | CHILD#n — which applicant this doc belongs to
+  createdAt      DateTime         @default(now())
 
   @@index([caseId])
   @@index([clientId])
   @@index([uploadedById])
+  @@index([applicantLabel])
 }
 
 model IMMFormTemplate {

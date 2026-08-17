@@ -115,6 +115,12 @@ const portalUploadSchema = z.object({
     .optional()
     .default(DocumentCategory.OTHER),
   notes: z.string().max(1000).optional().default(""),
+  applicantLabel: z
+    .string()
+    .max(40)
+    .optional()
+    .default("")
+    .transform((v) => v.trim().toUpperCase()),
 });
 
 // ─── Constants ─────────────────────────────────────────────────────────────
@@ -214,6 +220,7 @@ export async function POST(req: NextRequest) {
       token: formData.get("token"),
       category: formData.get("category"),
       notes: formData.get("notes"),
+      applicantLabel: formData.get("applicantLabel"),
     };
     const metadata = portalUploadSchema.parse(rawMetadata);
 
@@ -301,9 +308,14 @@ export async function POST(req: NextRequest) {
     const clientLabel = clientInfo.clientFirstName && clientInfo.clientLastName
       ? `${clientInfo.clientFirstName} ${clientInfo.clientLastName}`
       : null;
+    const isDefaultApplicantLabel =
+      !metadata.applicantLabel || metadata.applicantLabel === "PRIMARY";
+    // Tag non-primary docs with the applicant label in the filename
     const documentName = clientLabel
-      ? `${clientLabel} - ${file.name}`
-      : file.name;
+      ? `${clientLabel}${isDefaultApplicantLabel ? "" : ` (${metadata.applicantLabel})`} - ${file.name}`
+      : isDefaultApplicantLabel
+        ? file.name
+        : `${metadata.applicantLabel} - ${file.name}`;
 
     // ── Upload to Supabase Storage (admin client — no session needed) ────
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -346,6 +358,7 @@ export async function POST(req: NextRequest) {
         sizeBytes: file.size,
         category: metadata.category,
         notes: metadata.notes || "Uploaded by client via portal",
+        applicantLabel: isDefaultApplicantLabel ? null : metadata.applicantLabel,
       })
       .select()
       .single();

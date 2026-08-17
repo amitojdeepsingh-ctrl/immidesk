@@ -82,6 +82,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
   const [file, setFile] = useState<File | null>(null);
   const [category, setCategory] = useState<DocCatType>(DocumentCategory.OTHER);
   const [notes, setNotes] = useState("");
+  const [applicantLabel, setApplicantLabel] = useState("");
   const [uploadState, setUploadState] = useState<UploadState>({
     status: "idle",
     progress: 0,
@@ -189,6 +190,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
       formData.append("file", file);
       formData.append("token", token);
       formData.append("category", category);
+      if (applicantLabel) formData.append("applicantLabel", applicantLabel);
       if (notes.trim()) formData.append("notes", notes.trim());
       formData.append("clientFirstName", clientInfo.firstName.trim());
       formData.append("clientLastName", clientInfo.lastName.trim());
@@ -230,12 +232,13 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
         errorMessage: message,
       });
     }
-  }, [file, token, category, notes, clientInfo]);
+  }, [file, token, category, notes, applicantLabel, clientInfo]);
 
   const handleReset = useCallback(() => {
     setFile(null);
     setCategory(DocumentCategory.OTHER);
     setNotes("");
+    setApplicantLabel("");
     setUploadState({ status: "idle", progress: 0 });
   }, []);
 
@@ -462,6 +465,23 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                       {label}
                     </option>
                   ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                  Who is this document for?
+                </label>
+                <select
+                  value={applicantLabel}
+                  onChange={(e) => setApplicantLabel(e.target.value)}
+                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                >
+                  <option value="">Main applicant</option>
+                  <option value="SPOUSE">Spouse</option>
+                  <option value="CHILD#1">Child 1</option>
+                  <option value="CHILD#2">Child 2</option>
+                  <option value="CHILD#3">Child 3</option>
+                  <option value="CHILD#4">Child 4</option>
                 </select>
               </div>
               <div>

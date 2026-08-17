@@ -5,15 +5,15 @@ export type CRSInput = {
   levelOfEducation: EducationLevel;
   canadianWorkExperience: number;
   foreignWorkExperience: number;
-  firstLanguage: { speaking: number; listening: number; reading: number; writing: number };
-  secondLanguage?: { speaking: number; listening: number; reading: number; writing: number };
+  englishTest: { speaking: number; listening: number; reading: number; writing: number };
+  frenchTest?: { speaking: number; listening: number; reading: number; writing: number };
   hasSpouse?: boolean;
   spouseLevelOfEducation?: EducationLevel;
-  spouseFirstLanguage?: { speaking: number; listening: number; reading: number; writing: number };
+  spouseEnglishTest?: { speaking: number; listening: number; reading: number; writing: number };
+  spouseFrenchTest?: { speaking: number; listening: number; reading: number; writing: number };
   spouseCanadianWorkExperience?: number;
   canadianEducation?: "none" | "oneYear" | "twoYear" | "phd";
   provincialNomination?: boolean;
-  frenchProficiency?: boolean;
   siblingInCanada?: boolean;
 };
 
@@ -166,13 +166,13 @@ function provincialNominationPoints(nominated: boolean): number {
   return nominated ? 600 : 0;
 }
 
-function frenchBonus(french: boolean, firstLang: { speaking: number; listening: number; reading: number; writing: number }): number {
+function frenchBonus(french: { speaking: number; listening: number; reading: number; writing: number } | undefined, english: { speaking: number; listening: number; reading: number; writing: number }): number {
   if (!french) return 0;
-  const avgFrench = (firstLang.speaking + firstLang.listening + firstLang.reading + firstLang.writing) / 4;
-  if (avgFrench < 7) return 0;
-  const englishClb = firstLang.reading;
-  if (englishClb >= 5) return 50;
-  if (englishClb >= 4) return 25;
+  const allBands = [french.speaking, french.listening, french.reading, french.writing];
+  if (allBands.some(b => b < 7)) return 0;
+  const englishMin = Math.min(english.speaking, english.listening, english.reading, english.writing);
+  if (englishMin >= 5) return 50;
+  if (englishMin >= 4) return 25;
   return 0;
 }
 
@@ -191,30 +191,30 @@ function siblingPoints(sibling: boolean): number {
 
 export function calculateCRS(input: CRSInput): CRSBreakdown {
   const hasSpouse = input.hasSpouse ?? false;
-  const lang1 = input.firstLanguage;
-  const lang2 = input.secondLanguage;
+  const eng = input.englishTest;
+  const fre = input.frenchTest;
 
   const coreAge = agePoints(input.age, hasSpouse);
   const coreEducation = educationPoints(input.levelOfEducation, hasSpouse);
-  const coreLanguage = languagePoints(lang1, hasSpouse);
+  const coreLanguage = languagePoints(eng, hasSpouse);
   const coreCanadianWork = canadianWorkPoints(input.canadianWorkExperience, hasSpouse);
 
   const spouseEdu = spouseEducationPoints(hasSpouse ? input.spouseLevelOfEducation : undefined);
-  const spouseLang = spouseLanguagePoints(hasSpouse ? input.spouseFirstLanguage : undefined);
+  const spouseLang = spouseLanguagePoints(hasSpouse ? input.spouseEnglishTest : undefined);
   const spouseWork = spouseCanadianWorkPoints(hasSpouse ? input.spouseCanadianWorkExperience : undefined);
 
   const coreTotal = coreAge + coreEducation + coreLanguage + coreCanadianWork;
 
   // Skill transferability — two groups, each max 50, added together
   const ei = eduIndex(input.levelOfEducation);
-  const group1 = Math.max(tEduCanWork(ei, input.canadianWorkExperience), tEduLang(ei, lang1));
-  const group2 = Math.max(tForeignWorkLang(input.foreignWorkExperience, lang1), tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience));
+  const group1 = Math.max(tEduCanWork(ei, input.canadianWorkExperience), tEduLang(ei, eng));
+  const group2 = Math.max(tForeignWorkLang(input.foreignWorkExperience, eng), tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience));
   const transferTotal = Math.min(100, group1 + group2);
 
   const additionalCanadianEdu = canadianEducationPoints(input.canadianEducation ?? "none");
   const additionalPNP = provincialNominationPoints(input.provincialNomination ?? false);
-  const additionalFrench = frenchBonus(input.frenchProficiency ?? false, lang1);
-  const additionalSecondLang = secondLanguagePoints(lang2);
+  const additionalFrench = frenchBonus(fre, eng);
+  const additionalSecondLang = secondLanguagePoints(fre);
   const additionalSibling = siblingPoints(input.siblingInCanada ?? false);
   const additionalTotal = additionalPNP + additionalCanadianEdu + additionalSecondLang + additionalFrench + additionalSibling;
 
@@ -225,8 +225,8 @@ export function calculateCRS(input: CRSInput): CRSBreakdown {
     spouse: { education: spouseEdu, language: spouseLang, work: spouseWork },
     skillTransferability: {
       educationAndWork: group1,
-      languageAndEducation: tEduLang(ei, lang1),
-      foreignWorkAndLanguage: group2,
+      languageAndEducation: tEduLang(ei, eng),
+      foreignWorkAndLanguage: tForeignWorkLang(input.foreignWorkExperience, eng),
       foreignWorkAndCanadianWork: tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience),
       total: transferTotal,
     },

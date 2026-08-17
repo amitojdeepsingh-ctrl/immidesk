@@ -3,6 +3,8 @@
 import { useState, useRef, useCallback } from "react";
 import { CheckCircle2, ChevronRight, Upload, X, FileText, Loader2, Check, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DocumentCategory, DocumentCategoryLabel } from "@/types";
+import type { ApplicantDraft } from "@/lib/intake/pis-schema";
 
 interface PortalTabDocsProps {
   token: string;
@@ -38,7 +40,11 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
     dateOfBirth: "",
     nationality: "",
     maritalStatus: "",
-    spouseName: "",
+    spouseFirstName: "",
+    spouseLastName: "",
+    spouseDateOfBirth: "",
+    spouseNationality: "",
+    spouseWillApply: true,
     passportNumber: "",
     passportExpiry: "",
     passportCountry: "",
@@ -58,7 +64,9 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
     previousVisas: "",
     additionalNotes: "",
   });
+  const [dependants, setDependants] = useState<Array<{ id: number; firstName: string; lastName: string; dateOfBirth: string; nationality: string; willApply: boolean }>>([]);
   const [intakeSaving, setIntakeSaving] = useState(false);
+  const [intakeError, setIntakeError] = useState<string | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -79,15 +87,107 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
 
   async function submitIntake() {
     setIntakeSaving(true);
+    setIntakeError(null);
     try {
-      await fetch("/api/client-portal/intake", {
+      const married = intake.maritalStatus === "Married" || intake.maritalStatus === "Common-law partner";
+      const primary: ApplicantDraft = {
+        role: "PRIMARY",
+        applicantLabel: "PRIMARY",
+        firstName: client.firstName,
+        lastName: client.lastName,
+        willApply: true,
+        relationLabel: "Primary applicant",
+        pis: {
+          givenNames: client.firstName,
+          surname: client.lastName,
+          email: client.email,
+          cellPhone: client.phone ?? "",
+          dateOfBirth: intake.dateOfBirth,
+          birthCountry: intake.nationality,
+          countryOfResidence: intake.country,
+          maritalStatus: intake.maritalStatus,
+          spouseFirstName: married ? intake.spouseFirstName : "",
+          spouseLastName: married ? intake.spouseLastName : "",
+          passportNumber: intake.passportNumber,
+          passportExpiryDate: intake.passportExpiry,
+          passportCountryOfIssue: intake.passportCountry,
+          currentAddress: [intake.addressLine1, intake.city, intake.province, intake.postalCode, intake.country].filter(Boolean).join(", "),
+          homeCountryAddress: intake.addressLine2,
+          languageTest: intake.languageTest,
+          languageScore: intake.languageScore,
+          educationLevel: intake.educationLevel,
+          jobTitle: intake.jobTitle,
+          nocCode: intake.nocCode,
+          yearsOfExperience: intake.yearsOfExperience,
+          currentImmigrationStatus: intake.currentStatus,
+          previousVisas: intake.previousVisas,
+          additionalNotes: intake.additionalNotes,
+        },
+        education: [],
+        employment: [],
+        travel: [],
+        addressHistory: [],
+        statutory: {},
+      };
+
+      const family: ApplicantDraft[] = [];
+      if (married && (intake.spouseFirstName || intake.spouseLastName)) {
+        family.push({
+          role: "SPOUSE",
+          applicantLabel: "SPOUSE",
+          firstName: intake.spouseFirstName,
+          lastName: intake.spouseLastName,
+          willApply: intake.spouseWillApply,
+          relationLabel: "Spouse",
+          pis: {
+            givenNames: intake.spouseFirstName,
+            surname: intake.spouseLastName,
+            dateOfBirth: intake.spouseDateOfBirth,
+            birthCountry: intake.spouseNationality,
+          },
+          education: [],
+          employment: [],
+          travel: [],
+          addressHistory: [],
+          statutory: {},
+        });
+      }
+      dependants.forEach((d, i) => {
+        family.push({
+          role: "CHILD",
+          applicantLabel: `CHILD#${i + 1}`,
+          firstName: d.firstName,
+          lastName: d.lastName,
+          willApply: !!d.willApply,
+          relationLabel: "Dependent child",
+          pis: {
+            givenNames: d.firstName,
+            surname: d.lastName,
+            dateOfBirth: d.dateOfBirth,
+            birthCountry: d.nationality,
+          },
+          education: [],
+          employment: [],
+          travel: [],
+          addressHistory: [],
+          statutory: {},
+        });
+      });
+
+      const res = await fetch("/api/client-portal/intake", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, caseId, intake }),
+        body: JSON.stringify({
+          token,
+          caseId,
+          intake: { programType: caseType, primary, family },
+        }),
       });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body?.error ?? "Could not save your information");
       setStep("upload");
-    } catch {
-      setStep("upload");
+    } catch (err) {
+      setIntakeError(err instanceof Error ? err.message : "Could not save your information");
     } finally {
       setIntakeSaving(false);
     }
@@ -213,12 +313,77 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
                     <option>Separated</option>
                   </select>
                 </div>
-                {(intake.maritalStatus === "Married" || intake.maritalStatus === "Common-law partner") && (
-                  <div>
-                    <label className={labelCls}>Spouse / Partner Full Name</label>
-                    <input type="text" value={intake.spouseName} onChange={e => setIntake(p => ({ ...p, spouseName: e.target.value }))} className={inputCls} />
-                  </div>
-                )}
+              </div>
+              {(intake.maritalStatus === "Married" || intake.maritalStatus === "Common-law partner") && (
+                <div className="mt-4">
+                  <Section title="Spouse / Partner Information">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelCls}>First Name</label>
+                        <input type="text" value={intake.spouseFirstName} onChange={e => setIntake(p => ({ ...p, spouseFirstName: e.target.value }))} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Last Name</label>
+                        <input type="text" value={intake.spouseLastName} onChange={e => setIntake(p => ({ ...p, spouseLastName: e.target.value }))} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Date of Birth</label>
+                        <input type="date" value={intake.spouseDateOfBirth} onChange={e => setIntake(p => ({ ...p, spouseDateOfBirth: e.target.value }))} className={inputCls} />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Nationality</label>
+                        <input type="text" value={intake.spouseNationality} onChange={e => setIntake(p => ({ ...p, spouseNationality: e.target.value }))} className={inputCls} placeholder="India" />
+                      </div>
+                      <div className="col-span-2 flex items-center justify-between rounded-md border border-zinc-200 px-3 py-2 dark:border-zinc-700">
+                        <span className="text-sm text-zinc-600 dark:text-zinc-400">Will your spouse / partner also be applying?</span>
+                        <select value={String(intake.spouseWillApply)} onChange={e => setIntake(p => ({ ...p, spouseWillApply: e.target.value === "true" }))} className={inputCls + " !w-32"}>
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </Section>
+                </div>
+              )}
+
+              <div className="mt-4">
+                <Section title="Dependants (Children)">
+                  <p className="mb-3 text-sm text-zinc-500">Add any dependent children who will be included in this application.</p>
+                  {dependants.map((d, i) => (
+                    <div key={d.id} className="mb-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-700">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className={labelCls}>First Name</label>
+                          <input type="text" value={d.firstName} onChange={e => { const next = [...dependants]; next[i] = { ...d, firstName: e.target.value }; setDependants(next); }} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Last Name</label>
+                          <input type="text" value={d.lastName} onChange={e => { const next = [...dependants]; next[i] = { ...d, lastName: e.target.value }; setDependants(next); }} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Date of Birth</label>
+                          <input type="date" value={d.dateOfBirth} onChange={e => { const next = [...dependants]; next[i] = { ...d, dateOfBirth: e.target.value }; setDependants(next); }} className={inputCls} />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Nationality</label>
+                          <input type="text" value={d.nationality} onChange={e => { const next = [...dependants]; next[i] = { ...d, nationality: e.target.value }; setDependants(next); }} className={inputCls} placeholder="India" />
+                        </div>
+                        <div className="col-span-2 flex items-center justify-between gap-3">
+                          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                            <input type="checkbox" checked={d.willApply} onChange={e => { const next = [...dependants]; next[i] = { ...d, willApply: e.target.checked }; setDependants(next); }} className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-600" />
+                            Applying with you
+                          </label>
+                          <button onClick={() => setDependants(dependants.filter(x => x.id !== d.id))}
+                            className="text-xs text-red-600 hover:underline dark:text-red-400">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <button onClick={() => setDependants([...dependants, { id: Date.now(), firstName: "", lastName: "", dateOfBirth: "", nationality: "", willApply: true }])}
+                    className="rounded-md border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300">
+                    + Add Dependant
+                  </button>
+                </Section>
               </div>
             </Section>
 
@@ -352,6 +517,12 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
               </div>
             </Section>
 
+            {intakeError && (
+              <div className="flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950">
+                <AlertTriangle className="h-4 w-4 shrink-0" />{intakeError}
+              </div>
+            )}
+
             <button onClick={submitIntake} disabled={intakeSaving}
               className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
               {intakeSaving
@@ -426,17 +597,9 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
               <div>
                 <label className={labelCls}>Document Category</label>
                 <select value={category} onChange={e => setCategory(e.target.value)} className={inputCls}>
-                  <option value="PASSPORT">Passport</option>
-                  <option value="LANGUAGE_TEST">Language Test Results</option>
-                  <option value="EDUCATION">Education / Degree</option>
-                  <option value="EMPLOYMENT">Employment / Work Experience</option>
-                  <option value="FINANCIAL">Financial / Bank Statements</option>
-                  <option value="POLICE_CERT">Police Certificate</option>
-                  <option value="MEDICAL">Medical Exam</option>
-                  <option value="PHOTO">Photos</option>
-                  <option value="RELATIONSHIP">Relationship / Marriage Proof</option>
-                  <option value="IMMIGRATION_FORM">Immigration Form</option>
-                  <option value="OTHER">Other</option>
+                  {(Object.keys(DocumentCategory) as Array<keyof typeof DocumentCategory>).map(k => (
+                    <option key={DocumentCategory[k]} value={DocumentCategory[k]}>{DocumentCategoryLabel[DocumentCategory[k]]}</option>
+                  ))}
                 </select>
               </div>
             )}
