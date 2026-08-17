@@ -24,7 +24,7 @@ import {
 } from "@/lib/document-naming";
 import { DocumentCategory } from "@/types";
 import { z } from "zod";
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, randomUUID, timingSafeEqual } from "crypto";
 
 // ─── Token utilities ───────────────────────────────────────────────────────
 
@@ -349,6 +349,7 @@ export async function POST(req: NextRequest) {
     const { data: document, error: insertError } = await supabase
       .from("Document")
       .insert({
+        id: randomUUID(),
         caseId: portalToken.caseId,
         clientId: portalToken.clientId,
         uploadedById: uploadedById,

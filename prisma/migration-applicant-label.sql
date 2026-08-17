@@ -14,9 +14,12 @@ ALTER TABLE "IMMFormSubmission"
 
 CREATE INDEX IF NOT EXISTS idx_imm_submissions_applicant_label ON "IMMFormSubmission"("applicantLabel");
 
--- Replace the legacy (caseId, templateId) unique key with the per-applicant composite
+-- Replace the legacy (caseId, templateId) unique key with the per-applicant composite.
+-- Supabase projects drift here: the 2-col key shows up as a bare UNIQUE INDEX
+-- (not a constraint), so DROP CONSTRAINT alone leaves it blocking multi-applicant inserts.
 ALTER TABLE "IMMFormSubmission"
   DROP CONSTRAINT IF EXISTS "IMMFormSubmission_caseId_templateId_key";
+DROP INDEX IF EXISTS "IMMFormSubmission_caseId_templateId_key";
 ALTER TABLE "IMMFormSubmission"
   ADD CONSTRAINT "IMMFormSubmission_caseId_templateId_applicantLabel_key"
   UNIQUE ("caseId", "templateId", "applicantLabel");
