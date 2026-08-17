@@ -14,6 +14,25 @@ type MigrationDef = {
 
 const MIGRATIONS: MigrationDef[] = [
   {
+    label: "v2",
+    file: "migration-v2.sql",
+    isApplied: (tables) =>
+      ["CaseTypeConfig", "RolePermission", "NotificationPreference", "AiFeatureConfig"].every(
+        (t) => tables.includes(t)
+      ),
+  },
+  {
+    label: "intake",
+    file: "migration-intake.sql",
+    isApplied: (tables) => tables.includes("intake_submissions"),
+  },
+  {
+    label: "consultations",
+    file: "migration-consultations.sql",
+    isApplied: (tables) =>
+      ["Consultation", "AvailabilityRule"].every((t) => tables.includes(t)),
+  },
+  {
     label: "payment",
     file: "migration-payment.sql",
     isApplied: (tables) => tables.includes("Payment"),
@@ -38,10 +57,78 @@ function migrationSql(file: string): string {
 }
 
 function splitStatements(sql: string): string[] {
-  return sql
-    .split(";")
-    .map((s) => s.trim())
-    .filter((s) => s && !s.startsWith("--"));
+  const statements: string[] = [];
+  let buf = "";
+  let i = 0;
+  let inSingleQuote = false;
+  let inDollar = false;
+  let inLineComment = false;
+  while (i < sql.length) {
+    const ch = sql[i];
+    const next = sql[i + 1];
+
+    if (inLineComment) {
+      buf += ch;
+      if (ch === "\n") inLineComment = false;
+      i++;
+      continue;
+    }
+
+    if (inSingleQuote) {
+      buf += ch;
+      if (ch === "'" && next === "'") {
+        buf += next;
+        i += 2;
+        continue;
+      }
+      if (ch === "'") inSingleQuote = false;
+      i++;
+      continue;
+    }
+
+    if (inDollar) {
+      buf += ch;
+      if (ch === "$" && next === "$") {
+        buf += next;
+        inDollar = false;
+        i += 2;
+        continue;
+      }
+      i++;
+      continue;
+    }
+
+    if (ch === "-" && next === "-") {
+      inLineComment = true;
+      buf += ch + next;
+      i += 2;
+      continue;
+    }
+    if (ch === "'") {
+      inSingleQuote = true;
+      buf += ch;
+      i++;
+      continue;
+    }
+    if (ch === "$" && next === "$") {
+      inDollar = true;
+      buf += ch + next;
+      i += 2;
+      continue;
+    }
+    if (ch === ";") {
+      const stmt = buf.trim();
+      if (stmt) statements.push(stmt);
+      buf = "";
+      i++;
+      continue;
+    }
+    buf += ch;
+    i++;
+  }
+  const last = buf.trim();
+  if (last) statements.push(last);
+  return statements;
 }
 
 async function dbState() {
