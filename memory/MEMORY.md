@@ -24,7 +24,13 @@ Fixed this session (5 source fixes + 3 infra fixes), all deployed & e2e-probed:
    `photo, 2024.png` kept `( ) , é` etc. which the path validator's allow-list `[A-Za-z0-9._/-]`
    rejects. FIX: added `.replace(/[^a-zA-Z0-9._-]+/g, "-")` to base name (before `-+` collapse) AND
    extension now stripped to `[a-zA-Z0-9.]` before return. Regression test
-   `src/lib/crs/__tests__/document-naming.test.ts` (3 tests). `ffee5cf`.
+   `src/lib/crs/__tests__/document-naming.test.ts` (3 tests). `ffee5cf`. LIVE-VERIFIED: all 4 names
+   201 via probe (token minted with `.env` secret), probe docs/objects cleaned.
+6. **Upload-notification email "View Case" link 405/150** (user report) — email linked to
+   `/cases/{caseId}` (NO such page; case detail lives at `/clients/[id]`) on a STALE base URL
+   `https://mqh56s7s-47hx.vercel.app` baked from `.env.production`/`.env.vercel` NEXT_PUBLIC_APP_URL.
+   FIX: link now `/clients/{clientId}`, base URL prefers `req.url` origin first, falls back to env,
+   then `https://immidesk.vercel.app`. `ed1124c`, deployed (clients/{id} → 307 to login = real page).
 
 Infra fixes (Supabase, not code):
 - Created 4 missing storage buckets: `client-documents`, `generated-forms`, `organization-logos`,
@@ -35,6 +41,8 @@ Live E2E verification (probe-e2e.cjs, deleted after): intake 200 (PRIMARY+CHILD 
 old-browser upload 201, cleanup OK.
 
 ## Recent Session (Aug 17) — What was done
+- **Fixed "View Case" email link 405** — upload notification email pointed to `/cases/{id}` (no page)
+  on stale `mqh56s7s-47hx.vercel.app` base. Now `/clients/{clientId}` w/ request-origin base. `ed1124c`.
 - **Fixed "Path contains unsafe characters"** — user-reported upload failure. Root cause: `sanitizeFileName`
   left `( ) , é` etc. in names (e.g. `Bank Statement (1).pdf`, `résumé.pdf`) which the path allow-list
   `[A-Za-z0-9._/-]` rejects. Fix: emit only `[a-zA-Z0-9._-]` for base + `[a-zA-Z0-9.]` for extension;
@@ -161,7 +169,7 @@ old-browser upload 201, cleanup OK.
 | `prisma/schema.prisma` | 20 models, 10 enums (+ Document.applicantLabel) |
 | `src/lib/document-naming.ts` | UNSAFE_PATH_CHARS allow-list for validateStoragePath; sanitizeFileName now emits only `[a-zA-Z0-9._-]` base + safe extension |
 | `src/lib/crs/__tests__/document-naming.test.ts` | Reg test: parens/commas/accents sanitized → paths pass validateStoragePath |
-| `src/app/api/client-portal/upload/route.ts` | FIXED — nullish notes/applicantLabel + `id: randomUUID()` on Document insert |
+| `src/app/api/client-portal/upload/route.ts` | FIXED — nullish notes/applicantLabel + `id: randomUUID()` on Document insert; email "View Case" → `/clients/{clientId}` (request-origin base) |
 | `src/lib/intake/pis-schema.ts` | PIS sections/statutory/applicant types (single source of truth) |
 | `src/app/(client-portal)/portal/[token]/portal-tab-docs.tsx` | FIXED — category dropdown from enum + spouse/dependant intake + correct payload |
 | `src/app/(client-portal)/intake/[token]/intake-form.tsx` | 4-step multi-applicant PIS wizard |
@@ -179,6 +187,6 @@ old-browser upload 201, cleanup OK.
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
-- Recent: `ffee5cf` (path-safe filename sanitizer + regression test), `3a6889f` (memory update),
-  `1c127e9` (wire all 5 migrations + robust splitter), `6363ceb` (upload id fix + migration drop-index),
-  `9aee6ed` (422/INVALID_PATH), `2bd32cc` (portal UI + enum). All pushed → auto-deploy to Vercel.
+- Recent: `ed1124c` (email link → client detail, request-origin base), `ffee5cf` (path-safe sanitizer + test),
+  `13c8c57` (memory), `1c127e9` (migrate wiring), `6363ceb` (upload id fix), `9aee6ed` (422/INVALID_PATH).
+  All pushed → auto-deploy to Vercel.
