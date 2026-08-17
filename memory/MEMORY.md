@@ -3,7 +3,7 @@
 ## Current State (Session Aug 17, 2026)
 **All currently-known client-portal upload + multi-applicant intake bugs FIXED and VERIFIED LIVE on `https://immidesk.vercel.app`.**
 **Migrate route now wires ALL 5 migrations (`v2`, `intake`, `consultations`, `payment`, `applicant-label`) with a robust dollar-quote/comment-aware SQL splitter.**
-Fixed this session (4 source fixes + 3 infra fixes), all deployed & e2e-probed:
+Fixed this session (5 source fixes + 3 infra fixes), all deployed & e2e-probed:
 
 1. **Upload 422 `VALIDATION_ERROR`** (notes/applicantLabel "expected string, received null") — old/browserless
    uploads send no `notes`/`applicantLabel`; schema required them. FIX: `.nullish().default("")` +
@@ -19,6 +19,12 @@ Fixed this session (4 source fixes + 3 infra fixes), all deployed & e2e-probed:
    `23505 duplicate key ... "IMMFormSubmission_caseId_templateId_key"`. The migration `DROP CONSTRAINT`
    missed it because it's a bare index, NOT in `pg_constraint` (Prisma drift). FIX: `DROP INDEX IF EXISTS`
    both in DB and in `prisma/migration-applicant-label.sql`. Verified via PostgREST spouse+child inserts. `6363ceb`.
+5. **Upload "Path contains unsafe characters"** (user report) — `sanitizeFileName` only stripped
+   `UNSAFE_FILENAME_CHARS` + separators, so real names like `Bank Statement (1).pdf`, `résumé.pdf`,
+   `photo, 2024.png` kept `( ) , é` etc. which the path validator's allow-list `[A-Za-z0-9._/-]`
+   rejects. FIX: added `.replace(/[^a-zA-Z0-9._-]+/g, "-")` to base name (before `-+` collapse) AND
+   extension now stripped to `[a-zA-Z0-9.]` before return. Regression test
+   `src/lib/crs/__tests__/document-naming.test.ts` (3 tests). `ffee5cf`.
 
 Infra fixes (Supabase, not code):
 - Created 4 missing storage buckets: `client-documents`, `generated-forms`, `organization-logos`,
@@ -29,6 +35,11 @@ Live E2E verification (probe-e2e.cjs, deleted after): intake 200 (PRIMARY+CHILD 
 old-browser upload 201, cleanup OK.
 
 ## Recent Session (Aug 17) — What was done
+- **Fixed "Path contains unsafe characters"** — user-reported upload failure. Root cause: `sanitizeFileName`
+  left `( ) , é` etc. in names (e.g. `Bank Statement (1).pdf`, `résumé.pdf`) which the path allow-list
+  `[A-Za-z0-9._/-]` rejects. Fix: emit only `[a-zA-Z0-9._-]` for base + `[a-zA-Z0-9.]` for extension;
+  verified via tsx end-to-end (all 3 bad names → valid paths) + 3 new regression tests. Commit `ffee5cf`,
+  deployed (home 200).
 - **Root-caused upload 422/INVALID_PATH** by live-probing the deployed endpoint with old-browser
   FormData (confirm: 422 on notes/applicantLabel; then 400 INVALID_PATH after schema toleration).
 - **Found bare-index drift**: pooler showed `(caseId,templateId,applicantLabel)` unique but PostgREST
@@ -127,11 +138,14 @@ old-browser upload 201, cleanup OK.
 2. **DONE**: Migrate route wires `v2`/`intake`/`consultations`/`payment`/`applicant-label`; SQL splitter
    now dollar-quote + single-quote + line-comment aware (old naive `split(";")` would corrupt `DO $$` blocks).
    Live DB verified: all tables + `UserRole` enum values already present → route now reports all applied.
-3. Re-test the actual browser flow end-to-end if the user wants: upload `IMM5739_1-16GBO03B.pdf` with
-   category "Immigration Form" + fill spouse/dependant on `/portal/[token]` → both should now succeed.
-4. Consider renaming `prisma/migrations` (empty) vs raw SQL convention; `prisma db push` still
+3. **DONE**: "Path contains unsafe characters" fix (`ffee5cf`) — sanitizer emits path-safe names;
+   regression tests added + deployed.
+4. Re-test the actual browser flow end-to-end if the user wants: upload `IMM5739_1-16GBO03B.pdf` with
+   category "Immigration Form" + a paren/space/accents filename (e.g. `Bank Statement (1).pdf`) on
+   `/portal/[token]` → both should now succeed.
+5. Consider renaming `prisma/migrations` (empty) vs raw SQL convention; `prisma db push` still
    requires `--accept-data-loss` → always additive.
-5. Then backlog: Cases overview → Tasks UI → CRS Calculator → RLS
+6. Then backlog: Cases overview → Tasks UI → CRS Calculator → RLS
 
 ## Connection Quick Reference
 - Pooler (USE THIS): `postgres` @ `aws-1-ca-central-1.pooler.supabase.com:6543`, user `postgres.hcilbqzipmpxqektvzgk`, pw `ImmiDeskMjAyNiE=Rc3t`
@@ -145,7 +159,8 @@ old-browser upload 201, cleanup OK.
 | File | Purpose |
 |------|---------|
 | `prisma/schema.prisma` | 20 models, 10 enums (+ Document.applicantLabel) |
-| `src/lib/document-naming.ts` | UNSAFE_PATH_CHARS allow-list for validateStoragePath (was false-INVALID_PATH) |
+| `src/lib/document-naming.ts` | UNSAFE_PATH_CHARS allow-list for validateStoragePath; sanitizeFileName now emits only `[a-zA-Z0-9._-]` base + safe extension |
+| `src/lib/crs/__tests__/document-naming.test.ts` | Reg test: parens/commas/accents sanitized → paths pass validateStoragePath |
 | `src/app/api/client-portal/upload/route.ts` | FIXED — nullish notes/applicantLabel + `id: randomUUID()` on Document insert |
 | `src/lib/intake/pis-schema.ts` | PIS sections/statutory/applicant types (single source of truth) |
 | `src/app/(client-portal)/portal/[token]/portal-tab-docs.tsx` | FIXED — category dropdown from enum + spouse/dependant intake + correct payload |
@@ -164,5 +179,6 @@ old-browser upload 201, cleanup OK.
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
-- Recent: `1c127e9` (wire all 5 migrations + robust splitter), `6363ceb` (upload id fix + migration drop-index),
-  `9aee6ed` (422/INVALID_PATH), `2bd32cc` (portal UI + enum). Pushed through `6363ceb` → auto-deploy to Vercel.
+- Recent: `ffee5cf` (path-safe filename sanitizer + regression test), `3a6889f` (memory update),
+  `1c127e9` (wire all 5 migrations + robust splitter), `6363ceb` (upload id fix + migration drop-index),
+  `9aee6ed` (422/INVALID_PATH), `2bd32cc` (portal UI + enum). All pushed → auto-deploy to Vercel.
