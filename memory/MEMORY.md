@@ -1,56 +1,52 @@
 # ImmigDesk — Session Memory
 
 ## Current State (Session Aug 17, 2026)
-**Portal bugs FIXED (both reported today); migration + intake smoke PASSED earlier today.**
-Fixed (in `portal-tab-docs.tsx`, the `/portal/[token]` Documents tab):
-1. **Upload "Invalid input"** — dropdown sent values not in `DocumentCategory` enum
-   (`EMPLOYMENT`, `POLICE_CERT`, `RELATIONSHIP`, and `IMMIGRATION_FORM` was missing from the
-   enum entirely). Route validates via `z.nativeEnum(DocumentCategory)` → rejected.
-   FIX: added `IMMIGRATION_FORM` to enum in `src/types/index.ts`, `prisma/schema.prisma`,
-   `src/lib/document-naming.ts` label map, AND live DB (`ALTER TYPE ... ADD VALUE` via pooler,
-   done + verified). Replaced the hardcoded `<select>` with a dropdown derived from
-   `DocumentCategory`/`DocumentCategoryLabel`.
-2. **No spouse/dependant questions** — "Your Info" step collected only a spouse *name* and no
-   dependants. Also `submitIntake` posted a flat object the intake API ignores (API expects
-   `intake.primary`/`intake.family`), so nothing was saved.
-   FIX: full spouse section (first/last name, DOB, nationality, will-apply) shown when
-   Married/Common-law + repeatable Dependants (children) section; `submitIntake` now builds
-   proper `ApplicantDraft[]` (PRIMARY + SPOUSE + CHILD#n) → persisted as IMMFormSubmission rows.
-Typecheck ✅, `npm run build` ✅, vitest ✅ (21 passed), no NEW lint issues in edited files.
-Not yet deployed to Vercel.
+**All currently-known client-portal upload + multi-applicant intake bugs FIXED and VERIFIED LIVE on `https://immidesk.vercel.app`.**
+**Migrate route now wires ALL 5 migrations (`v2`, `intake`, `consultations`, `payment`, `applicant-label`) with a robust dollar-quote/comment-aware SQL splitter.**
+Fixed this session (4 source fixes + 3 infra fixes), all deployed & e2e-probed:
+
+1. **Upload 422 `VALIDATION_ERROR`** (notes/applicantLabel "expected string, received null") — old/browserless
+   uploads send no `notes`/`applicantLabel`; schema required them. FIX: `.nullish().default("")` +
+   `transform((v)=>(v??"").trim().toUpperCase())` on both fields in `upload/route.ts` schema. `9aee6ed`.
+2. **Upload 400 `INVALID_PATH`** — `validateStoragePath` used `UNSAFE_FILENAME_CHARS` (contains `/`, and a
+   stateful `/g` flag) against the FULL path which always contains `/` → false-invalid every time. FIX:
+   new `UNSAFE_PATH_CHARS = /[^A-Za-z0-9._/-]/` allow-list in `src/lib/document-naming.ts`; traversal/ctrl/spaces still rejected. `9aee6ed`.
+3. **Upload 500 `INSERT_FAILED` null `Document.id`** — Document table has NO DB default for `id`
+   (PostgREST doesn't run Prisma `cuid()`); route inserted without `id`. FIX: `id: randomUUID()` +
+   import in `upload/route.ts`. `6363ceb`.
+4. **Intake 500 on 2nd applicant (SPOUSE/CHILD#n)** — stale bare UNIQUE INDEX
+   `IMMFormSubmission_caseId_templateId_key` (2-col) blocked multi-applicant inserts with
+   `23505 duplicate key ... "IMMFormSubmission_caseId_templateId_key"`. The migration `DROP CONSTRAINT`
+   missed it because it's a bare index, NOT in `pg_constraint` (Prisma drift). FIX: `DROP INDEX IF EXISTS`
+   both in DB and in `prisma/migration-applicant-label.sql`. Verified via PostgREST spouse+child inserts. `6363ceb`.
+
+Infra fixes (Supabase, not code):
+- Created 4 missing storage buckets: `client-documents`, `generated-forms`, `organization-logos`,
+  `compliance-exports` (project only had `immigdesk-documents`/`immigdesk-data` → upload failed `Bucket not found`).
+- Cleaned leaked probe rows: `IMMFormSubmission` d722d66e + probe Case c769be5c + probe docs + storage objects.
+
+Live E2E verification (probe-e2e.cjs, deleted after): intake 200 (PRIMARY+CHILD rows), modern upload 201,
+old-browser upload 201, cleanup OK.
 
 ## Recent Session (Aug 17) — What was done
-- **Applied `additive-v3-migration.sql`** via `run-migration-pooler.ts` (direct host
-  `db.hcilbqzipmpxqektvzgk.supabase.co` DNS is flaky — **always use pooler**
-  `aws-1-ca-central-1.pooler.supabase.com:6543` for DDL). Migration OK in 458 ms.
-- **Verified** (query against pooler): `Task`, `Payment`, `Notification` +
-  recreated `CaseTypeConfig`/`RolePermission`/`NotificationPreference`/`AiFeatureConfig`
-  tables exist; `Client.deletedAt`/`isArchived`, `Case.assignedToId`/`deletedAt`/`isArchived`
-  added; `Case.decisionResult` now `USER-DEFINED` (enum); all 6 new enums present; FKs OK.
-- **Smoke seed** (`smoke-intake.ts`, kept in repo root): `PrismaClient` from
-  `./generated/prisma/client` + `PrismaPg` adapter (matches `src/lib/prisma.ts`). First
-  run failed on `caseType: "TEMPORARY_RESIDENT"` (not a valid enum value) → switched to
-  `WORK_PERMIT`. Client create (the old `isArchived` blocker) now succeeds.
-- **Cleanup**: deleted 3 `smoke-*` orgs + children (FK-safe order: case→client→org),
-  removed scratch scripts (`run-migration*.ts`, `verify-migration.ts`, `cleanup-smoke.ts`,
-  `show-models.cjs`, `enum-casetype.ts`, `list-tables.ts`), deleted stale `db-current.prisma`.
-- **Remaining drift** (intentional, NOT to be "fixed"): `LmiaAd/LmiaApplicant/LmiaCase/
-  LmiaLead/PortalMessage/portal_submissions` live REST features not in schema;
-  `Consultation`/`AvailabilityRule` snake_case (code queries snake_case — leave as-is);
-  `UserRole.MEMBER` unused value; `immigration/lead/intake_submissions` tweaks non-blocking.
-- **`prisma migrate diff` over pooler TIMES OUT** — don't use it for verification; use
-  direct SQL queries via `pg` instead.
-- **Live `DocumentCategory` enum now**: PASSPORT, EDUCATION, LANGUAGE_TEST, WORK_EXPERIENCE,
-  FINANCIAL, MEDICAL, POLICE_CERTIFICATE, PHOTO, MARRIAGE_CERTIFICATE, BIRTH_CERTIFICATE,
-  OTHER, INSURANCE, INVITATION, IDENTITY, WORK_PERMIT, IMMIGRATION_FORM (16 values).
+- **Root-caused upload 422/INVALID_PATH** by live-probing the deployed endpoint with old-browser
+  FormData (confirm: 422 on notes/applicantLabel; then 400 INVALID_PATH after schema toleration).
+- **Found bare-index drift**: pooler showed `(caseId,templateId,applicantLabel)` unique but PostgREST
+  still 409'd on `(caseId,templateId)` — the 2-col UNIQUE INDEX survived (pg_constraint vs pg_indexes).
+- **Verified secret/env matching**: `.env` + `.env.production` secrets MATCH live deploy; `.env.vercel`/
+  `.env.example` do NOT (225-char service key ≠ 219-char). Live token uploads only work with the `.env`
+  secret. `NEXT_PUBLIC_APP_URL` in `.env` is `http://localhost:3000` — override to
+  `https://immidesk.vercel.app` when probing live via fetch.
+- **db check**: tables `id` columns are all TEXT with NO default — any `.insert({...})` via PostgREST
+  MUST supply `id` explicitly (intake does; upload route previously didn't).
+- Cleanup: all probe-*.cjs / scan-*.cjs / scratch removed. Working tree clean.
+- Applied `additive-v3-migration.sql` earlier (docs below) via pooler; `prisma migrate diff` still times out — use raw SQL.
 
 ## Vision
 - `/intake/[token]` — Personal Information Sheet w/ 4-step wizard + per-applicant branching
 - `/upload/[token]` — doc upload with "who is this for?" applicant selector
 - Dashboard client detail — new **Family & Intake** section listing per-applicant submissions
-- `Document.applicantLabel` — additive nullable column (migration in `prisma/migration-applicant-label.sql`, NOT yet applied to DB)
-- `/portal/[token]` Documents tab — now asks for spouse + dependants on "Your Info" step, and
-  persists per-applicant submissions via `/api/client-portal/intake`
+- `Document.applicantLabel` — additive nullable column (migration in `prisma/migration-applicant-label.sql`)
 
 
 ## What's Been Done
@@ -120,17 +116,21 @@ Not yet deployed to Vercel.
 
 ## Blocked
 - Vercel Deployment Protection blocks anonymous access — user must disable in Vercel Dashboard
+  (Note: `.env`-keyed HMAC tokens still pass live — invalid tokens now 401, valid tokens 200).
 - Direct DB host `db.hcilbqzipmpxqektvzgk.supabase.co` DNS fails intermittently (`getaddrinfo ENOTFOUND`) — **use transaction pooler `aws-1-ca-central-1.pooler.supabase.com:6543`** (user `postgres.hcilbqzipmpxqektvzgk`) for all DB work, incl. DDL
 - `prisma migrate diff` / introspection over pooler times out — verify schema via raw SQL instead
 - Old `IMMIDESK` folder not yet renamed to `REVIEW-APP`
+- `immigdesk-documents` / `immigdesk-data` buckets are legacy/unused by code (code uses the 4 `client-documents` etc.) — leave as-is
 
 ## Next Steps (Priority Order)
-1. **Done**: additive migration applied; smoke seed org→client→case→token→intake PASSED (HTTP 200)
-2. **DONE**: portal bugs fixed (category enum mismatch + spouse/dependants intake). **NEXT: deploy to Vercel and re-test** on `https://immidesk.vercel.app/portal/[token]`:
-   - upload `IMM5739_1-16GBO03B.pdf` with category "Immigration Form" → expect success (no "Invalid input")
-   - fill "Your Info" with spouse + a dependant → expect `/api/client-portal/intake` to persist PRIMARY/SPOUSE/CHILD#1 submission rows
-3. Wire v2 scripts (`migration-v2.sql`, `migration-intake.sql`, `migration-consultations.sql`, `migration-payment.sql`, `applicant-label`) into `src/app/api/migrate/route.ts` MIGRATIONS list for idempotent future runs
-4. Consider renaming `prisma/migrations` (empty) vs raw SQL convention; `prisma db push` still requires `--accept-data-loss` → always additive
+1. **DONE**: Portal upload (both browser + legacy) + multi-applicant intake verified live (200/201).
+2. **DONE**: Migrate route wires `v2`/`intake`/`consultations`/`payment`/`applicant-label`; SQL splitter
+   now dollar-quote + single-quote + line-comment aware (old naive `split(";")` would corrupt `DO $$` blocks).
+   Live DB verified: all tables + `UserRole` enum values already present → route now reports all applied.
+3. Re-test the actual browser flow end-to-end if the user wants: upload `IMM5739_1-16GBO03B.pdf` with
+   category "Immigration Form" + fill spouse/dependant on `/portal/[token]` → both should now succeed.
+4. Consider renaming `prisma/migrations` (empty) vs raw SQL convention; `prisma db push` still
+   requires `--accept-data-loss` → always additive.
 5. Then backlog: Cases overview → Tasks UI → CRS Calculator → RLS
 
 ## Connection Quick Reference
@@ -138,20 +138,25 @@ Not yet deployed to Vercel.
 - Direct: `postgres` @ `db.hcilbqzipmpxqektvzgk.supabase.co:5432` (DNS flaky)
 - Management API PAT (REVOKED — was committed in an earlier push; see memory note; do not re-commit)
 - `.env`/`.env.production`/`.env.vercel` updated; deployed `https://immidesk.vercel.app`
+- Storage buckets (created live): `client-documents`, `generated-forms`, `organization-logos`, `compliance-exports`
+- All PK `id` columns are TEXT, NO DEFAULT → every PostgREST `.insert()` must pass `id: randomUUID()`
 
 ## Key Files
 | File | Purpose |
 |------|---------|
 | `prisma/schema.prisma` | 20 models, 10 enums (+ Document.applicantLabel) |
-| `src/lib/intake/pis-schema.ts` | NEW — PIS sections/statutory/applicant types (single source of truth) |
+| `src/lib/document-naming.ts` | UNSAFE_PATH_CHARS allow-list for validateStoragePath (was false-INVALID_PATH) |
+| `src/app/api/client-portal/upload/route.ts` | FIXED — nullish notes/applicantLabel + `id: randomUUID()` on Document insert |
+| `src/lib/intake/pis-schema.ts` | PIS sections/statutory/applicant types (single source of truth) |
 | `src/app/(client-portal)/portal/[token]/portal-tab-docs.tsx` | FIXED — category dropdown from enum + spouse/dependant intake + correct payload |
 | `src/app/(client-portal)/intake/[token]/intake-form.tsx` | 4-step multi-applicant PIS wizard |
 | `src/app/(client-portal)/intake/[token]/page.tsx` | Server token verify + prefill + public header |
-| `src/app/api/client-portal/intake/route.ts` | Per-applicant persistence + IMM_PIS self-heal |
-| `prisma/migration-applicant-label.sql` | NEW — Document.applicantLabel (pending apply) |
+| `src/app/api/client-portal/intake/route.ts` | Per-applicant persistence + IMM_PIS self-heal (generates id) |
+| `src/app/api/migrate/route.ts` | ALL 5 migrations wired; dollar-quote/comment-aware SQL splitter |
+| `prisma/migration-applicant-label.sql` | Document.applicantLabel + drops stale 2-col unique INDEX |
+| `src/lib/storage.ts` | Bucket helpers (4 buckets now created live) |
 | `src/components/documents/DocumentList.tsx` | Applicant column |
 | `src/app/(dashboard)/clients/[id]/client-detail-view.tsx` | Family & Intake section |
-| `src/app/api/client-portal/upload/route.ts` | Secure client upload (HMAC token + applicantLabel) |
 | `src/app/api/client-portal/message/route.ts` | Client messaging + RCIC email notify |
 | `src/lib/portal-token.ts` | Token verify utility |
 | `IMMIDESK-PROJECT-DESCRIPTION.md` | Project overview for other AI agents |
@@ -159,3 +164,5 @@ Not yet deployed to Vercel.
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
+- Recent: `1c127e9` (wire all 5 migrations + robust splitter), `6363ceb` (upload id fix + migration drop-index),
+  `9aee6ed` (422/INVALID_PATH), `2bd32cc` (portal UI + enum). Pushed through `6363ceb` → auto-deploy to Vercel.
