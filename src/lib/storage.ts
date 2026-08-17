@@ -206,11 +206,15 @@ interface PresignedDownloadOptions {
 /**
  * Generate a presigned download URL for a stored file.
  * Useful for serving private documents without exposing the bucket publicly.
+ *
+ * Uses the service-role admin client: stored objects live in RLS-secured
+ * buckets with no storage policies, and callers already perform their own
+ * authz (requireAuth + org ownership) before requesting a URL.
  */
 export async function getPresignedDownloadUrl(
   opts: PresignedDownloadOptions,
 ): Promise<{ data: { signedUrl: string } | null; error: string | null }> {
-  const supabase = await createServerClient();
+  const supabase = getSupabaseAdmin();
 
   const { data, error } = await supabase.storage
     .from(opts.bucket)
