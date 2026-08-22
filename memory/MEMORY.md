@@ -22,6 +22,10 @@
   SUV, Self-Employed, AIP, Quebec CSQ/PEQ, dependant lock-in age, BOWP, visitor records, eTA,
   study PAL/funds $22,895 (Sept 2025), PGWP field/language rules, off-campus 24h). Medical
   excessive-demand figure aligned (~$28.2k/yr 2025). AI page: red test banner removed; links to /knowledge.
+- **Client emails now carry PIS links** (`4f6fb21`): onboarding (clients/intake) + resend-links emails
+  previously pointed only at `/portal/{token}` docs tab (and with broken relative base when
+  NEXT_PUBLIC_APP_URL empty). Both now send Sign Agreement → Personal Information Sheet (/intake)
+  → Upload Documents (/upload), origin-resolved. Sign-route next-steps email unchanged (`9b8ee3b`).
 - Earlier this session: document downloads FIXED (`02c5a9d` — getPresignedDownloadUrl now uses
   service-role admin client; storage buckets have NO RLS policies so anon-client signing failed
   with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
