@@ -57,6 +57,14 @@ score <p> lacks aria-label. ⑥ Firm sending domains — POST/GET /api/organizat
 (Resend domains.create/get), Settings EmailDomainCard w/ DNS records + status; orgSender sends
 FROM noreply@firm.com once settings.sendingDomain.status==="verified".
 
+**Consultation booking completed (`ef7a614`)**: native flow already existed (/book/[org-slug]
+public page + available-slots + AvailabilityRule editor in Settings) but was unsurfaced & silent.
+Now: booking → branded confirmation email w/ .ics calendar invite (src/lib/ics.ts RFC5545 builder,
+60-min VALARM) + consultant notify; public /join/[id] page mints guest LiveKit token via
+/api/consultations/guest-token (id = capability). NOTE Consultation/Availability tables use
+snake_case columns (schema drift vs other camelCase tables). Booking tab now leads with copy-link
+card for /book/{slug} (fetched from GET /api/organization); cal.com demoted to alternative.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
