@@ -20,8 +20,8 @@ export function StatsCard({
         <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
           {title}
         </p>
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
-          <Icon className="h-5 w-5 text-zinc-600 dark:text-zinc-300" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600 ring-1 ring-inset ring-brand-100 dark:bg-brand-500/10 dark:text-brand-400 dark:ring-brand-500/20">
+          <Icon className="h-5 w-5" />
         </div>
       </div>
 

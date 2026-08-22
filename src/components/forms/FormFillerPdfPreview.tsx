@@ -151,7 +151,7 @@ export function FormFillerPdfPreview({
           </button>
           <button
             onClick={downloadPdf}
-            className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
           >
             <Download className="h-3.5 w-3.5" />
             Download PDF
@@ -191,7 +191,7 @@ export function FormFillerPdfPreview({
             </p>
             <button
               onClick={generatePreview}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-2 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
             >
               <Eye className="h-3.5 w-3.5" />
               Generate Preview

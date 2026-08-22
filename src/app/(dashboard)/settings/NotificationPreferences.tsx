@@ -112,7 +112,7 @@ export default function NotificationPreferences() {
         <button
           onClick={save}
           disabled={saving || loading}
-          className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+          className="flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
         >
           {saving ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -172,7 +172,7 @@ export default function NotificationPreferences() {
                           className={cn(
                             "relative h-5 w-9 rounded-full transition-colors",
                             pref?.email
-                              ? "bg-zinc-900 dark:bg-zinc-50"
+                              ? "bg-brand-600 dark:bg-brand-500"
                               : "bg-zinc-200 dark:bg-zinc-700",
                           )}
                         >
@@ -190,7 +190,7 @@ export default function NotificationPreferences() {
                           className={cn(
                             "relative h-5 w-9 rounded-full transition-colors",
                             pref?.inApp
-                              ? "bg-zinc-900 dark:bg-zinc-50"
+                              ? "bg-brand-600 dark:bg-brand-500"
                               : "bg-zinc-200 dark:bg-zinc-700",
                           )}
                         >

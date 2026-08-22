@@ -82,7 +82,7 @@ export default function NotificationBell() {
       >
         <Bell className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
         {unread > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-bold text-white dark:bg-zinc-50 dark:text-zinc-900">
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white dark:bg-brand-500 dark:text-white">
             {unread > 9 ? "9+" : unread}
           </span>
         )}
@@ -116,7 +116,7 @@ export default function NotificationBell() {
                   className={`w-full cursor-pointer border-b border-zinc-100 px-4 py-3 text-left transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-800/30 ${n.read ? "opacity-50" : ""}`}
                 >
                   <div className="flex items-start gap-2.5">
-                    <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.read ? "bg-zinc-300 dark:bg-zinc-600" : "bg-zinc-900 dark:bg-zinc-50"}`} />
+                    <div className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${n.read ? "bg-zinc-300 dark:bg-zinc-600" : "bg-brand-600 dark:bg-brand-500"}`} />
                     <div className="min-w-0 flex-1">
                       <p className={`text-sm ${n.read ? "text-zinc-500" : "text-zinc-900 dark:text-zinc-50"}`}>{n.title}</p>
                       {n.message && <p className="mt-0.5 truncate text-xs text-zinc-500">{n.message}</p>}

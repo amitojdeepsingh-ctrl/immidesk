@@ -33,7 +33,7 @@ export function CaseStatusSelect({ caseId, status }: { caseId: string; status: s
         value={value}
         disabled={saving}
         onChange={(e) => change(e.target.value)}
-        className="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs font-medium text-zinc-700 focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+        className="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs font-medium text-zinc-700 focus:outline-none focus:ring-1 focus:ring-brand-500/40 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
       >
         {CASE_STATUSES.map((s) => (
           <option key={s} value={s}>
@@ -72,7 +72,7 @@ export function CasePrioritySelect({ caseId, priority }: { caseId: string; prior
       disabled={saving}
       onChange={(e) => change(e.target.value)}
       className={cn(
-        "rounded-full px-2 py-0.5 text-[11px] font-semibold border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-zinc-400 disabled:opacity-50",
+        "rounded-full px-2 py-0.5 text-[11px] font-semibold border-0 cursor-pointer focus:outline-none focus:ring-1 focus:ring-brand-500/40 disabled:opacity-50",
         PRIORITY_STYLES[value] ?? PRIORITY_STYLES.NORMAL,
       )}
     >

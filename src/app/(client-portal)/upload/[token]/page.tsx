@@ -1,4 +1,4 @@
-﻿// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 // ImmigDesk — Client Portal Upload Page
 // ═══════════════════════════════════════════════════════════════════════════
 // Route: /upload/[token]
@@ -101,8 +101,8 @@ export default async function ClientPortalUploadPage({ params }: PageProps) {
       <div className="w-full max-w-lg space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 dark:bg-zinc-50">
-            <Upload className="h-6 w-6 text-white dark:text-zinc-900" />
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-600 dark:bg-brand-500">
+            <Upload className="h-6 w-6 text-white dark:text-white" />
           </div>
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Upload Documents

@@ -20,7 +20,7 @@ export interface CompanyProfile {
 }
 
 const inputCls =
-  "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
+  "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
 
 function F({
   label,
@@ -139,7 +139,7 @@ export function CompanyProfileForm({ profile, canEdit }: { profile: CompanyProfi
           <button
             type="submit"
             disabled={!canEdit || saving}
-            className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+            className="flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
           >
             {saving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Building2 className="h-3.5 w-3.5" />}
             Save Company Profile

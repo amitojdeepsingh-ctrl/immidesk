@@ -192,7 +192,7 @@ export function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
           <button onClick={exportCsv} className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400">
             <Download className="h-3.5 w-3.5" /> Export CSV
           </button>
-          <button onClick={() => setShowAddForm(true)} className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+          <button onClick={() => setShowAddForm(true)} className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white">
             <Plus className="h-4 w-4" /> Add Lead
           </button>
         </div>
@@ -234,7 +234,7 @@ export function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
             onClick={() => setFilter(s)}
             className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               filter === s
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400"
             }`}
           >
@@ -329,49 +329,49 @@ export function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Company Name *</label>
-                  <input required value={addForm.companyName} onChange={e => setAddForm(f => ({ ...f, companyName: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="ABC Farms Ltd." />
+                  <input required value={addForm.companyName} onChange={e => setAddForm(f => ({ ...f, companyName: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="ABC Farms Ltd." />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Contact Name</label>
-                  <input value={addForm.contactName} onChange={e => setAddForm(f => ({ ...f, contactName: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="John Smith" />
+                  <input value={addForm.contactName} onChange={e => setAddForm(f => ({ ...f, contactName: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="John Smith" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Email</label>
-                  <input type="email" value={addForm.email} onChange={e => setAddForm(f => ({ ...f, email: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="hr@company.com" />
+                  <input type="email" value={addForm.email} onChange={e => setAddForm(f => ({ ...f, email: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="hr@company.com" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Phone</label>
-                  <input value={addForm.phone} onChange={e => setAddForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="604-000-0000" />
+                  <input value={addForm.phone} onChange={e => setAddForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="604-000-0000" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Province</label>
-                  <select value={addForm.province} onChange={e => setAddForm(f => ({ ...f, province: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50">
+                  <select value={addForm.province} onChange={e => setAddForm(f => ({ ...f, province: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50">
                     <option value="">Select…</option>
                     {PROVINCES.map(p => <option key={p} value={p}>{p}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Job Title</label>
-                  <input value={addForm.jobTitle} onChange={e => setAddForm(f => ({ ...f, jobTitle: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="Farm Worker" />
+                  <input value={addForm.jobTitle} onChange={e => setAddForm(f => ({ ...f, jobTitle: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="Farm Worker" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">NOC Code</label>
-                  <input value={addForm.nocCode} onChange={e => setAddForm(f => ({ ...f, nocCode: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="85100" />
+                  <input value={addForm.nocCode} onChange={e => setAddForm(f => ({ ...f, nocCode: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" placeholder="85100" />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Source</label>
-                  <select value={addForm.source} onChange={e => setAddForm(f => ({ ...f, source: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50">
+                  <select value={addForm.source} onChange={e => setAddForm(f => ({ ...f, source: e.target.value }))} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50">
                     {SOURCES.map(s => <option key={s} value={s}>{s.replace("_"," ")}</option>)}
                   </select>
                 </div>
                 <div className="col-span-2">
                   <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1">Notes</label>
-                  <textarea value={addForm.notes} onChange={e => setAddForm(f => ({ ...f, notes: e.target.value }))} rows={2} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" />
+                  <textarea value={addForm.notes} onChange={e => setAddForm(f => ({ ...f, notes: e.target.value }))} rows={2} className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50" />
                 </div>
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button type="button" onClick={() => setShowAddForm(false)} className="rounded-md px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-100">Cancel</button>
-                <button type="submit" disabled={saving} className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+                <button type="submit" disabled={saving} className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                   {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Add Lead
                 </button>
@@ -398,7 +398,7 @@ export function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
                 <input
                   value={emailDraft.subject}
                   onChange={e => setEmailDraft(d => ({ ...d, subject: e.target.value }))}
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                 />
               </div>
               <div>
@@ -407,7 +407,7 @@ export function LeadsManager({ initialLeads }: { initialLeads: Lead[] }) {
                   value={emailDraft.html}
                   onChange={e => setEmailDraft(d => ({ ...d, html: e.target.value }))}
                   rows={14}
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-mono focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm font-mono focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                 />
               </div>
               <p className="text-xs text-zinc-400">Replace <code>[Your Name]</code>, <code>[Your Phone]</code> etc. before sending.</p>

@@ -68,7 +68,7 @@ export default async function HomePage() {
           {isLoggedIn ? (
             <Link
               href="/dashboard"
-              className="flex items-center gap-1.5 rounded-md bg-zinc-50 px-3 py-1.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
+              className="flex items-center gap-1.5 rounded-md bg-brand-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-400"
             >
               Dashboard
               <ArrowRight className="h-3.5 w-3.5" />
@@ -83,7 +83,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/signup"
-                className="rounded-md bg-zinc-50 px-3 py-1.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-200"
+                className="rounded-md bg-brand-500 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-400"
               >
                 Get started
               </Link>
@@ -105,14 +105,14 @@ export default async function HomePage() {
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link
               href="/signup"
-              className="inline-flex items-center gap-2 rounded-md bg-zinc-50 px-5 py-2.5 text-sm font-semibold text-zinc-900 transition-colors hover:bg-zinc-200"
+              className="inline-flex items-center gap-2 rounded-md bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
             >
               Start free trial
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-md border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-50"
+              className="inline-flex items-center gap-2 rounded-md border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-brand-400 hover:text-white"
             >
               Sign in
             </Link>
@@ -121,7 +121,7 @@ export default async function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="border-t border-zinc-800 bg-zinc-900 px-6 py-20">
+      <section className="border-t border-zinc-800 bg-brand-600 px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-2xl font-semibold text-zinc-50">
             Everything you need to manage immigration cases

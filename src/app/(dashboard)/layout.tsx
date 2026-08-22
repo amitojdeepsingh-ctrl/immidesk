@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         userEmail={prismaUser.email}
       />
       <main className="flex-1 overflow-auto">
-        <div className="flex items-center justify-end border-b border-zinc-200 px-6 py-2 dark:border-zinc-800">
+        <div className="flex items-center justify-end border-b border-zinc-200 bg-white/60 px-6 py-2 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/40">
           <NotificationBell />
         </div>
         <div className="mx-auto max-w-6xl px-6 py-6">{children}</div>

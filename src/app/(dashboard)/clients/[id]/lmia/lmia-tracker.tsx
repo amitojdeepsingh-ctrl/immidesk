@@ -158,7 +158,7 @@ export function LmiaTracker({
     }
   }
 
-  const inputCls = "h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
+  const inputCls = "h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
   const labelCls = "mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400";
 
   return (
@@ -240,7 +240,7 @@ export function LmiaTracker({
               className={cn(
                 "inline-flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
                 tab === key
-                  ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                  ? "border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50"
                   : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400",
               )}
             >
@@ -248,7 +248,7 @@ export function LmiaTracker({
               {label}
               <span className={cn(
                 "ml-1 rounded-full px-1.5 py-0.5 text-xs",
-                tab === key ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
+                tab === key ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
               )}>{count}</span>
             </button>
           ))}
@@ -265,7 +265,7 @@ export function LmiaTracker({
             </div>
             <button
               onClick={() => setShowAdForm(!showAdForm)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+              className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
             >
               <Plus className="h-3.5 w-3.5" /> Add Advertisement
             </button>
@@ -308,7 +308,7 @@ export function LmiaTracker({
                 </div>
               </div>
               <div className="flex gap-2">
-                <button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+                <button type="submit" disabled={saving} className="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                   {saving ? "Saving…" : "Save Advertisement"}
                 </button>
                 <button type="button" onClick={() => setShowAdForm(false)} className="rounded-md border border-zinc-200 px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400">
@@ -388,7 +388,7 @@ export function LmiaTracker({
             <p className="text-xs text-zinc-500">Log every Canadian/PR who applied and why they were not selected. This is required for the LMIA application.</p>
             <button
               onClick={() => setShowApplicantForm(!showApplicantForm)}
-              className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+              className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
             >
               <Plus className="h-3.5 w-3.5" /> Add Applicant
             </button>
@@ -432,7 +432,7 @@ export function LmiaTracker({
                 </div>
               </div>
               <div className="flex gap-2">
-                <button type="submit" disabled={saving} className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+                <button type="submit" disabled={saving} className="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                   {saving ? "Saving…" : "Save Applicant"}
                 </button>
                 <button type="button" onClick={() => setShowApplicantForm(false)} className="rounded-md border border-zinc-200 px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400">

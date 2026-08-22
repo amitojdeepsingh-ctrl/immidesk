@@ -102,7 +102,7 @@ export function MessagesView({
                   "max-w-[75%] rounded-2xl px-4 py-2.5",
                   isClient
                     ? "rounded-tl-sm bg-zinc-100 dark:bg-zinc-800"
-                    : "rounded-tr-sm bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900",
+                    : "rounded-tr-sm bg-brand-600 text-white dark:bg-brand-500 dark:text-white",
                 )}>
                   <p className={cn("text-xs font-medium mb-1", isClient ? "text-zinc-500" : "text-zinc-400 dark:text-zinc-500")}>
                     {msg.senderName ?? (isClient ? clientName : rcicName)}
@@ -126,12 +126,12 @@ export function MessagesView({
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder={`Reply to ${clientName}…`}
-            className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="flex-1 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           />
           <button
             type="submit"
             disabled={sending || !text.trim()}
-            className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+            className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
           >
             {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Send

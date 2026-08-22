@@ -82,8 +82,8 @@ export default async function CasesPage({ searchParams }: PageProps) {
                 className={cn(
                   "rounded-md border px-3 py-1 text-xs font-medium",
                   statusFilter === key
-                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
-                    : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400"
+                    ? "border-brand-600 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500 dark:text-white"
+                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800"
                 )}
               >
                 {label}
@@ -96,7 +96,7 @@ export default async function CasesPage({ searchParams }: PageProps) {
           <form className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
             <input name="search" type="search" defaultValue={search} placeholder="Search title or client…"
-              className="h-8 w-56 rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" />
+              className="h-8 w-56 rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" />
           </form>
         </div>
       </div>

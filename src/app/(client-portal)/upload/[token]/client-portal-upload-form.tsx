@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useCallback, useRef } from "react";
 import {
@@ -268,7 +268,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     value={clientInfo.firstName}
                     onChange={(e) => updateInfo("firstName", e.target.value)}
                     required
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
                 <div>
@@ -280,7 +280,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     value={clientInfo.lastName}
                     onChange={(e) => updateInfo("lastName", e.target.value)}
                     required
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
               </div>
@@ -294,7 +294,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="date"
                     value={clientInfo.dateOfBirth}
                     onChange={(e) => updateInfo("dateOfBirth", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
                 <div>
@@ -305,7 +305,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="text"
                     value={clientInfo.passportNumber}
                     onChange={(e) => updateInfo("passportNumber", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
               </div>
@@ -319,7 +319,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                   value={clientInfo.addressLine1}
                   onChange={(e) => updateInfo("addressLine1", e.target.value)}
                   placeholder="Street address"
-                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                 />
               </div>
 
@@ -332,7 +332,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="text"
                     value={clientInfo.city}
                     onChange={(e) => updateInfo("city", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
                 <div className="col-span-1">
@@ -343,7 +343,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="text"
                     value={clientInfo.province}
                     onChange={(e) => updateInfo("province", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
                 <div className="col-span-1">
@@ -354,7 +354,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="text"
                     value={clientInfo.postalCode}
                     onChange={(e) => updateInfo("postalCode", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
                 <div className="col-span-1">
@@ -365,7 +365,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                     type="text"
                     value={clientInfo.country}
                     onChange={(e) => updateInfo("country", e.target.value)}
-                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                    className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                   />
                 </div>
               </div>
@@ -375,7 +375,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
           <button
             type="submit"
             disabled={!clientInfo.firstName.trim() || !clientInfo.lastName.trim()}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400 transition-colors"
           >
             Continue to Upload
           </button>
@@ -397,7 +397,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                 "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 transition-colors",
                 isDragging
                   ? "border-zinc-400 bg-zinc-100 dark:border-zinc-500 dark:bg-zinc-800"
-                  : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-zinc-900",
+                  : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-brand-600",
                 file && "border-zinc-300 bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-900",
               )}
             >
@@ -458,7 +458,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value as DocCatType)}
-                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                 >
                   {Object.entries(DocumentCategoryLabel).map(([key, label]) => (
                     <option key={key} value={key}>
@@ -474,7 +474,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                 <select
                   value={applicantLabel}
                   onChange={(e) => setApplicantLabel(e.target.value)}
-                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+                  className="h-9 w-full rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
                 >
                   <option value="">Main applicant</option>
                   <option value="SPOUSE">Spouse</option>
@@ -494,7 +494,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
                   placeholder="Any additional information about this document…"
                   rows={2}
                   maxLength={1000}
-                  className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600 resize-none"
+                  className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30 resize-none"
                 />
               </div>
             </div>
@@ -509,7 +509,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
               </div>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
                 <div
-                  className="h-full rounded-full bg-zinc-600 transition-all duration-500 dark:bg-zinc-400"
+                  className="h-full rounded-full bg-brand-600 transition-all duration-500 dark:bg-brand-400"
                   style={{ width: `${uploadState.progress}%` }}
                 />
               </div>
@@ -556,7 +556,7 @@ export function ClientPortalUploadForm({ token }: ClientPortalUploadFormProps) {
           {file && isIdle && (
             <button
               onClick={handleUpload}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400 transition-colors"
             >
               <Upload className="h-4 w-4" />
               Upload Document

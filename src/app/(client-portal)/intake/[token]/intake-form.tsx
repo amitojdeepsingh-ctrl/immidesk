@@ -93,7 +93,7 @@ function applicantFromPrefill(sub: ExistingSubmission | undefined, role: "PRIMAR
 // ─── Shared field renderer ─────────────────────────────────────────────────
 
 const inputClass =
-  "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
+  "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
 const labelClass = "block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1";
 
 function FieldInput({
@@ -811,8 +811,8 @@ export default function IntakeForm({
       <div className="mx-auto max-w-3xl px-4">
         {/* Header */}
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 dark:bg-zinc-50">
-            <Users className="h-6 w-6 text-white dark:text-zinc-900" />
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 shadow-md shadow-brand-950/15">
+            <Users className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Personal Information Sheet
@@ -832,7 +832,7 @@ export default function IntakeForm({
                 onClick={() => i < step && setStep(i)}
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
                   i === step
-                    ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                    ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                     : i < step
                       ? "bg-emerald-500 text-white"
                       : "bg-zinc-200 text-zinc-500 dark:bg-zinc-800"
@@ -863,7 +863,7 @@ export default function IntakeForm({
                     key={p.value}
                     className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${
                       programType === p.value
-                        ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+                        ? "border-brand-500 bg-brand-50 text-brand-900 ring-1 ring-inset ring-brand-200 dark:border-brand-500/60 dark:bg-brand-500/10 dark:text-brand-100 dark:ring-brand-500/30"
                         : "border-zinc-200 bg-white text-zinc-800 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
                     }`}
                   >
@@ -1086,7 +1086,7 @@ export default function IntakeForm({
                 type="button"
                 onClick={() => setStep((s) => Math.min(3, s + 1))}
                 disabled={step === 2 && !canContinue}
-                className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                className="flex items-center gap-1.5 rounded-md bg-brand-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-40 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
               >
                 Continue <ChevronRight className="h-4 w-4" />
               </button>

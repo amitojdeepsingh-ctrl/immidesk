@@ -144,7 +144,7 @@ export default function CrsPage() {
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">French Test (TEF / TCF)</h2>
               <button onClick={() => toggleFrench(!form.frenchTest)}
-                className={cn("rounded-md border px-3 py-1 text-xs font-medium", form.frenchTest ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500")}>
+                className={cn("rounded-md border px-3 py-1 text-xs font-medium", form.frenchTest ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" : "text-zinc-500")}>
                 {form.frenchTest ? "Included" : "Not included"}
               </button>
             </div>
@@ -161,7 +161,7 @@ export default function CrsPage() {
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Spouse / Partner</h2>
               <button onClick={() => update("hasSpouse", !form.hasSpouse)}
-                className={cn("rounded-md border px-3 py-1 text-xs font-medium", form.hasSpouse ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500")}>
+                className={cn("rounded-md border px-3 py-1 text-xs font-medium", form.hasSpouse ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" : "text-zinc-500")}>
                 {form.hasSpouse ? "Included" : "Not included"}
               </button>
             </div>
@@ -181,7 +181,7 @@ export default function CrsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <label className={lbl}>English Test</label>
                     <button onClick={() => update("spouseEnglishTest", form.spouseEnglishTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
-                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseEnglishTest ? "bg-zinc-900 text-white" : "text-zinc-500")}>
+                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseEnglishTest ? "bg-brand-600 text-white" : "text-zinc-500")}>
                       {form.spouseEnglishTest ? "Included" : "Not included"}
                     </button>
                   </div>
@@ -193,7 +193,7 @@ export default function CrsPage() {
                   <div className="flex items-center justify-between mb-2">
                     <label className={lbl}>French Test</label>
                     <button onClick={() => update("spouseFrenchTest", form.spouseFrenchTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
-                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseFrenchTest ? "bg-zinc-900 text-white" : "text-zinc-500")}>
+                      className={cn("rounded border px-2 py-0.5 text-xs font-medium", form.spouseFrenchTest ? "bg-brand-600 text-white" : "text-zinc-500")}>
                       {form.spouseFrenchTest ? "Included" : "Not included"}
                     </button>
                   </div>
@@ -240,7 +240,7 @@ export default function CrsPage() {
           </div>
 
           <button onClick={calculate} disabled={calculating}
-            className="w-full rounded-md bg-zinc-900 py-3 text-sm font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 flex items-center justify-center gap-2 dark:bg-zinc-50 dark:text-zinc-900">
+            className="w-full rounded-md bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50 flex items-center justify-center gap-2 dark:bg-brand-500 dark:text-white">
             <Calculator className="h-4 w-4" />
             {calculating ? "Calculating..." : "Calculate CRS Score"}
           </button>

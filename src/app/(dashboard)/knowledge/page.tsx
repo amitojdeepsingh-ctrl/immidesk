@@ -131,7 +131,7 @@ export default function KnowledgePage() {
     <div className="flex h-[calc(100vh-8rem)] flex-col space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 shadow-sm">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-sky-600 shadow-sm">
           <BookOpen className="h-5 w-5 text-white" />
         </div>
         <div>
@@ -170,7 +170,7 @@ export default function KnowledgePage() {
               )}
             >
               <div className="flex items-center gap-2.5">
-                <group.icon className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
+                <group.icon className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                 <span className="text-sm font-semibold text-zinc-800 dark:text-zinc-100">
                   {group.label}
                 </span>
@@ -218,7 +218,7 @@ export default function KnowledgePage() {
                   className={cn(
                     "max-w-2xl rounded-lg px-3.5 py-2.5 text-sm leading-relaxed",
                     msg.role === "user"
-                      ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                      ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                       : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
                   )}
                 >
@@ -285,12 +285,12 @@ export default function KnowledgePage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask about any immigration program, requirement, or process…"
-          className="h-11 flex-1 rounded-lg border border-zinc-200 bg-white px-4 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500"
+          className="h-11 flex-1 rounded-lg border border-zinc-200 bg-white px-4 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500"
         />
         <button
           type="submit"
           disabled={!input.trim() || loading}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-zinc-900 text-white transition-colors hover:bg-zinc-800 disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-white transition-colors hover:bg-brand-700 disabled:opacity-40 dark:bg-brand-500 dark:text-white"
         >
           <Send className="h-4 w-4" />
         </button>

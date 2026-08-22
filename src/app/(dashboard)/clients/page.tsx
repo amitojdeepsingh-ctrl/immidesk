@@ -108,7 +108,7 @@ export default async function ClientsPage({ searchParams }: PageProps) {
             <Target className="h-4 w-4" /> Add Lead
           </Link>
           <Link href="/clients/new"
-            className="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+            className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400">
             <UserPlus className="h-4 w-4" /> New Client
           </Link>
         </div>
@@ -119,25 +119,25 @@ export default async function ClientsPage({ searchParams }: PageProps) {
         <Link href={`/clients?${buildQuery({ view: "clients", page: "1" })}`}
           className={cn("flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
             view === "clients"
-              ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+              ? "border-brand-600 text-brand-700 dark:border-brand-400 dark:text-brand-300"
               : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400")}>
           <Users className="h-3.5 w-3.5" />
           Clients
           <span className={cn("ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-            view === "clients" ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400")}>
+            view === "clients" ? "bg-brand-600 text-white dark:bg-brand-500" : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400")}>
             {clientCount}
           </span>
         </Link>
         <Link href={`/clients?${buildQuery({ view: "leads", page: "1" })}`}
           className={cn("flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
             view === "leads"
-              ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+              ? "border-brand-600 text-brand-700 dark:border-brand-400 dark:text-brand-300"
               : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400")}>
           <Target className="h-3.5 w-3.5" />
           Leads
           {leadCount > 0 && (
             <span className={cn("ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
-              view === "leads" ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400")}>
+              view === "leads" ? "bg-brand-600 text-white dark:bg-brand-500" : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400")}>
               {leadCount}
             </span>
           )}
@@ -149,16 +149,16 @@ export default async function ClientsPage({ searchParams }: PageProps) {
         <form className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-400" />
           <input name="search" type="search" defaultValue={search} placeholder="Search name or email…"
-            className="h-8 w-56 rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" />
+            className="h-8 w-56 rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-xs text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" />
         </form>
 
         <Link href={`/clients?${buildQuery({ caseType: "", page: "1" })}`}
-          className={cn("h-8 rounded-md border px-3 text-xs font-medium leading-8", !caseTypeFilter ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400")}>
+          className={cn("h-8 rounded-md border px-3 text-xs font-medium leading-8", !caseTypeFilter ? "border-brand-600 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400")}>
           All Types
         </Link>
         {Object.entries(CASE_TYPE_LABELS).map(([key, label]) => (
           <Link key={key} href={`/clients?${buildQuery({ caseType: key, page: "1" })}`}
-            className={cn("h-8 rounded-md border px-3 text-xs font-medium leading-8 whitespace-nowrap", caseTypeFilter === key ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400")}>
+            className={cn("h-8 rounded-md border px-3 text-xs font-medium leading-8 whitespace-nowrap", caseTypeFilter === key ? "border-brand-600 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400")}>
             {label.split(" ")[0] === "LMIA" ? label : label.split("(")[0].trim()}
           </Link>
         ))}
@@ -173,7 +173,7 @@ export default async function ClientsPage({ searchParams }: PageProps) {
           {!search && (
             <Link
               href={view === "leads" ? "/clients/new?lead=true" : "/clients/new"}
-              className="mt-4 inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+              className="mt-4 inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400">
               {view === "leads" ? <><Target className="h-4 w-4" /> Add Lead</> : <><UserPlus className="h-4 w-4" /> New Client</>}
             </Link>
           )}
@@ -207,7 +207,7 @@ export default async function ClientsPage({ searchParams }: PageProps) {
             </Link>
             {Array.from({ length: totalPages }, (_, i) => i + 1).slice(Math.max(0, page - 4), page + 3).map(n => (
               <Link key={n} href={`/clients?${buildQuery({ page: n.toString() })}`}
-                className={cn("rounded-md px-2.5 py-1 text-xs font-medium", n === page ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800")}>
+                className={cn("rounded-md px-2.5 py-1 text-xs font-medium", n === page ? "bg-brand-600 text-white dark:bg-brand-500" : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800")}>
                 {n}
               </Link>
             ))}

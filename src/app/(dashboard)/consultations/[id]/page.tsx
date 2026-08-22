@@ -126,7 +126,7 @@ export default function ConsultationDetailPage({ params }: { params: Promise<{ i
 
         {consultation.status === "SCHEDULED" && (
           <button onClick={joinVideo}
-            className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+            className="flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white">
             <Video className="h-4 w-4" /> Join Video Call
           </button>
         )}
@@ -138,7 +138,7 @@ export default function ConsultationDetailPage({ params }: { params: Promise<{ i
           className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
           rows={4} placeholder="Add consultation notes..." />
         <button onClick={saveNotes}
-          className="mt-2 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+          className="mt-2 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white">
           Save Notes
         </button>
       </div>

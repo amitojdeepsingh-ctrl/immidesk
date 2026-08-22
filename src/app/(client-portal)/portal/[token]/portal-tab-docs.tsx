@@ -21,7 +21,7 @@ type Step = "checklist" | "intake" | "upload" | "done";
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
-const inputCls = "h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
+const inputCls = "h-9 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
 const labelCls = "mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -238,7 +238,7 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
             return (
               <div key={s} className={cn(
                 "flex items-center gap-1.5 border-b-2 px-4 py-3 text-sm font-medium",
-                active ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                active ? "border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50"
                 : done ? "border-transparent text-green-600 dark:text-green-400"
                 : "border-transparent text-zinc-400"
               )}>
@@ -277,7 +277,7 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
             </div>
             <p className="text-xs text-zinc-400">You don&apos;t need everything ready now — you can still proceed and upload documents as you gather them.</p>
             <button onClick={() => setStep("intake")}
-              className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white">
               Continue to Your Information <ChevronRight className="h-4 w-4" />
             </button>
           </div>
@@ -512,7 +512,7 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
                   <label className={labelCls}>Additional Notes or Special Circumstances</label>
                   <textarea value={intake.additionalNotes} onChange={e => setIntake(p => ({ ...p, additionalNotes: e.target.value }))}
                     rows={3} placeholder="Anything your consultant should know about your situation…"
-                    className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 resize-none" />
+                    className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 resize-none" />
                 </div>
               </div>
             </Section>
@@ -524,7 +524,7 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
             )}
 
             <button onClick={submitIntake} disabled={intakeSaving}
-              className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
               {intakeSaving
                 ? <><Loader2 className="h-4 w-4 animate-spin" />Saving…</>
                 : <>Save & Continue to Documents <ChevronRight className="h-4 w-4" /></>}
@@ -613,7 +613,7 @@ export function PortalTabDocs({ token, caseId, caseType, caseLabel, client, chec
             <div className="flex gap-3">
               {currentFile && (
                 <button onClick={uploadFile} disabled={uploading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                   {uploading
                     ? <><Loader2 className="h-4 w-4 animate-spin" />Uploading…</>
                     : <><Upload className="h-4 w-4" />Upload This File</>}

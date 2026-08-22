@@ -320,7 +320,7 @@ export function AgreementView({
           <button
             onClick={submit}
             disabled={!hasSignature || submitting}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-40 dark:bg-brand-500 dark:text-white"
           >
             {submitting ? <><Loader2 className="h-4 w-4 animate-spin" /> Submitting…</> : "Sign & Submit Retainer Agreement"}
           </button>

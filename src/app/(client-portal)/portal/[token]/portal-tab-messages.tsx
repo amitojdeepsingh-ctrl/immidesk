@@ -103,7 +103,7 @@ export function PortalTabMessages({
                   className={cn(
                     "rounded-2xl px-4 py-2 text-sm",
                     isClient
-                      ? "bg-zinc-900 text-white rounded-tr-sm"
+                      ? "bg-brand-600 text-white rounded-tr-sm"
                       : "bg-zinc-100 text-zinc-900 rounded-tl-sm"
                   )}
                 >
@@ -127,13 +127,13 @@ export function PortalTabMessages({
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
           placeholder="Type a message…"
-          className="flex-1 text-sm border border-zinc-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-300"
+          className="flex-1 text-sm border border-zinc-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-brand-500/30"
           disabled={sending}
         />
         <button
           onClick={handleSend}
           disabled={sending || !input.trim()}
-          className="flex items-center gap-1.5 bg-zinc-900 text-white text-sm px-4 py-2 rounded-lg disabled:opacity-50 hover:bg-zinc-700 transition-colors"
+          className="flex items-center gap-1.5 bg-brand-600 text-white text-sm px-4 py-2 rounded-lg disabled:opacity-50 hover:bg-zinc-700 transition-colors"
         >
           {sending ? (
             <Loader2 className="w-4 h-4 animate-spin" />

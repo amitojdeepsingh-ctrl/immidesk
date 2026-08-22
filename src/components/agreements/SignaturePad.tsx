@@ -126,7 +126,7 @@ export function SignaturePad({ onCapture, clientName }: SignaturePadProps) {
             className={cn(
               "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
               mode === "draw"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700",
             )}
           >
@@ -139,7 +139,7 @@ export function SignaturePad({ onCapture, clientName }: SignaturePadProps) {
             className={cn(
               "rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
               mode === "type"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700",
             )}
           >

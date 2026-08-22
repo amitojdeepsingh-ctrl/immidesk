@@ -110,7 +110,7 @@ export default function CrsCalculatorPage() {
     );
   }
 
-  const inp = "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
+  const inp = "w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50";
   const lbl = "block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1";
 
   const ClbGrid = ({ value, onChange }: { value: ClbScores; onChange: (field: string, val: number) => void }) => (
@@ -186,7 +186,7 @@ export default function CrsCalculatorPage() {
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">French Test (TEF / TCF)</h2>
               <button type="button" onClick={() => update("frenchTest", form.frenchTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
-                className={`rounded-md border px-3 py-1 text-xs font-medium ${form.frenchTest ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500"}`}>
+                className={`rounded-md border px-3 py-1 text-xs font-medium ${form.frenchTest ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" : "text-zinc-500"}`}>
                 {form.frenchTest ? "Included" : "Not included"}
               </button>
             </div>
@@ -203,7 +203,7 @@ export default function CrsCalculatorPage() {
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Spouse / Partner</h2>
               <button type="button" onClick={() => update("hasSpouse", !form.hasSpouse)}
-                className={`rounded-md border px-3 py-1 text-xs font-medium ${form.hasSpouse ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" : "text-zinc-500"}`}>
+                className={`rounded-md border px-3 py-1 text-xs font-medium ${form.hasSpouse ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" : "text-zinc-500"}`}>
                 {form.hasSpouse ? "Included" : "Not included"}
               </button>
             </div>
@@ -225,7 +225,7 @@ export default function CrsCalculatorPage() {
                   <div className="flex items-center justify-between mb-2">
                     <label className={lbl}>English Test</label>
                     <button type="button" onClick={() => update("spouseEnglishTest", form.spouseEnglishTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
-                      className={`rounded border px-2 py-0.5 text-xs font-medium ${form.spouseEnglishTest ? "bg-zinc-900 text-white" : "text-zinc-500"}`}>
+                      className={`rounded border px-2 py-0.5 text-xs font-medium ${form.spouseEnglishTest ? "bg-brand-600 text-white" : "text-zinc-500"}`}>
                       {form.spouseEnglishTest ? "Included" : "Not included"}
                     </button>
                   </div>
@@ -237,7 +237,7 @@ export default function CrsCalculatorPage() {
                   <div className="flex items-center justify-between mb-2">
                     <label className={lbl}>French Test</label>
                     <button type="button" onClick={() => update("spouseFrenchTest", form.spouseFrenchTest ? undefined : { speaking: 7, listening: 7, reading: 7, writing: 7 })}
-                      className={`rounded border px-2 py-0.5 text-xs font-medium ${form.spouseFrenchTest ? "bg-zinc-900 text-white" : "text-zinc-500"}`}>
+                      className={`rounded border px-2 py-0.5 text-xs font-medium ${form.spouseFrenchTest ? "bg-brand-600 text-white" : "text-zinc-500"}`}>
                       {form.spouseFrenchTest ? "Included" : "Not included"}
                     </button>
                   </div>
@@ -295,7 +295,7 @@ export default function CrsCalculatorPage() {
               <Row label="Additional points" value={result.additional.total} />
             </div>
             <button type="submit" disabled={sending || !form.firstName || !form.lastName || !form.email}
-              className="flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200">
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400">
               {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               {sending ? "Saving..." : "Save My Score — We'll Contact You"}
             </button>

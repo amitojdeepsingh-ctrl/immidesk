@@ -143,7 +143,7 @@ export default function CorrespondencePage() {
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Any specific details to include..."
-            className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder-zinc-400 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+            className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm placeholder-zinc-400 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
           />
         </div>
 

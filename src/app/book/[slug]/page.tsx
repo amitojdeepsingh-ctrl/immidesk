@@ -109,7 +109,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
           {["date", "time", "info"].map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${
-                step === s ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" :
+                step === s ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" :
                 s === "date" && step !== "date" ? "bg-green-500 text-white" : "bg-zinc-200 text-zinc-500 dark:bg-zinc-800"
               }`}>{i + 1}</div>
               <span className={step === s ? "text-zinc-900 font-medium dark:text-zinc-50" : "text-zinc-400"}>{s.charAt(0).toUpperCase() + s.slice(1)}</span>
@@ -143,7 +143,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
                     onClick={() => selectDate(day)}
                     className={`rounded-md py-2 text-sm transition-colors ${
                       isPast ? "text-zinc-300 cursor-not-allowed dark:text-zinc-700" :
-                      isToday ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900" :
+                      isToday ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white" :
                       "text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                     }`}>
                     {day}
@@ -178,7 +178,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
                 <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {slots.filter(s => !selectedConsultant || s.consultantId === selectedConsultant).map((slot, i) => (
                     <button key={i} onClick={() => selectSlot(slot)}
-                      className="rounded-md border border-zinc-200 px-3 py-2 text-sm text-zinc-700 hover:border-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50">
+                      className="rounded-md border border-zinc-200 px-3 py-2 text-sm text-zinc-700 hover:border-brand-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-50">
                       {slot.startTime}
                     </button>
                   ))}
@@ -213,7 +213,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
               </div>
               {error && <p className="mt-3 text-xs text-red-500">{error}</p>}
               <button onClick={book} disabled={sending || !name || !email}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                 {sending ? "Booking..." : "Confirm Booking"}
               </button>

@@ -32,7 +32,7 @@ export function NewLmiaCaseButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+        className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
       >
         <Plus className="h-4 w-4" />
         New LMIA Case
@@ -55,7 +55,7 @@ export function NewLmiaCaseButton() {
                   onChange={e => setForm(f => ({ ...f, employerName: e.target.value }))}
                   placeholder="e.g. ABC Farms Ltd."
                   required
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                 />
               </div>
               <div>
@@ -65,7 +65,7 @@ export function NewLmiaCaseButton() {
                   onChange={e => setForm(f => ({ ...f, jobTitle: e.target.value }))}
                   placeholder="e.g. General Farm Worker"
                   required
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -75,7 +75,7 @@ export function NewLmiaCaseButton() {
                     value={form.nocCode}
                     onChange={e => setForm(f => ({ ...f, nocCode: e.target.value }))}
                     placeholder="e.g. 85100"
-                    className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                    className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                   />
                 </div>
                 <div>
@@ -84,7 +84,7 @@ export function NewLmiaCaseButton() {
                     value={form.location}
                     onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
                     placeholder="e.g. Kelowna, BC"
-                    className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-zinc-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                    className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm focus:border-brand-400 focus:bg-white focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
                   />
                 </div>
               </div>
@@ -93,7 +93,7 @@ export function NewLmiaCaseButton() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
                 >
                   {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Create Case

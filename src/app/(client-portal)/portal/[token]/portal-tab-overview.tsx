@@ -105,7 +105,7 @@ export function PortalTabOverview({
           </div>
           <div className="h-2 w-full rounded-full bg-zinc-100 dark:bg-zinc-800">
             <div
-              className="h-2 rounded-full bg-zinc-900 transition-all dark:bg-zinc-50"
+              className="h-2 rounded-full bg-brand-600 transition-all dark:bg-brand-500"
               style={{ width: `${pct}%` }}
             />
           </div>
@@ -132,13 +132,13 @@ export function PortalTabOverview({
                   <div className={cn(
                     "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
                     isPast
-                      ? "border-zinc-900 bg-zinc-900 dark:border-zinc-50 dark:bg-zinc-50"
+                      ? "border-brand-700 bg-brand-600 dark:border-brand-500 dark:bg-brand-500"
                       : isCurrent
-                        ? "border-zinc-900 bg-white dark:border-zinc-50 dark:bg-zinc-900"
+                        ? "border-brand-700 bg-white dark:border-brand-500 dark:bg-zinc-900"
                         : "border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900"
                   )}>
                     {isPast ? (
-                      <CheckCircle2 className="h-3.5 w-3.5 text-white dark:text-zinc-900" />
+                      <CheckCircle2 className="h-3.5 w-3.5 text-white dark:text-white" />
                     ) : isCurrent ? (
                       <Circle className="h-2.5 w-2.5 fill-zinc-900 text-zinc-900 dark:fill-zinc-50 dark:text-zinc-50" />
                     ) : (
@@ -148,7 +148,7 @@ export function PortalTabOverview({
                   {i < STATUS_STAGES.length - 1 && (
                     <div className={cn(
                       "my-1 w-0.5 flex-1",
-                      isPast ? "bg-zinc-900 dark:bg-zinc-50" : "bg-zinc-200 dark:bg-zinc-700"
+                      isPast ? "bg-brand-600 dark:bg-brand-500" : "bg-zinc-200 dark:bg-zinc-700"
                     )} style={{ minHeight: "1.5rem" }} />
                   )}
                 </div>

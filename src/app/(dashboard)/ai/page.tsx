@@ -90,7 +90,7 @@ const FEATURE_DEFS: {
     name: "IRCC Insights",
     description: "Instant Q&A across IRPR, IRCC policy manuals, and operational bulletins",
     icon: BookOpen,
-    accent: "from-cyan-500 to-cyan-600",
+    accent: "from-sky-500 to-sky-600",
     category: "Research",
   },
   {
@@ -104,10 +104,10 @@ const FEATURE_DEFS: {
 ];
 
 const QUICK_ACTIONS = [
-  { label: "Check Compliance Deadlines", href: "/compliance", icon: Bell, color: "text-rose-600", bg: "bg-rose-50 dark:bg-rose-900/20", border: "hover:border-rose-300 dark:hover:border-rose-700" },
-  { label: "Assess a Case", href: "/assess", icon: Scale, color: "text-violet-600", bg: "bg-violet-50 dark:bg-violet-900/20", border: "hover:border-violet-300 dark:hover:border-violet-700" },
-  { label: "Draft Communication to Client", href: "/messages", icon: PenLine, color: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-900/20", border: "hover:border-emerald-300 dark:hover:border-emerald-700" },
-  { label: "CRS Calculator", href: "/crs", icon: Calculator, color: "text-violet-600", bg: "bg-violet-50 dark:bg-violet-900/20", border: "hover:border-violet-300 dark:hover:border-violet-700" },
+  { label: "Check Compliance Deadlines", href: "/compliance", icon: Bell, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-500/10", border: "hover:border-amber-300 dark:hover:border-amber-500/40" },
+  { label: "Assess a Case", href: "/assess", icon: Scale, color: "text-brand-600 dark:text-brand-400", bg: "bg-brand-50 dark:bg-brand-500/10", border: "hover:border-brand-300 dark:hover:border-brand-500/40" },
+  { label: "Draft Communication to Client", href: "/messages", icon: PenLine, color: "text-sky-600 dark:text-sky-400", bg: "bg-sky-50 dark:bg-sky-500/10", border: "hover:border-sky-300 dark:hover:border-sky-500/40" },
+  { label: "CRS Calculator", href: "/crs", icon: Calculator, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-500/10", border: "hover:border-emerald-300 dark:hover:border-emerald-500/40" },
 ];
 
 const SUGGESTED_QUESTIONS = [
@@ -209,24 +209,24 @@ export default function AiFeaturesPage() {
   return (
     <div className="space-y-8">
       {/* Hero header */}
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 px-6 py-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-700 via-brand-800 to-brand-950 px-6 py-8">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full border-[12px] border-white/5" />
         <div className="absolute -bottom-6 -left-6 h-24 w-24 rounded-full border-8 border-white/5" />
         <div className="relative flex items-start gap-4">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/10 shadow-lg ring-1 ring-inset ring-white/25 backdrop-blur">
             <Brain className="h-7 w-7 text-white" />
           </div>
           <div className="flex-1">
             <h1 className="flex items-center gap-2 text-xl font-bold text-white">
               AI-Powered Smart Portal
-              <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-medium text-amber-300">
+              <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-medium text-brand-100">
                 {enabledCount}/{FEATURE_DEFS.length} active
               </span>
             </h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-brand-100/80">
             Intelligent tools purpose-built for Canadian immigration practice
           </p>
-          <span className="text-[10px] text-zinc-600">v2.1-redesign</span>
+          <span className="text-[10px] text-white/40">v2.1-redesign</span>
           </div>
         </div>
       </div>
@@ -267,14 +267,14 @@ export default function AiFeaturesPage() {
       </div>
 
       {/* Add-on banner */}
-      <section className="rounded-lg border border-amber-200/60 bg-gradient-to-r from-amber-50 via-amber-50/80 to-transparent px-6 py-4 dark:border-amber-800/40 dark:from-amber-900/10 dark:via-amber-900/5">
+      <section className="rounded-lg border border-brand-200/70 bg-gradient-to-r from-brand-50 via-brand-50/70 to-transparent px-6 py-4 dark:border-brand-500/25 dark:from-brand-500/10 dark:via-brand-500/[0.04]">
         <div className="flex items-start gap-3">
-          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+          <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-brand-600 dark:text-brand-400" />
           <div>
-            <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+            <p className="text-sm font-medium text-brand-900 dark:text-brand-100">
               AI Features Add-On
             </p>
-            <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+            <p className="mt-1 text-xs text-brand-700 dark:text-brand-300">
               All AI tools are available for <strong>$29/month flat per firm</strong>.
               Toggle features on below — your subscription updates automatically.
             </p>
@@ -362,12 +362,12 @@ export default function AiFeaturesPage() {
                       className={cn(
                         "relative h-6 w-11 shrink-0 rounded-full transition-colors",
                         enabled
-                          ? "bg-zinc-900 dark:bg-zinc-50"
+                          ? "bg-brand-600 dark:bg-brand-500"
                           : "bg-zinc-300 dark:bg-zinc-700",
                       )}
                     >
                       {togglingNow ? (
-                        <Loader2 className="absolute left-1 top-1 h-4 w-4 animate-spin text-white dark:text-zinc-900" />
+                        <Loader2 className="absolute left-1 top-1 h-4 w-4 animate-spin text-white dark:text-white" />
                       ) : (
                         <span
                           className={cn(
@@ -409,7 +409,7 @@ export default function AiFeaturesPage() {
         <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky-500 to-sky-600">
                 <BookOpen className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -428,7 +428,7 @@ export default function AiFeaturesPage() {
             )}
             <Link
               href="/knowledge"
-              className="flex items-center gap-1.5 rounded-md border border-cyan-200 px-3 py-1.5 text-xs font-medium text-cyan-700 transition-colors hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/20"
+              className="flex items-center gap-1.5 rounded-md border border-sky-200 px-3 py-1.5 text-xs font-medium text-sky-700 transition-colors hover:bg-sky-50 dark:border-sky-500/40 dark:text-sky-400 dark:hover:bg-sky-500/10"
             >
               Open full page <ArrowRight className="h-3 w-3" />
             </Link>
@@ -467,7 +467,7 @@ export default function AiFeaturesPage() {
                   className={cn(
                     "max-w-lg rounded-lg px-3 py-2 text-sm",
                     msg.role === "user"
-                      ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                      ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                       : "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
                   )}
                 >
@@ -493,7 +493,7 @@ export default function AiFeaturesPage() {
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               placeholder="Type your question..."
-              className="flex-1 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-500"
+              className="flex-1 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50 dark:placeholder-zinc-500"
               onKeyDown={async (e) => {
                 if (e.key === "Enter") await sendChat(chatInput);
               }}
@@ -506,7 +506,7 @@ export default function AiFeaturesPage() {
             <button
               onClick={() => sendChat(chatInput)}
               disabled={!chatInput.trim() || chatLoading}
-              className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+              className="flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-2 text-xs font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
             >
               <Send className="h-3.5 w-3.5" />
             </button>

@@ -147,7 +147,7 @@ export default function ConsultationsPage() {
                   </code>
                   <button
                     onClick={copyLink}
-                    className="flex items-center gap-1 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+                    className="flex items-center gap-1 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
                   >
                     {copied ? <><Check className="h-3 w-3" /> Copied</> : <><Copy className="h-3 w-3" /> Copy</>}
                   </button>
@@ -200,7 +200,7 @@ export default function ConsultationsPage() {
                 value={calUsername}
                 onChange={(e) => setCalUsername(e.target.value)}
                 placeholder="yourname"
-                className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
               />
             </div>
             <div className="flex-1">
@@ -210,14 +210,14 @@ export default function ConsultationsPage() {
                 value={calEventType}
                 onChange={(e) => setCalEventType(e.target.value)}
                 placeholder="15min"
-                className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+                className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
               />
             </div>
             <div className="flex items-end">
               <button
                 onClick={saveCalConfig}
                 disabled={!calUsername}
-                className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900"
+                className="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white"
               >
                 Save
               </button>
@@ -255,7 +255,7 @@ export default function ConsultationsPage() {
           </p>
           <button
             onClick={() => setShowConfig(true)}
-            className="mt-4 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+            className="mt-4 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
           >
             Configure Cal.com
           </button>
@@ -324,7 +324,7 @@ export default function ConsultationsPage() {
                   {c.status === "SCHEDULED" && (
                     <Link
                       href={`/consultations/${c.id}`}
-                      className="flex items-center gap-1 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+                      className="flex items-center gap-1 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
                     >
                       <Video className="h-3 w-3" /> Join
                     </Link>

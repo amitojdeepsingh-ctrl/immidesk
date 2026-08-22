@@ -6,15 +6,15 @@ import { Users, Briefcase, FileText, CalendarClock, ArrowRight, AlertTriangle, S
 import Link from "next/link";
 
 const PIPELINE_STAGES = [
-  { key: "INTAKE",                    label: "Intake",           color: "bg-zinc-400" },
-  { key: "DOCUMENT_COLLECTION",       label: "Docs",             color: "bg-blue-400" },
-  { key: "FORM_FILLING",              label: "Forms",            color: "bg-indigo-400" },
-  { key: "READY_TO_SUBMIT",           label: "Ready",            color: "bg-amber-400" },
-  { key: "SUBMITTED",                 label: "Submitted",        color: "bg-orange-400" },
-  { key: "AOR_RECEIVED",              label: "AOR",              color: "bg-yellow-400" },
-  { key: "IN_PROCESS",               label: "In Process",       color: "bg-purple-400" },
-  { key: "ADDITIONAL_DOCS_REQUESTED", label: "More Docs",        color: "bg-red-400" },
-  { key: "DECISION_MADE",             label: "Decision",         color: "bg-teal-400" },
+  { key: "INTAKE",                    label: "Intake",        color: "bg-zinc-400 dark:bg-zinc-500" },
+  { key: "DOCUMENT_COLLECTION",       label: "Docs",          color: "bg-sky-400 dark:bg-sky-500" },
+  { key: "FORM_FILLING",              label: "Forms",         color: "bg-indigo-400 dark:bg-indigo-500" },
+  { key: "READY_TO_SUBMIT",           label: "Ready",         color: "bg-violet-400 dark:bg-violet-500" },
+  { key: "SUBMITTED",                 label: "Submitted",     color: "bg-amber-400 dark:bg-amber-500" },
+  { key: "AOR_RECEIVED",              label: "AOR",           color: "bg-cyan-400 dark:bg-cyan-500" },
+  { key: "IN_PROCESS",               label: "In Process",    color: "bg-brand-400 dark:bg-brand-500" },
+  { key: "ADDITIONAL_DOCS_REQUESTED", label: "More Docs",     color: "bg-orange-400 dark:bg-orange-500" },
+  { key: "DECISION_MADE",             label: "Decision",      color: "bg-teal-400 dark:bg-teal-500" },
 ];
 
 export default async function DashboardPage() {
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
             Here&apos;s what&apos;s happening at {organization.name}
           </p>
         </div>
-        <Link href="/newsletter" className="flex items-center gap-1.5 rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800">
+        <Link href="/newsletter" className="flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 hover:border-brand-300 hover:text-brand-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-brand-500/40 dark:hover:text-brand-300">
           <Send className="h-3.5 w-3.5" /> Newsletter
         </Link>
       </div>
@@ -128,7 +128,7 @@ export default async function DashboardPage() {
           {PIPELINE_STAGES.map(({ key, label, color }) => {
             const count = pipelineCounts[key] ?? 0;
             return (
-              <Link key={key} href={`/clients?status=${key}`} className="flex min-w-[90px] flex-col items-center rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-3 text-center hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:bg-zinc-800">
+              <Link key={key} href={`/clients?status=${key}`} className="flex min-w-[90px] flex-col items-center rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-3 text-center transition-colors hover:border-brand-200 hover:bg-brand-50/60 dark:border-zinc-800 dark:bg-zinc-800/50 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/10">
                 <div className={`mb-2 h-2 w-2 rounded-full ${color}`} />
                 <span className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{count}</span>
                 <span className="mt-0.5 text-[10px] font-medium text-zinc-500 dark:text-zinc-400 leading-tight">{label}</span>
@@ -229,7 +229,7 @@ export default async function DashboardPage() {
                 const action = (a.action as string).replace(/_/g, " ").toLowerCase();
                 return (
                   <div key={a.id as string} className="flex items-start gap-3 px-5 py-3">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-[10px] font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[10px] font-medium text-brand-700 dark:bg-brand-500/20 dark:text-brand-300">
                       {user?.name?.charAt(0) ?? "?"}
                     </div>
                     <div className="min-w-0 flex-1">

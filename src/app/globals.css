@@ -1,26 +1,115 @@
 @import "tailwindcss";
 
+/* ══════════════════════════════════════════════════════════════════════
+   ImmigDesk — Semantic Design Tokens
+   ────────────────────────────────────────────────────────────────────────
+   PRIMARY  · `brand`  deep harbor navy  — trust, institutional calm.
+             Buttons, active nav/tabs, links, focus rings, primary CTAs.
+   ACCENT   · `maple`  Canadian crimson  — brand moments ONLY (auth mark,
+             recommended-plan ribbon, small highlights). Never for errors
+             or destructive actions (danger = Tailwind `red`).
+   SEMANTIC · success = emerald · warning = amber · danger = red ·
+             info = sky (Tailwind ramps; AA-checked tinted-pill combos)
+   SURFACE  · zinc remains the neutral ramp for surfaces, borders, and
+             text tiers: page zinc-50/zinc-950 · card white/zinc-900 ·
+             border zinc-200/zinc-800 · text zinc-900 → zinc-400.
+
+   Canonical recipes (keep app-wide consistency):
+   ─ Primary action    bg-brand-600 hover:bg-brand-700 text-white
+                       dark:bg-brand-500 dark:hover:bg-brand-400
+   ─ Active nav/tab    bg-brand-50 text-brand-700 dark:bg-brand-500/10
+                       dark:text-brand-300 (+ ring-brand-200 / ring-brand-500/20)
+   ─ Focus ring        focus:ring-2 focus:ring-brand-500/30
+                       dark:focus:ring-brand-400/40
+   ─ Brand highlight   bg-maple-600 text-white (badge-scale only)
+   ─ Status pill       {semantic}-50 text-{shade}-700 ring-1 ring-inset
+                       {semantic}-200 · dark:{semantic}-500/10 +
+                       dark:text-{shade}-400 + dark:ring-{shade}-500/25
+   ══════════════════════════════════════════════════════════════════════ */
+
+@theme {
+  /* ── Primary — Harbor Navy ──────────────────────────────────────── */
+  --color-brand-50: #f0f4fb;
+  --color-brand-100: #dce6f5;
+  --color-brand-200: #c1d3ec;
+  --color-brand-300: #98b5dd;
+  --color-brand-400: #6b8fc9;
+  --color-brand-500: #4a72b4;
+  --color-brand-600: #35599c;
+  --color-brand-700: #2c487e;
+  --color-brand-800: #263c69;
+  --color-brand-900: #203052;
+  --color-brand-950: #131d36;
+
+  /* ── Accent — Maple (use sparingly) ─────────────────────────────── */
+  --color-maple-50: #fdf3f2;
+  --color-maple-100: #fbe6e3;
+  --color-maple-200: #f7cdc8;
+  --color-maple-300: #f0a79f;
+  --color-maple-400: #e67c72;
+  --color-maple-500: #d84f43;
+  --color-maple-600: #c23a30;
+  --color-maple-700: #a02d26;
+  --color-maple-800: #862724;
+  --color-maple-900: #702622;
+  --color-maple-950: #3e110e;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafafa;
+  --foreground: #18181b;
+
+  /* Surface layers (semantic aliases over the zinc ramp) */
+  --surface-card: #ffffff;
+  --surface-subtle: #f4f4f5;
+  --border-subtle: #e4e4e7;
+  --border-strong: #d4d4d8;
+
+  /* Text tiers */
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #a1a1aa;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--surface-card);
+  --color-subtle: var(--surface-subtle);
+  --color-edge: var(--border-subtle);
+  --color-edge-strong: var(--border-strong);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #09090b;
+    --foreground: #f4f4f5;
+
+    --surface-card: #111113;
+    --surface-subtle: #1c1c1f;
+    --border-subtle: #27272a;
+    --border-strong: #3f3f46;
+
+    --text-primary: #f4f4f5;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+::selection {
+  background-color: rgb(53 89 156 / 0.18);
+}
+@media (prefers-color-scheme: dark) {
+  ::selection {
+    background-color: rgb(107 143 201 / 0.32);
+  }
 }

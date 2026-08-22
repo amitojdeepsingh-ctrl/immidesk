@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import {
   UserPlus,
   AlertCircle,
   Loader2,
+  Compass,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -67,6 +68,9 @@ export function SignupForm() {
     >
       {/* Heading */}
       <div className="space-y-1.5 text-center">
+        <div className="mx-auto mb-2 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-brand-800 shadow-md shadow-brand-950/20">
+          <Compass className="h-5 w-5 text-white" />
+        </div>
         <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
           Create your account
         </h1>
@@ -101,7 +105,7 @@ export function SignupForm() {
             {...register("name")}
             className={cn(
               "w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+              "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
               errors.name
                 ? "border-red-300 dark:border-red-700"
                 : "border-zinc-200 dark:border-zinc-700",
@@ -133,7 +137,7 @@ export function SignupForm() {
             {...register("organizationName")}
             className={cn(
               "w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+              "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
               errors.organizationName
                 ? "border-red-300 dark:border-red-700"
                 : "border-zinc-200 dark:border-zinc-700",
@@ -163,7 +167,7 @@ export function SignupForm() {
           {...register("companyPhone")}
           className={cn(
             "w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-            "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+            "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
             errors.companyPhone
               ? "border-red-300 dark:border-red-700"
               : "border-zinc-200 dark:border-zinc-700",
@@ -191,7 +195,7 @@ export function SignupForm() {
           {...register("rcicNumber")}
           className={cn(
             "w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-            "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+            "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
             errors.rcicNumber
               ? "border-red-300 dark:border-red-700"
               : "border-zinc-200 dark:border-zinc-700",
@@ -225,7 +229,7 @@ export function SignupForm() {
             {...register("email")}
             className={cn(
               "w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+              "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
               errors.email
                 ? "border-red-300 dark:border-red-700"
                 : "border-zinc-200 dark:border-zinc-700",
@@ -257,7 +261,7 @@ export function SignupForm() {
             {...register("password")}
             className={cn(
               "w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+              "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
               errors.password
                 ? "border-red-300 dark:border-red-700"
                 : "border-zinc-200 dark:border-zinc-700",
@@ -289,7 +293,7 @@ export function SignupForm() {
             {...register("confirmPassword")}
             className={cn(
               "w-full rounded-md border bg-white py-2 pl-9 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
-              "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+              "focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:focus:border-brand-400 dark:focus:ring-brand-400/40",
               errors.confirmPassword
                 ? "border-red-300 dark:border-red-700"
                 : "border-zinc-200 dark:border-zinc-700",
@@ -308,8 +312,8 @@ export function SignupForm() {
         type="submit"
         disabled={isPending}
         className={cn(
-          "flex w-full items-center justify-center gap-2 rounded-md bg-zinc-900 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200",
-          "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+          "flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-brand-700 dark:bg-brand-500 dark:hover:bg-brand-400",
+          "focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:ring-offset-2 dark:focus:ring-brand-400/50",
           "disabled:cursor-not-allowed disabled:opacity-50",
         )}
       >
@@ -326,7 +330,7 @@ export function SignupForm() {
         Already have an account?{" "}
         <Link
           href="/login"
-          className="font-medium text-zinc-900 underline underline-offset-4 hover:text-zinc-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+          className="font-medium text-brand-600 underline underline-offset-4 hover:text-brand-700 dark:text-brand-400 dark:hover:text-brand-300"
         >
           Sign in
         </Link>

@@ -47,7 +47,7 @@ function NewsletterForm() {
     }
   }
 
-  const inputCls = "w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
+  const inputCls = "w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 py-4">
@@ -90,7 +90,7 @@ function NewsletterForm() {
 
         <div className="flex gap-3">
           <button onClick={send} disabled={!subject.trim() || !body.trim() || sending}
-            className="flex items-center gap-2 rounded-md bg-zinc-900 px-5 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900">
+            className="flex items-center gap-2 rounded-md bg-brand-600 px-5 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-40 dark:bg-brand-500 dark:text-white">
             {sending ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending…</> : <><Send className="h-4 w-4" /> Send Newsletter</>}
           </button>
           <div className="flex items-center gap-1.5 text-xs text-zinc-400">

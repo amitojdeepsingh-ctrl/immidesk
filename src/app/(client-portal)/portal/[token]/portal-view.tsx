@@ -140,7 +140,7 @@ export function PortalView({
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 border-b-2 px-4 py-3 text-sm font-medium transition-colors",
                   activeTab === id
-                    ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                    ? "border-brand-600 text-brand-700 dark:border-brand-400 dark:text-brand-300"
                     : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
                 )}
               >

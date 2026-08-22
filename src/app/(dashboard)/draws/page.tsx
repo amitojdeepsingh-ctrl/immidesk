@@ -93,7 +93,7 @@ export default function DrawsPage() {
           <p className="text-sm text-zinc-500">Express Entry draws, PNP updates, and immigration news — auto-updated daily</p>
         </div>
         <button onClick={runScraper} disabled={scraping}
-          className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-900">
+          className="flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
           <RefreshCw className={cn("h-3.5 w-3.5", scraping && "animate-spin")} />
           {scraping ? "Checking…" : "Check for Updates"}
         </button>
@@ -106,7 +106,7 @@ export default function DrawsPage() {
           <button key={t.key} onClick={() => setCategory(t.key)}
             className={cn("flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
               category === t.key
-                ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                ? "border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50"
                 : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400")}>
             <t.icon className="h-3.5 w-3.5" />{t.label}
           </button>

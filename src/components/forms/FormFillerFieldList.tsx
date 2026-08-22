@@ -112,7 +112,7 @@ export function FormFillerFieldList({ fields, prefilledData, onFieldUpdate }: Fo
           <input
             type="text"
             placeholder="Search fields..."
-            className="w-full rounded-md border border-zinc-200 py-1.5 pl-8 pr-3 text-xs focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-500"
+            className="w-full rounded-md border border-zinc-200 py-1.5 pl-8 pr-3 text-xs focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:focus:border-brand-400"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -126,7 +126,7 @@ export function FormFillerFieldList({ fields, prefilledData, onFieldUpdate }: Fo
               className={cn(
                 "rounded-md px-2 py-1 text-[10px] font-medium transition-colors",
                 group === g
-                  ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-900"
+                  ? "bg-brand-600 text-white dark:bg-brand-500 dark:text-white"
                   : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700",
               )}
             >
@@ -208,7 +208,7 @@ export function FormFillerFieldList({ fields, prefilledData, onFieldUpdate }: Fo
                       <select
                         value={String(prefilledData[field.key] ?? "")}
                         onChange={(e) => onFieldUpdate(field.key, e.target.value)}
-                        className="w-full rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        className="w-full rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                       >
                         <option value="">Select...</option>
                         {field.options.map((opt) => (
@@ -222,7 +222,7 @@ export function FormFillerFieldList({ fields, prefilledData, onFieldUpdate }: Fo
                         type={field.type === "date" ? "date" : "text"}
                         value={String(prefilledData[field.key] ?? "")}
                         onChange={(e) => onFieldUpdate(field.key, e.target.value)}
-                        className="w-full rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs focus:border-zinc-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+                        className="w-full rounded-md border border-zinc-200 px-2.5 py-1.5 text-xs focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
                       />
                     )}
                   </div>

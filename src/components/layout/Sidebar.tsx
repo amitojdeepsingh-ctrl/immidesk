@@ -72,13 +72,16 @@ export function Sidebar({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                "relative flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50"
+                  ? "bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300"
                   : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
               )}
             >
-              <item.icon className="h-4 w-4 shrink-0" />
+              {isActive && (
+                <span className="absolute left-0 top-1/2 h-4 w-1 -translate-y-1/2 rounded-r-full bg-brand-600 dark:bg-brand-400" />
+              )}
+              <item.icon className={cn("h-4 w-4 shrink-0", isActive && "text-brand-600 dark:text-brand-400")} />
               {item.label}
             </Link>
           );
@@ -87,7 +90,7 @@ export function Sidebar({
 
       <div className="border-t border-zinc-200 px-3 py-3 dark:border-zinc-800">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-200 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-medium text-brand-700 dark:bg-brand-500/20 dark:text-brand-300">
             {userName
               .split(" ")
               .map((p: string) => p[0])

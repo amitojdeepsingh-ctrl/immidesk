@@ -90,18 +90,18 @@ export function CaseTasks({ caseId, initialTasks }: { caseId: string; initialTas
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="New task…"
-          className="h-8 flex-1 rounded-md border border-zinc-200 bg-white px-2.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
+          className="h-8 flex-1 rounded-md border border-zinc-200 bg-white px-2.5 text-xs text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50"
         />
         <input
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}
-          className="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+          className="h-8 rounded-md border border-zinc-200 bg-white px-2 text-xs text-zinc-600 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
         />
         <button
           type="submit"
           disabled={adding || !title.trim()}
-          className="flex h-8 items-center gap-1 rounded-md bg-zinc-900 px-2.5 text-xs font-medium text-white disabled:opacity-40 dark:bg-zinc-50 dark:text-zinc-900"
+          className="flex h-8 items-center gap-1 rounded-md bg-brand-600 px-2.5 text-xs font-medium text-white disabled:opacity-40 dark:bg-brand-500 dark:text-white"
         >
           {adding ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />} Add
         </button>

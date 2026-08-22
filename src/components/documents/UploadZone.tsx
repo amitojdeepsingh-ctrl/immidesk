@@ -1,4 +1,4 @@
-﻿// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 // ImmigDesk — UploadZone Component
 // ═══════════════════════════════════════════════════════════════════════════
 // Drag-and-drop file upload zone with category selection, case assignment,
@@ -312,7 +312,7 @@ export function UploadZone({
           "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 transition-colors",
           isDragging
             ? "border-zinc-400 bg-zinc-100 dark:border-zinc-500 dark:bg-zinc-800"
-            : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-zinc-900",
+            : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-700 dark:hover:border-zinc-600 dark:hover:bg-brand-600",
         )}
       >
         <Upload className="mb-3 h-8 w-8 text-zinc-400" />
@@ -363,7 +363,7 @@ export function UploadZone({
                 className={cn(
                   "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
                   canUpload
-                    ? "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    ? "bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
                     : "cursor-not-allowed bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500",
                 )}
               >
@@ -473,7 +473,7 @@ function FileCard({
               <select
                 value={item.caseId}
                 onChange={(e) => onUpdate(item.localId, { caseId: e.target.value })}
-                className="h-7 rounded border border-zinc-200 bg-white px-1.5 text-xs text-zinc-700 focus:border-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:focus:border-zinc-600"
+                className="h-7 rounded border border-zinc-200 bg-white px-1.5 text-xs text-zinc-700 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:focus:border-brand-400/70"
               >
                 <option value="">Select case…</option>
                 {cases.map((c) => (
@@ -491,7 +491,7 @@ function FileCard({
                     category: e.target.value as DocCatType,
                   })
                 }
-                className="h-7 rounded border border-zinc-200 bg-white px-1.5 text-xs text-zinc-700 focus:border-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:focus:border-zinc-600"
+                className="h-7 rounded border border-zinc-200 bg-white px-1.5 text-xs text-zinc-700 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:focus:border-brand-400/70"
               >
                 {Object.entries(DocumentCategoryLabel).map(([key, label]) => (
                   <option key={key} value={key}>
@@ -508,7 +508,7 @@ function FileCard({
                 onChange={(e) =>
                   onUpdate(item.localId, { notes: e.target.value })
                 }
-                className="h-7 min-w-[120px] flex-1 rounded border border-zinc-200 bg-white px-2 text-xs text-zinc-700 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600"
+                className="h-7 min-w-[120px] flex-1 rounded border border-zinc-200 bg-white px-2 text-xs text-zinc-700 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70"
               />
             </div>
           )}

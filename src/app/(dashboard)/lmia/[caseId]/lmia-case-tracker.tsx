@@ -260,7 +260,7 @@ export function LmiaCaseTracker({
               className={cn(
                 "inline-flex items-center gap-1.5 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors",
                 activeTab === id
-                  ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                  ? "border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50"
                   : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400"
               )}
             >
@@ -331,7 +331,7 @@ export function LmiaCaseTracker({
               </div>
               <div className="flex justify-end gap-2">
                 <button type="button" onClick={() => setShowAdForm(false)} className="rounded-md px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100">Cancel</button>
-                <button type="submit" disabled={addingAd} className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50">
+                <button type="submit" disabled={addingAd} className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50">
                   {addingAd && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Save
                 </button>
               </div>
@@ -438,7 +438,7 @@ export function LmiaCaseTracker({
               </div>
               <div className="flex justify-end gap-2">
                 <button type="button" onClick={() => setShowAppForm(false)} className="rounded-md px-3 py-1.5 text-sm text-zinc-500 hover:bg-zinc-100">Cancel</button>
-                <button type="submit" disabled={addingApp} className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50">
+                <button type="submit" disabled={addingApp} className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50">
                   {addingApp && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Save
                 </button>
               </div>

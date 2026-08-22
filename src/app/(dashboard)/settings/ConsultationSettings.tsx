@@ -79,7 +79,7 @@ export default function ConsultationSettings() {
               <button onClick={() => upsertRule(i)}
                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-xs font-medium transition-colors ${
                   rule?.is_active
-                    ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+                    ? "border-brand-700 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500 dark:text-white"
                     : "border-zinc-200 text-zinc-400 dark:border-zinc-700"
                 }`}>
                 {rule?.is_active ? "✓" : "+"}

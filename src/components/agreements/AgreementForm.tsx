@@ -214,7 +214,7 @@ export function AgreementForm({
             <button
               type="button"
               onClick={handleDownload}
-              className="inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
             >
               <Download className="h-4 w-4" />
               Download PDF
@@ -349,7 +349,7 @@ export function AgreementForm({
                     className={cn(
                       "cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
                       serviceType === value
-                        ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+                        ? "border-brand-700 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500 dark:text-white"
                         : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800",
                     )}
                   >
@@ -383,7 +383,7 @@ export function AgreementForm({
                     className={cn(
                       "cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
                       feeStructure === value
-                        ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+                        ? "border-brand-700 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500 dark:text-white"
                         : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800",
                     )}
                   >
@@ -446,7 +446,7 @@ export function AgreementForm({
                     className={cn(
                       "cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors",
                       paymentSchedule === value
-                        ? "border-zinc-900 bg-zinc-900 text-white dark:border-zinc-50 dark:bg-zinc-50 dark:text-zinc-900"
+                        ? "border-brand-700 bg-brand-600 text-white dark:border-brand-500 dark:bg-brand-500 dark:text-white"
                         : "border-zinc-200 bg-white text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800",
                     )}
                   >
@@ -559,7 +559,7 @@ export function AgreementForm({
             type="submit"
             disabled={isPending}
             className={cn(
-              "inline-flex items-center gap-2 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200",
+              "inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400",
               "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
               "disabled:cursor-not-allowed disabled:opacity-50",
             )}

@@ -84,7 +84,7 @@ export function ClientCard({ client, latestCase, latestAgreement, docCount = 0, 
       {/* Application type + case status */}
       {latestCase && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-md bg-zinc-900 px-2 py-0.5 text-[10px] font-semibold text-white dark:bg-zinc-50 dark:text-zinc-900">
+          <span className="rounded-md bg-brand-600 px-2 py-0.5 text-[10px] font-semibold text-white dark:bg-brand-500 dark:text-white">
             {shortLabel}
           </span>
           {statusMeta && (

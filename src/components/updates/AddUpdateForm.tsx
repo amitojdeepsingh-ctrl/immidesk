@@ -173,8 +173,8 @@ export function AddUpdateForm({ caseId, clientId, onUpdate }: AddUpdateFormProps
           disabled={submitting}
           className={cn(
             "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors",
-            "bg-zinc-900 text-white hover:bg-zinc-800",
-            "dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200",
+            "bg-brand-600 text-white hover:bg-brand-700",
+            "dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400",
             "disabled:pointer-events-none disabled:opacity-50",
           )}
         >

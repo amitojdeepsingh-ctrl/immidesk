@@ -171,7 +171,7 @@ export default function AuditLogPage() {
           </div>
           <button
             onClick={handleFilter}
-            className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
           >
             <Search className="h-3.5 w-3.5" /> Filter
           </button>

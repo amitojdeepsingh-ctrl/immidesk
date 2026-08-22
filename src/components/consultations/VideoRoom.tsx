@@ -93,7 +93,7 @@ export default function VideoRoom({ token, roomName, identity, onLeave }: VideoR
   }
 
   return (
-    <div className="relative overflow-hidden rounded-lg bg-zinc-900">
+    <div className="relative overflow-hidden rounded-lg bg-brand-600">
       {connecting && (
         <div className="flex items-center justify-center py-24">
           <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />

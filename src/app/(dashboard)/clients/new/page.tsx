@@ -58,7 +58,7 @@ export default function NewClientPage() {
     setTimeout(() => setCopied(null), 2000);
   }
 
-  const inputCls = "h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-400 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
+  const inputCls = "h-10 w-full rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/40 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50";
 
   if (links) {
     return (
@@ -130,7 +130,7 @@ export default function NewClientPage() {
 
         <div className="flex gap-3">
           <Link href={`/clients/${links.clientId}`}
-            className="flex-1 rounded-md bg-zinc-900 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900">
+            className="flex-1 rounded-md bg-brand-600 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white">
             View Profile
           </Link>
           <button onClick={() => { setLinks(null); setForm({ firstName: "", lastName: "", email: "", phone: "", caseType: "EXPRESS_ENTRY", fee: "", currency: "CAD" }); }}
@@ -244,7 +244,7 @@ export default function NewClientPage() {
           className={cn("w-full rounded-md py-2.5 text-sm font-medium disabled:opacity-50",
             isLead
               ? "bg-amber-500 text-white hover:bg-amber-600"
-              : "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200")}>
+              : "bg-brand-600 text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400")}>
           {saving ? "Saving…" : isLead ? "Add Lead" : "Create Client & Generate Links"}
         </button>
       </form>

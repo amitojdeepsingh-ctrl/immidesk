@@ -1,4 +1,4 @@
-﻿// ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
 // ImmigDesk — DocumentList Component
 // ═══════════════════════════════════════════════════════════════════════════
 // Displays a filterable, sortable table of documents for a client or case.
@@ -207,7 +207,7 @@ const hasCaseData =
             placeholder="Search documents…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-full rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+            className="h-9 w-full rounded-md border border-zinc-200 bg-white pl-8 pr-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
           />
         </div>
 
@@ -219,7 +219,7 @@ const hasCaseData =
             onChange={(e) =>
               setCategoryFilter(e.target.value as DocCatType | "ALL")
             }
-            className="h-9 rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-zinc-600 dark:focus:ring-zinc-600"
+            className="h-9 rounded-md border border-zinc-200 bg-white px-2.5 text-sm text-zinc-900 focus:border-brand-400 focus:outline-none focus:ring-1 focus:ring-brand-500/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-brand-400/70 dark:focus:ring-brand-400/30"
           >
             <option value="ALL">All Categories</option>
             {CATEGORY_OPTIONS.filter((c) => c !== "ALL").map((cat) => (
@@ -300,7 +300,7 @@ const hasCaseData =
                 return (
                   <tr
                     key={doc.id}
-                    className="bg-white transition-colors hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900/70"
+                    className="bg-white transition-colors hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-brand-600/70"
                   >
                     {/* Name */}
                     <td className="px-4 py-2.5">

@@ -149,7 +149,7 @@ export default async function ClientApplicationPage({ params }: PageProps) {
             <p className="text-sm text-zinc-500 dark:text-zinc-400">No form submissions yet</p>
             <Link
               href={`/clients/${clientId}/application/prefill`}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white dark:hover:bg-brand-400"
             >
               <Plus className="h-3.5 w-3.5" />
               Pre-fill First Form

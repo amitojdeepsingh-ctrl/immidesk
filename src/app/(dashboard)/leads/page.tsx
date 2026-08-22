@@ -142,7 +142,7 @@ export default function LeadsPage() {
           <button key={t.key} onClick={() => setStatus(t.key)}
             className={cn("px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
               status === t.key
-                ? "border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50"
+                ? "border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50"
                 : "border-transparent text-zinc-500 hover:text-zinc-700 dark:text-zinc-400")}>
             {t.label}
           </button>
@@ -210,7 +210,7 @@ export default function LeadsPage() {
                       target="_blank"
                       rel="noreferrer"
                       onClick={() => updateStatus(lead.id, "contacted")}
-                      className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-zinc-900 py-2 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900"
+                      className="flex flex-1 items-center justify-center gap-1.5 rounded-md bg-brand-600 py-2 text-xs font-semibold text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white"
                     >
                       <MessageSquare className="h-3.5 w-3.5" />
                       {lead.platform === "Reddit" ? "Open Reddit DM" : `Open ${lead.platform} DM`}

@@ -24,7 +24,7 @@ export default async function LmiaLeadsPage() {
         <Link href="/lmia" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 border-transparent text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
           <ClipboardList className="h-4 w-4" /> Cases
         </Link>
-        <Link href="/lmia/leads" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 border-zinc-900 text-zinc-900 dark:border-zinc-50 dark:text-zinc-50">
+        <Link href="/lmia/leads" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 border-brand-700 text-zinc-900 dark:border-brand-500 dark:text-zinc-50">
           <Mail className="h-4 w-4" /> Outreach
         </Link>
       </div>

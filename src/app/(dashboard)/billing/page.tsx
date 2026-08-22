@@ -162,7 +162,7 @@ export default function BillingPage() {
             </div>
           </div>
           <button onClick={handleManage} disabled={managing}
-            className="flex items-center gap-1.5 rounded-md bg-zinc-900 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 disabled:opacity-50">
+            className="flex items-center gap-1.5 rounded-md bg-brand-600 px-4 py-2 text-xs font-semibold text-white hover:bg-brand-700 dark:bg-brand-500 dark:text-white disabled:opacity-50">
             {managing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CreditCard className="h-3.5 w-3.5" />}
             Manage Subscription
           </button>
@@ -185,11 +185,13 @@ export default function BillingPage() {
               <div key={plan.id} className={cn(
                 "relative rounded-lg border p-4 transition-colors",
                 isCurrent
-                  ? "border-zinc-900 bg-zinc-50 dark:border-zinc-50 dark:bg-zinc-800"
-                  : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900",
+                  ? "border-brand-600 bg-brand-50/60 ring-1 ring-inset ring-brand-200 dark:border-brand-500 dark:bg-brand-500/10 dark:ring-brand-500/25"
+                  : plan.highlighted
+                    ? "border-maple-300 bg-white shadow-sm shadow-maple-100/60 dark:border-maple-500/40 dark:bg-zinc-900 dark:shadow-none"
+                    : "border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900",
               )}>
                 {plan.highlighted && (
-                  <span className="absolute -top-2.5 left-3 rounded-full bg-zinc-900 px-2.5 py-0.5 text-[10px] font-semibold text-white dark:bg-zinc-50 dark:text-zinc-900">
+                  <span className="absolute -top-2.5 left-3 rounded-full bg-maple-600 px-2.5 py-0.5 text-[10px] font-semibold text-white">
                     {plan.highlighted}
                   </span>
                 )}
@@ -213,7 +215,7 @@ export default function BillingPage() {
                   <button
                     onClick={() => handleUpgrade(plan.id)}
                     disabled={checkoutPlan !== null}
-                    className="mt-4 w-full rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-800 transition-colors hover:bg-zinc-900 hover:text-white disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-100 dark:hover:bg-zinc-50 dark:hover:text-zinc-900"
+                    className="mt-4 w-full rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-800 transition-colors hover:border-brand-600 hover:bg-brand-600 hover:text-white disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-100 dark:hover:border-brand-400 dark:hover:bg-brand-500 dark:hover:text-white"
                   >
                     {checkoutPlan === plan.id ? (
                       <Loader2 className="mx-auto h-3.5 w-3.5 animate-spin" />
