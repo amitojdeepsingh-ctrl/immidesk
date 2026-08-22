@@ -22,6 +22,10 @@ export const signupSchema = z
     organizationName: z
       .string()
       .min(2, "Organization name must be at least 2 characters"),
+    // Company identity (stored on the Organization so client-facing
+    // documents and emails are branded with the subscriber's details)
+    companyPhone: z.string().optional(),
+    rcicNumber: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

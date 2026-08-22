@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { verifyAgreementToken, generatePortalToken, intakeUrl, uploadUrl } from "@/lib/portal-token";
-import { sendEmail } from "@/lib/email/resend";
+import { sendEmail, orgSender } from "@/lib/email/resend";
 import { generateAgreementPdf } from "@/lib/pdf/generator";
 import { headers } from "next/headers";
 
@@ -154,8 +154,9 @@ export async function POST(req: NextRequest) {
       }).catch(e => console.warn("RCIC notification email failed:", e));
     }
 
-    // Send confirmation copy to client
+    // Send confirmation copy to client (branded as the firm)
     await sendEmail({
+      ...orgSender({ name: org.name, email: client.email }),
       to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
       subject: `Your Service Agreement is Signed — ${org.name}`,
       html: `
@@ -189,6 +190,7 @@ export async function POST(req: NextRequest) {
         const upload = uploadUrl(portalToken, origin);
 
       await sendEmail({
+        ...orgSender({ name: org.name, email: client.email }),
         to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
         subject: `Next Steps — Your Information Sheet & Documents (${org.name})`,
         html: `

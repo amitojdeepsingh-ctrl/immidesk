@@ -23,7 +23,7 @@ export async function signupAction(
     return { success: false, error: parsed.error.issues[0].message };
   }
 
-  const { name, email, password, organizationName } = parsed.data;
+  const { name, email, password, organizationName, companyPhone, rcicNumber } = parsed.data;
 
   // Check if email already exists
   const { data: existingUser } = await getSupabaseAdmin()
@@ -73,6 +73,8 @@ export async function signupAction(
     id: crypto.randomUUID(),
     name: organizationName,
     slug,
+    phone: companyPhone?.trim() || null,
+    ciccRegistrationNumber: rcicNumber?.trim() || null,
     updatedAt: now,
   });
 

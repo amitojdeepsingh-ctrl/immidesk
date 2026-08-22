@@ -35,6 +35,8 @@ export function SignupForm() {
       password: "",
       confirmPassword: "",
       organizationName: "",
+      companyPhone: "",
+      rcicNumber: "",
     },
   });
 
@@ -141,6 +143,66 @@ export function SignupForm() {
         {errors.organizationName && (
           <p className="text-xs text-red-600 dark:text-red-400">
             {errors.organizationName.message}
+          </p>
+        )}
+      </div>
+
+      {/* Company phone */}
+      <div className="space-y-1.5">
+        <label
+          htmlFor="companyPhone"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
+          Company phone <span className="font-normal text-zinc-400">(optional)</span>
+        </label>
+        <input
+          id="companyPhone"
+          type="tel"
+          autoComplete="tel"
+          placeholder="+1 (416) 555-0123"
+          {...register("companyPhone")}
+          className={cn(
+            "w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
+            "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+            errors.companyPhone
+              ? "border-red-300 dark:border-red-700"
+              : "border-zinc-200 dark:border-zinc-700",
+          )}
+        />
+        {errors.companyPhone && (
+          <p className="text-xs text-red-600 dark:text-red-400">
+            {errors.companyPhone.message}
+          </p>
+        )}
+      </div>
+
+      {/* RCIC number */}
+      <div className="space-y-1.5">
+        <label
+          htmlFor="rcicNumber"
+          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+        >
+          RCIC registration number <span className="font-normal text-zinc-400">(optional)</span>
+        </label>
+        <input
+          id="rcicNumber"
+          type="text"
+          placeholder="e.g. R123456"
+          {...register("rcicNumber")}
+          className={cn(
+            "w-full rounded-md border bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500",
+            "focus:outline-none focus:ring-2 focus:ring-zinc-900/20 dark:focus:ring-zinc-50/20",
+            errors.rcicNumber
+              ? "border-red-300 dark:border-red-700"
+              : "border-zinc-200 dark:border-zinc-700",
+          )}
+        />
+        <p className="text-xs text-zinc-400">
+          Shown on agreements and client documents. You can add it later in Settings.
+        </p>
+        {errors.rcicNumber && (
+          <p className="text-xs text-red-600 dark:text-red-400">
+            {errors.rcicNumber.message}
           </p>
         )}
       </div>

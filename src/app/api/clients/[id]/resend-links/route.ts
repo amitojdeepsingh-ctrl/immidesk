@@ -3,7 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { generatePortalToken, generateAgreementToken, portalUrl, agreementUrl, intakeUrl, uploadUrl } from "@/lib/portal-token";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
-import { sendEmail } from "@/lib/email/resend";
+import { sendEmail, orgSender } from "@/lib/email/resend";
 
 export async function POST(
   req: NextRequest,
@@ -69,6 +69,7 @@ export async function POST(
     const serviceLabel = CASE_TYPE_LABELS[c.caseType] ?? c.caseType;
 
     const result = await sendEmail({
+      ...orgSender({ name: organization.name }),
       to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
       subject: `Your ${serviceLabel} Application — Links & Next Steps`,
       html: `

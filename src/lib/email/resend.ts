@@ -66,6 +66,29 @@ function getResendClient(): Resend {
 const DEFAULT_FROM = process.env["RESEND_FROM_EMAIL"] ?? "ADS Immigration Services <onboarding@resend.dev>";
 const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3000";
 
+/** Platform sending address (the verified domain), e.g. "ADS Immigration <noreply@adsimmigration.com>". */
+export function platformFromAddress(): string {
+  return DEFAULT_FROM;
+}
+
+/**
+ * White-label identity for a subscriber's company:
+ *  - From display name = the company's name (sent over the platform's
+ *    verified domain, since arbitrary domains cannot send without DNS setup)
+ *  - Reply-To = the company's own email so client replies land in their inbox
+ */
+export function orgSender(org: { name: string; email?: string | null }): {
+  from: string;
+  replyTo?: string;
+} {
+  const platformAddr = DEFAULT_FROM.match(/<([^>]+)>/)?.[1] ?? DEFAULT_FROM;
+  const safeName = (org.name || "Immigration Services").replace(/"/g, "");
+  return {
+    from: `${safeName} <${platformAddr}>`,
+    replyTo: org.email ?? undefined,
+  };
+}
+
 // ─── sendEmail — Typed Wrapper ─────────────────────────────────────────────
 
 /**

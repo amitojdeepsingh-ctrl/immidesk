@@ -3,7 +3,7 @@ import { requireAuth } from "@/lib/auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { generatePortalToken, generateAgreementToken, portalUrl, agreementUrl, intakeUrl, uploadUrl } from "@/lib/portal-token";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
-import { sendEmail } from "@/lib/email/resend";
+import { sendEmail, orgSender } from "@/lib/email/resend";
 
 export async function POST(req: NextRequest) {
   try {
@@ -101,8 +101,9 @@ export async function POST(req: NextRequest) {
     const serviceLabel = CASE_TYPE_LABELS[caseType] ?? caseType;
     const fmtFee = fee ? new Intl.NumberFormat("en-CA", { style: "currency", currency: currency ?? "CAD" }).format(parseFloat(fee)) : null;
 
-    // Send welcome email to client with both links
+    // Send welcome email to client with both links (branded as the firm)
     await sendEmail({
+      ...orgSender({ name: organization.name, email: prismaUser.email }),
       to: { email, name: `${firstName} ${lastName}` },
       subject: `Your ${serviceLabel} Application — Next Steps`,
       html: `

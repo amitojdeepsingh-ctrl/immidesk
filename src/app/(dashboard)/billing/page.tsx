@@ -63,6 +63,33 @@ export default function BillingPage() {
   const [loading, setLoading] = useState(true);
   const [managing, setManaging] = useState(false);
   const [manageMsg, setManageMsg] = useState<string | null>(null);
+  const [checkoutPlan, setCheckoutPlan] = useState<string | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  async function handleUpgrade(planId: string) {
+    if (planId === "ENTERPRISE") {
+      window.location.href = "mailto:sales@immidesk.vercel.app?subject=Enterprise%20plan";
+      return;
+    }
+    setCheckoutPlan(planId);
+    setCheckoutError(null);
+    try {
+      const res = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planTier: planId }),
+      });
+      const json = await res.json();
+      if (json?.url) {
+        window.location.href = json.url;
+        return;
+      }
+      setCheckoutError(json?.error ?? "Could not start checkout.");
+    } catch {
+      setCheckoutError("Network error starting checkout.");
+    }
+    setCheckoutPlan(null);
+  }
 
   useEffect(() => {
     Promise.all([
@@ -146,6 +173,11 @@ export default function BillingPage() {
       {/* Plan Comparison */}
       <div>
         <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50 mb-3">Compare Plans</h3>
+        {checkoutError && (
+          <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+            {checkoutError}
+          </div>
+        )}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {PLAN_TIERS.map(plan => {
             const isCurrent = plan.id === planName;
@@ -177,6 +209,17 @@ export default function BillingPage() {
                   <li className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-500 shrink-0" /> {plan.reports}</li>
                   {plan.ai && <li className="flex items-center gap-1.5"><Check className="h-3 w-3 text-emerald-500 shrink-0" /> AI features included</li>}
                 </ul>
+                {!isCurrent && (
+                  <button
+                    onClick={() => handleUpgrade(plan.id)}
+                    disabled={checkoutPlan !== null}
+                    className="mt-4 w-full rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-semibold text-zinc-800 transition-colors hover:bg-zinc-900 hover:text-white disabled:opacity-50 dark:border-zinc-600 dark:text-zinc-100 dark:hover:bg-zinc-50 dark:hover:text-zinc-900"
+                  >
+                    {checkoutPlan === plan.id ? (
+                      <Loader2 className="mx-auto h-3.5 w-3.5 animate-spin" />
+                    ) : plan.id === "ENTERPRISE" ? "Contact Sales" : `Upgrade to ${plan.name}`}
+                  </button>
+                )}
               </div>
             );
           })}
