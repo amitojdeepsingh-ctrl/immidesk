@@ -1,6 +1,12 @@
 # ImmigDesk — Session Memory
 
-## Current State (Session Aug 17, 2026)
+## Current State (Session Aug 2026)
+**Visual identity redesign SHIPPED (`82e8b6c`, 68 files)**: "Harbor Navy" brand system in
+globals.css (Tailwind v4 @theme: brand-50 #F0F4FB → brand-950 #131D36; primary CTA = brand-600
+#35599C light / brand-500 dark) + single maple-crimson accent (#C23A30, brand moments only:
+plan ribbon/auth). Canonical pill recipe everywhere (tint fill + ink + inset ring). Status
+progression: prep blues → lodged amber → in-process navy → emerald/red outcomes. All zinc CTAs
+converted; layout/routing/APIs untouched; tsc+build verified.
 **Portal pipeline fully fixed & live (uploads, emails, downloads). Finalization pass done:**
 - **Case detail page `/cases/[id]`** NEW (`9a874a5`): status/priority selects (PATCH API extended
   to accept priority), key dates, IRCC/UCI, documents w/ presigned downloads + delete, task panel
