@@ -125,6 +125,9 @@ export default function ConsultationsPage() {
 
   const renderBookingTab = () => (
     <div className="space-y-6">
+      {/* Built-in booking page — recommended, zero external setup */}
+      <NativeBookingCard />
+
       {/* Share link card */}
       {calUrl ? (
         <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
@@ -387,6 +390,67 @@ export default function ConsultationsPage() {
       {activeTab === "book" && renderBookingTab()}
       {activeTab === "upcoming" && renderConsultationList(false)}
       {activeTab === "past" && renderConsultationList(true)}
+    </div>
+  );
+}
+
+function NativeBookingCard() {
+  const [slug, setSlug] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/organization")
+      .then(r => r.json())
+      .then(j => { if (j?.data?.slug) setSlug(j.data.slug); })
+      .catch(() => {});
+  }, []);
+
+  const link = slug && typeof window !== "undefined" ? `${window.location.origin}/book/${slug}` : null;
+
+  return (
+    <div className="rounded-lg border border-brand-200 bg-brand-50/50 p-5 dark:border-brand-800/60 dark:bg-brand-500/5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-100 dark:bg-brand-900/40">
+            <Link2 className="h-5 w-5 text-brand-600 dark:text-brand-400" />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+              Built-in Booking Page <span className="ml-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Recommended</span>
+            </h3>
+            <p className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">
+              Clients pick a consultant, date, and time from your availability — booked slots create a
+              consultation with an online meeting room, and the client gets a confirmation email with a calendar invite.
+            </p>
+            {link && (
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <code className="rounded-md bg-white px-3 py-1.5 text-xs text-zinc-700 ring-1 ring-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-700">
+                  {link}
+                </code>
+                <button
+                  onClick={async () => {
+                    try { await navigator.clipboard.writeText(link); } catch {}
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="flex items-center gap-1 rounded-md bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+                >
+                  {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                  {copied ? "Copied" : "Copy Link"}
+                </button>
+                <a
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                >
+                  <ExternalLink className="h-3 w-3" /> Preview
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
