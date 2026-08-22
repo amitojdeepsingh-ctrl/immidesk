@@ -13,6 +13,15 @@
 - **Audit-log dead links fixed**: task→/tasks, invoice→/invoices, consultation→/consultations (lists).
 - **Prospects section REMOVED** (`143fef5`): page, /api/prospects/pipeline, sidebar entry,
   reports "Prospects CSV" button+enum case, notification-prefs category all deleted (live 404).
+- **Knowledge Assistant tab ADDED** (`bf9cc15`): new `/knowledge` page (full-height grounded Q&A chat,
+  6 topic cards w/ 25 starter questions, sources shown per answer), sidebar entry under AI Features.
+  Knowledge base `src/lib/knowledge-base/entries.ts` expanded +30 grounded Canadian immigration
+  entries (IRPA/IRPR structure, inadmissibility ss.33-42, misrep s.40, residency obligation s.28,
+  PR card/PRTD, citizenship test + presence credit, refugee protection/claims/RAD, H&C s.25, PRRA,
+  removal orders/ARC, rehabilitation/TRP, NOC TEER 2021, EE category draws, FSW grid, IEC, GTS,
+  SUV, Self-Employed, AIP, Quebec CSQ/PEQ, dependant lock-in age, BOWP, visitor records, eTA,
+  study PAL/funds $22,895 (Sept 2025), PGWP field/language rules, off-campus 24h). Medical
+  excessive-demand figure aligned (~$28.2k/yr 2025). AI page: red test banner removed; links to /knowledge.
 - Earlier this session: document downloads FIXED (`02c5a9d` — getPresignedDownloadUrl now uses
   service-role admin client; storage buckets have NO RLS policies so anon-client signing failed
   with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
@@ -141,12 +150,14 @@ Infra: 4 storage buckets created; probe rows cleaned; migrate route wires all 5 
 | `src/components/documents/DocumentList.tsx` | Applicant column |
 | `src/app/(dashboard)/clients/[id]/client-detail-view.tsx` | Family & Intake section |
 | `src/app/api/client-portal/message/route.ts` | Client messaging + RCIC email notify |
+| `src/lib/knowledge-base/entries.ts` | Knowledge base — ~54 grounded entries (IRPA/IRPR, programs, fees, timelines); keyword-searched by search.ts |
+| `src/app/(dashboard)/knowledge/page.tsx` | Knowledge Assistant tab — full-page chat + topic browser |
 | `src/lib/portal-token.ts` | Token verify utility |
 | `IMMIDESK-PROJECT-DESCRIPTION.md` | Project overview for other AI agents |
 
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
-- Recent: `143fef5` (prospects removed), `9a874a5` (case detail + id-defaults migration + audit links), `02c5a9d` (download fix),
+- Recent: `bf9cc15` (knowledge tab + KB expansion), `143fef5` (prospects removed), `9a874a5` (case detail + id-defaults migration + audit links), `02c5a9d` (download fix),
   `f36c12f`/`ed1124c` (email link), `ffee5cf` (sanitizer), `13c8c57`, `1c127e9`, `6363ceb`, `9aee6ed`.
   All pushed → auto-deploy to Vercel.
