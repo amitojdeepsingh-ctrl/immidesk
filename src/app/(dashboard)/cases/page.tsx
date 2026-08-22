@@ -5,6 +5,7 @@ import { Briefcase, Search, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
 import { MarkSubmittedButton } from "./case-actions";
+import { CASE_STATUS_STYLES, PRIORITY_STYLES } from "./case-styles";
 
 interface PageProps {
   searchParams: Promise<{
@@ -13,28 +14,6 @@ interface PageProps {
     search?: string;
   }>;
 }
-
-const CASE_STATUS_STYLES: Record<string, string> = {
-  INTAKE: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
-  DOCUMENT_COLLECTION: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-400",
-  FORM_FILLING: "bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400",
-  READY_TO_SUBMIT: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400",
-  SUBMITTED: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-400",
-  AOR_RECEIVED: "bg-yellow-50 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-400",
-  IN_PROCESS: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-400",
-  ADDITIONAL_DOCS_REQUESTED: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400",
-  DECISION_MADE: "bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-400",
-  APPROVED: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400",
-  REFUSED: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400",
-  CLOSED: "bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500",
-};
-
-const PRIORITY_STYLES: Record<string, string> = {
-  LOW: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
-  NORMAL: "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400",
-  HIGH: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400",
-  URGENT: "bg-red-50 text-red-600 dark:bg-red-950 dark:text-red-400",
-};
 
 const STATUS_FILTERS = [
   { key: "", label: "All" },
@@ -146,7 +125,9 @@ export default async function CasesPage({ searchParams }: PageProps) {
                 const typeLabel = CASE_TYPE_LABELS[c.caseType]?.replace(/\(.*\)/, "").trim() ?? c.caseType;
                 return (
                   <tr key={c.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
-                    <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-50 max-w-[200px] truncate">{c.title}</td>
+                    <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-50 max-w-[200px] truncate">
+                      <Link href={`/cases/${c.id}`} className="hover:underline">{c.title}</Link>
+                    </td>
                     <td className="px-4 py-3">
                       <Link href={`/clients/${c.clientId}`} className="font-medium text-zinc-800 hover:text-zinc-600 dark:text-zinc-200 dark:hover:text-zinc-400">
                         {client?.firstName} {client?.lastName}
@@ -169,7 +150,7 @@ export default async function CasesPage({ searchParams }: PageProps) {
                     <td className="px-4 py-3 text-zinc-500 text-xs">{fmtDate(typeof c.createdAt === "string" ? c.createdAt : new Date(c.createdAt as Date).toISOString())}</td>
                     <td className="px-4 py-3">
                       {c.status === "SUBMITTED" || c.status === "APPROVED" || c.status === "REFUSED" || c.status === "CLOSED" ? (
-                        <Link href={`/clients/${c.clientId}`}
+                        <Link href={`/cases/${c.id}`}
                           className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300">
                           View <ArrowRight className="h-3 w-3" />
                         </Link>

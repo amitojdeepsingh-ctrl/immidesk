@@ -5,7 +5,8 @@ import { successResponse, handleApiError, AppError } from "@/lib/api/errors";
 import { z } from "zod";
 
 const updateSchema = z.object({
-  status: z.string().min(1),
+  status: z.string().min(1).optional(),
+  priority: z.string().min(1).optional(),
 });
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -15,10 +16,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const supabase = getSupabaseAdmin();
 
     const body = await req.json();
-    const { status } = updateSchema.parse(body);
+    const { status, priority } = updateSchema.parse(body);
 
-    const update: Record<string, unknown> = { status, updatedAt: new Date().toISOString() };
+    if (!status && !priority) {
+      throw new AppError("VALIDATION_ERROR", "status or priority is required", 422);
+    }
 
+    const update: Record<string, unknown> = { updatedAt: new Date().toISOString() };
+
+    if (status) update.status = status;
+    if (priority) update.priority = priority;
     if (status === "SUBMITTED") {
       update.submissionDate = new Date().toISOString();
     }

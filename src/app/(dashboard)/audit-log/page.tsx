@@ -91,11 +91,12 @@ export default function AuditLogPage() {
   function getEntityLink(log: ActivityLog): { href: string; label: string } | null {
     const id = log.entityId;
     const type = log.entityType.toLowerCase();
+    // Only link to routes that exist: /cases/[id] and /clients/[id] are detail
+    // pages; tasks/invoices/consultations only have list surfaces.
     if (type === "case") return { href: `/cases/${id}`, label: id.slice(0, 8) + "…" };
     if (type === "client") return { href: `/clients/${id}`, label: id.slice(0, 8) + "…" };
-    if (type === "task") return { href: `/tasks/${id}`, label: id.slice(0, 8) + "…" };
-    if (type === "consultation") return { href: `/consultations/${id}`, label: id.slice(0, 8) + "…" };
-    if (type === "invoice") return { href: `/invoices/${id}`, label: id.slice(0, 8) + "…" };
+    if (type === "task" || type === "invoice") return { href: type === "task" ? "/tasks" : "/invoices", label: id.slice(0, 8) + "…" };
+    if (type === "consultation") return { href: `/consultations`, label: id.slice(0, 8) + "…" };
     return null;
   }
 
