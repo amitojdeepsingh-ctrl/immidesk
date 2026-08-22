@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     // Send welcome email to client with both links (branded as the firm)
     await sendEmail({
-      ...orgSender({ name: organization.name, email: prismaUser.email }),
+      ...orgSender({ name: organization.name, email: (organization as unknown as { email?: string | null }).email ?? prismaUser.email }),
       to: { email, name: `${firstName} ${lastName}` },
       subject: `Your ${serviceLabel} Application — Next Steps`,
       html: `

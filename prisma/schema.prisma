@@ -153,6 +153,7 @@ model Organization {
   id                     String   @id @default(cuid())
   name                   String
   slug                   String   @unique
+  email                  String?
   ciccRegistrationNumber String?  @unique
   addressLine1           String?
   addressLine2           String?

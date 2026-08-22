@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     // Fetch full agreement + client + org details (including terms for PDF)
     const { data: agreement } = await db
       .from("ServiceAgreement")
-      .select("id, status, title, description, feeAmount, feeCurrency, feeStructure, paymentSchedule, serviceType, startDate, endDate, terms, client:Client!inner(firstName, lastName, email, phone, nationality, addressLine1, city, province, postalCode, country), organization:Organization!inner(name, phone, ciccRegistrationNumber, addressLine1, city, province, postalCode)")
+      .select("id, status, title, description, feeAmount, feeCurrency, feeStructure, paymentSchedule, serviceType, startDate, endDate, terms, client:Client!inner(firstName, lastName, email, phone, nationality, addressLine1, city, province, postalCode, country), organization:Organization!inner(name, email, phone, ciccRegistrationNumber, addressLine1, city, province, postalCode)")
       .eq("id", agreementId)
       .eq("organizationId", payload.organizationId)
       .single();
@@ -156,7 +156,7 @@ export async function POST(req: NextRequest) {
 
     // Send confirmation copy to client (branded as the firm)
     await sendEmail({
-      ...orgSender({ name: org.name, email: client.email }),
+      ...orgSender({ name: org.name, email: org.email ?? client.email }),
       to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
       subject: `Your Service Agreement is Signed — ${org.name}`,
       html: `
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
         const upload = uploadUrl(portalToken, origin);
 
       await sendEmail({
-        ...orgSender({ name: org.name, email: client.email }),
+        ...orgSender({ name: org.name, email: org.email ?? client.email }),
         to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
         subject: `Next Steps — Your Information Sheet & Documents (${org.name})`,
         html: `

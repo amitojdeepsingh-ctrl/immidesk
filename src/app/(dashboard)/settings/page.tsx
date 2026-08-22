@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/auth";
 import ConsultationSettings from "./ConsultationSettings";
 import NotificationPreferences from "./NotificationPreferences";
+import { CompanyProfileForm } from "./CompanyProfileForm";
 
 export default async function SettingsPage() {
   const { prismaUser, organization } = await requireAuth();
@@ -19,34 +20,28 @@ export default async function SettingsPage() {
       <section className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
           <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-            Organization
+            Company Profile
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            {organization.name}
+            Shown on agreements, documents, and client emails
           </p>
         </div>
-        <div className="space-y-4 px-6 py-5">
-          <Field label="Organization Name" value={organization.name} />
-          <Field label="Slug" value={organization.slug} />
-          <Field
-            label="CICC Registration Number"
-            value={organization.ciccRegistrationNumber ?? "—"}
-          />
-          <Field label="Address Line 1" value={organization.addressLine1 ?? "—"} />
-          <Field label="Address Line 2" value={organization.addressLine2 ?? "—"} />
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field label="City" value={organization.city ?? "—"} />
-            <Field label="Province" value={organization.province ?? "—"} />
-            <Field label="Postal Code" value={organization.postalCode ?? "—"} />
-          </div>
-          <Field label="Country" value={organization.country} />
-          <Field label="Phone" value={organization.phone ?? "—"} />
-          <Field
-            label="Logo URL"
-            value={organization.logoUrl ?? "—"}
-            mono
-          />
-        </div>
+        <CompanyProfileForm
+          profile={{
+            name: organization.name,
+            email: (organization as unknown as { email?: string | null }).email ?? null,
+            phone: organization.phone,
+            ciccRegistrationNumber: organization.ciccRegistrationNumber,
+            addressLine1: organization.addressLine1,
+            addressLine2: organization.addressLine2,
+            city: organization.city,
+            province: organization.province,
+            postalCode: organization.postalCode,
+            country: organization.country,
+            logoUrl: organization.logoUrl,
+          }}
+          canEdit={["OWNER", "ADMIN"].includes(prismaUser.role)}
+        />
       </section>
 
       <section className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
