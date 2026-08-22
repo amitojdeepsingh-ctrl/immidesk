@@ -44,6 +44,19 @@ groups), NEW job offer (+50 TEER0123 / +200 group00), caps 50/50/100. Public `/c
 (no auth) has full inputs + lead capture via /api/intake/submit; dashboard /crs has same inputs +
 "Send to Client" copy-link card. 27 tests incl. new-rule coverage.
 
+**Six-feature batch (`26cee28`)**: ① deadline notifications — lazy dedupe scanner in GET
+/api/notifications (14d horizon, OVERDUE/DUE TODAY/in-Nd titles, links to /cases/id); bell existed.
+② IMM auto-fill — /forms/[code] merges Client row + PIS submission → prefillForm rule mapper
+(FIELD_MAP extended w/ PIS keys); saved answers win; AI fallback via Ollama still available.
+③ /calendar — month grid (case deadlines ◆ brand, open tasks □ amber), ?month=YYYY-MM nav,
+upcoming-60d list; Sidebar "Calendar". ④ RLS enabled+FORCED on all 32 public tables (deny-all;
+app is service-role-only — verified no anon DB reads); prisma/migration-rls-enable.sql.
+⑤ e2e/smoke.spec.ts + playwright.config.ts (`npm run test:e2e`), 6 tests/30 runs stable;
+known testability nits: login has two "Sign in" buttons, crs-calculator labels lack htmlFor,
+score <p> lacks aria-label. ⑥ Firm sending domains — POST/GET /api/organization/email-domain
+(Resend domains.create/get), Settings EmailDomainCard w/ DNS records + status; orgSender sends
+FROM noreply@firm.com once settings.sendingDomain.status==="verified".
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
