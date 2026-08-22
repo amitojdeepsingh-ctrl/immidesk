@@ -1,65 +1,29 @@
 # ImmigDesk — Session Memory
 
 ## Current State (Session Aug 17, 2026)
-**All currently-known client-portal upload + multi-applicant intake bugs FIXED and VERIFIED LIVE on `https://immidesk.vercel.app`.**
-**Migrate route now wires ALL 5 migrations (`v2`, `intake`, `consultations`, `payment`, `applicant-label`) with a robust dollar-quote/comment-aware SQL splitter.**
-Fixed this session (5 source fixes + 3 infra fixes), all deployed & e2e-probed:
+**Portal pipeline fully fixed & live (uploads, emails, downloads). Finalization pass done:**
+- **Case detail page `/cases/[id]`** NEW (`9a874a5`): status/priority selects (PATCH API extended
+  to accept priority), key dates, IRCC/UCI, documents w/ presigned downloads + delete, task panel
+  (add/complete/delete via /api/tasks), recent activity (userMap pattern, entityId filter).
+  Cases list titles/View now deep-link to it; audit-log "case" links work.
+- **DB defaults migration `prisma/migration-id-defaults.sql` APPLIED LIVE**: gen_random_uuid()
+  default on 22 TEXT PKs that had none (Task, CRSScore, Payment, ActivityLog, Client, Case…).
+  Fixes POST /api/tasks (was 500 null id), CRSScore create, Payment create, silent ActivityLog
+  failures. Verified live in information_schema (22/22). PostgREST inserts may now omit id.
+- **Audit-log dead links fixed**: task→/tasks, invoice→/invoices, consultation→/consultations (lists).
+- Earlier this session: document downloads FIXED (`02c5a9d` — getPresignedDownloadUrl now uses
+  service-role admin client; storage buckets have NO RLS policies so anon-client signing failed
+  with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
+  ("ADS Immigration <noreply@adsimmigration.com>", domain verified) in .env* AND Vercel prod.
 
-1. **Upload 422 `VALIDATION_ERROR`** (notes/applicantLabel "expected string, received null") — old/browserless
-   uploads send no `notes`/`applicantLabel`; schema required them. FIX: `.nullish().default("")` +
-   `transform((v)=>(v??"").trim().toUpperCase())` on both fields in `upload/route.ts` schema. `9aee6ed`.
-2. **Upload 400 `INVALID_PATH`** — `validateStoragePath` used `UNSAFE_FILENAME_CHARS` (contains `/`, and a
-   stateful `/g` flag) against the FULL path which always contains `/` → false-invalid every time. FIX:
-   new `UNSAFE_PATH_CHARS = /[^A-Za-z0-9._/-]/` allow-list in `src/lib/document-naming.ts`; traversal/ctrl/spaces still rejected. `9aee6ed`.
-3. **Upload 500 `INSERT_FAILED` null `Document.id`** — Document table has NO DB default for `id`
-   (PostgREST doesn't run Prisma `cuid()`); route inserted without `id`. FIX: `id: randomUUID()` +
-   import in `upload/route.ts`. `6363ceb`.
-4. **Intake 500 on 2nd applicant (SPOUSE/CHILD#n)** — stale bare UNIQUE INDEX
-   `IMMFormSubmission_caseId_templateId_key` (2-col) blocked multi-applicant inserts with
-   `23505 duplicate key ... "IMMFormSubmission_caseId_templateId_key"`. The migration `DROP CONSTRAINT`
-   missed it because it's a bare index, NOT in `pg_constraint` (Prisma drift). FIX: `DROP INDEX IF EXISTS`
-   both in DB and in `prisma/migration-applicant-label.sql`. Verified via PostgREST spouse+child inserts. `6363ceb`.
-5. **Upload "Path contains unsafe characters"** (user report) — `sanitizeFileName` only stripped
-   `UNSAFE_FILENAME_CHARS` + separators, so real names like `Bank Statement (1).pdf`, `résumé.pdf`,
-   `photo, 2024.png` kept `( ) , é` etc. which the path validator's allow-list `[A-Za-z0-9._/-]`
-   rejects. FIX: added `.replace(/[^a-zA-Z0-9._-]+/g, "-")` to base name (before `-+` collapse) AND
-   extension now stripped to `[a-zA-Z0-9.]` before return. Regression test
-   `src/lib/crs/__tests__/document-naming.test.ts` (3 tests). `ffee5cf`. LIVE-VERIFIED: all 4 names
-   201 via probe (token minted with `.env` secret), probe docs/objects cleaned.
-6. **Upload-notification email "View Case" link 405/150** (user report) — email linked to
-   `/cases/{caseId}` (NO such page; case detail lives at `/clients/[id]`) on a STALE base URL
-   `https://mqh56s7s-47hx.vercel.app` baked from `.env.production`/`.env.vercel` NEXT_PUBLIC_APP_URL.
-   FIX: link now `/clients/{clientId}`, base URL prefers `req.url` origin first, falls back to env,
-   then `https://immidesk.vercel.app`. `ed1124c`, deployed (clients/{id} → 307 to login = real page).
-
-Infra fixes (Supabase, not code):
-- Created 4 missing storage buckets: `client-documents`, `generated-forms`, `organization-logos`,
-  `compliance-exports` (project only had `immigdesk-documents`/`immigdesk-data` → upload failed `Bucket not found`).
-- Cleaned leaked probe rows: `IMMFormSubmission` d722d66e + probe Case c769be5c + probe docs + storage objects.
-
-Live E2E verification (probe-e2e.cjs, deleted after): intake 200 (PRIMARY+CHILD rows), modern upload 201,
-old-browser upload 201, cleanup OK.
-
-## Recent Session (Aug 17) — What was done
-- **Fixed "View Case" email link 405** — upload notification email pointed to `/cases/{id}` (no page)
-  on stale `mqh56s7s-47hx.vercel.app` base. Now `/clients/{clientId}` w/ request-origin base. `ed1124c`.
-- **Fixed "Path contains unsafe characters"** — user-reported upload failure. Root cause: `sanitizeFileName`
-  left `( ) , é` etc. in names (e.g. `Bank Statement (1).pdf`, `résumé.pdf`) which the path allow-list
-  `[A-Za-z0-9._/-]` rejects. Fix: emit only `[a-zA-Z0-9._-]` for base + `[a-zA-Z0-9.]` for extension;
-  verified via tsx end-to-end (all 3 bad names → valid paths) + 3 new regression tests. Commit `ffee5cf`,
-  deployed (home 200).
-- **Root-caused upload 422/INVALID_PATH** by live-probing the deployed endpoint with old-browser
-  FormData (confirm: 422 on notes/applicantLabel; then 400 INVALID_PATH after schema toleration).
-- **Found bare-index drift**: pooler showed `(caseId,templateId,applicantLabel)` unique but PostgREST
-  still 409'd on `(caseId,templateId)` — the 2-col UNIQUE INDEX survived (pg_constraint vs pg_indexes).
-- **Verified secret/env matching**: `.env` + `.env.production` secrets MATCH live deploy; `.env.vercel`/
-  `.env.example` do NOT (225-char service key ≠ 219-char). Live token uploads only work with the `.env`
-  secret. `NEXT_PUBLIC_APP_URL` in `.env` is `http://localhost:3000` — override to
-  `https://immidesk.vercel.app` when probing live via fetch.
-- **db check**: tables `id` columns are all TEXT with NO default — any `.insert({...})` via PostgREST
-  MUST supply `id` explicitly (intake does; upload route previously didn't).
-- Cleanup: all probe-*.cjs / scan-*.cjs / scratch removed. Working tree clean.
-- Applied `additive-v3-migration.sql` earlier (docs below) via pooler; `prisma migrate diff` still times out — use raw SQL.
+## Prior Session Fixes (Aug 17) — all deployed & verified
+1. Upload 422 VALIDATION_ERROR (nullish notes/applicantLabel) `9aee6ed`
+2. Upload 400 INVALID_PATH (UNSAFE_PATH_CHARS allow-list) `9aee6ed`
+3. Upload 500 INSERT_FAILED null id → randomUUID() `6363ceb`
+4. Intake 23505 multi-applicant (stale 2-col unique INDEX dropped) `6363ceb`
+5. "Path contains unsafe characters" sanitizer emits [a-zA-Z0-9._-] `ffee5cf`
+6. Email "View Case" 405 → /clients/{clientId} + request-origin base `ed1124c`
+Infra: 4 storage buckets created; probe rows cleaned; migrate route wires all 5 migrations `1c127e9`.
 
 ## Vision
 - `/intake/[token]` — Personal Information Sheet w/ 4-step wizard + per-applicant branching
@@ -133,27 +97,21 @@ old-browser upload 201, cleanup OK.
 10. **Security: RLS** — none enabled on Supabase tables yet
 11. **No test suite** — zero unit, integration, or E2E tests in repo
 
-## Blocked
-- Vercel Deployment Protection blocks anonymous access — user must disable in Vercel Dashboard
-  (Note: `.env`-keyed HMAC tokens still pass live — invalid tokens now 401, valid tokens 200).
-- Direct DB host `db.hcilbqzipmpxqektvzgk.supabase.co` DNS fails intermittently (`getaddrinfo ENOTFOUND`) — **use transaction pooler `aws-1-ca-central-1.pooler.supabase.com:6543`** (user `postgres.hcilbqzipmpxqektvzgk`) for all DB work, incl. DDL
-- `prisma migrate diff` / introspection over pooler times out — verify schema via raw SQL instead
-- Old `IMMIDESK` folder not yet renamed to `REVIEW-APP`
-- `immigdesk-documents` / `immigdesk-data` buckets are legacy/unused by code (code uses the 4 `client-documents` etc.) — leave as-is
+## Missing / Gap Areas (updated Aug 17 finalize pass)
+1. ~~Cases overview~~ DONE — list + `/cases/[id]` detail page
+2. ~~Tasks UI~~ DONE — /tasks page + /api/tasks (create fixed by id-defaults migration)
+3. ~~CRS Calculator~~ DONE — /crs + /api/crs/calculate
+4. Reports exports — ALREADY IMPLEMENTED (/api/reports/export CSV, 6 types) — verify in browser
+5. **Storage/DB RLS** — none enabled; app is service-role-everywhere behind requireAuth, so risk
+   is low but defense-in-depth absent. Deliberately NOT bolted on during finalize (breakage risk).
+6. In-app notifications UI, calendar, bulk ops, team invites — still open backlog.
 
 ## Next Steps (Priority Order)
-1. **DONE**: Portal upload (both browser + legacy) + multi-applicant intake verified live (200/201).
-2. **DONE**: Migrate route wires `v2`/`intake`/`consultations`/`payment`/`applicant-label`; SQL splitter
-   now dollar-quote + single-quote + line-comment aware (old naive `split(";")` would corrupt `DO $$` blocks).
-   Live DB verified: all tables + `UserRole` enum values already present → route now reports all applied.
-3. **DONE**: "Path contains unsafe characters" fix (`ffee5cf`) — sanitizer emits path-safe names;
-   regression tests added + deployed.
-4. Re-test the actual browser flow end-to-end if the user wants: upload `IMM5739_1-16GBO03B.pdf` with
-   category "Immigration Form" + a paren/space/accents filename (e.g. `Bank Statement (1).pdf`) on
-   `/portal/[token]` → both should now succeed.
-5. Consider renaming `prisma/migrations` (empty) vs raw SQL convention; `prisma db push` still
-   requires `--accept-data-loss` → always additive.
-6. Then backlog: Cases overview → Tasks UI → CRS Calculator → RLS
+1. Browser smoke-test the new /cases/[id] page + Tasks create (was broken before DB default fix).
+2. Verify reports export buttons download real CSVs (endpoint exists; untested end-to-end).
+3. Backlog: notifications bell → calendar → bulk ops → team invites → RLS hardening.
+4. Optional: `vercel env` NEXT_PUBLIC_APP_URL already corrected locally; Vercel dashboard value
+   no longer matters for email links (request-origin preferred).
 
 ## Connection Quick Reference
 - Pooler (USE THIS): `postgres` @ `aws-1-ca-central-1.pooler.supabase.com:6543`, user `postgres.hcilbqzipmpxqektvzgk`, pw `ImmiDeskMjAyNiE=Rc3t`
@@ -187,6 +145,6 @@ old-browser upload 201, cleanup OK.
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
-- Recent: `ed1124c` (email link → client detail, request-origin base), `ffee5cf` (path-safe sanitizer + test),
-  `13c8c57` (memory), `1c127e9` (migrate wiring), `6363ceb` (upload id fix), `9aee6ed` (422/INVALID_PATH).
+- Recent: `9a874a5` (case detail + id-defaults migration + audit links), `02c5a9d` (download fix),
+  `f36c12f`/`ed1124c` (email link), `ffee5cf` (sanitizer), `13c8c57`, `1c127e9`, `6363ceb`, `9aee6ed`.
   All pushed → auto-deploy to Vercel.
