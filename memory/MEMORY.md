@@ -11,6 +11,8 @@
   Fixes POST /api/tasks (was 500 null id), CRSScore create, Payment create, silent ActivityLog
   failures. Verified live in information_schema (22/22). PostgREST inserts may now omit id.
 - **Audit-log dead links fixed**: task→/tasks, invoice→/invoices, consultation→/consultations (lists).
+- **Prospects section REMOVED** (`143fef5`): page, /api/prospects/pipeline, sidebar entry,
+  reports "Prospects CSV" button+enum case, notification-prefs category all deleted (live 404).
 - Earlier this session: document downloads FIXED (`02c5a9d` — getPresignedDownloadUrl now uses
   service-role admin client; storage buckets have NO RLS policies so anon-client signing failed
   with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
@@ -145,6 +147,6 @@ Infra: 4 storage buckets created; probe rows cleaned; migrate route wires all 5 
 ## Git
 - Remote: `github.com/amitojdeepsingh-ctrl/immidesk` (private)
 - Branch: main
-- Recent: `9a874a5` (case detail + id-defaults migration + audit links), `02c5a9d` (download fix),
+- Recent: `143fef5` (prospects removed), `9a874a5` (case detail + id-defaults migration + audit links), `02c5a9d` (download fix),
   `f36c12f`/`ed1124c` (email link), `ffee5cf` (sanitizer), `13c8c57`, `1c127e9`, `6363ceb`, `9aee6ed`.
   All pushed → auto-deploy to Vercel.
