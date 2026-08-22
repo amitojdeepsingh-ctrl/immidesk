@@ -208,11 +208,6 @@ export default function AiFeaturesPage() {
 
   return (
     <div className="space-y-8">
-      {/* VISIBLE TEST MARKER */}
-      <div className="rounded-lg bg-red-500 px-4 py-2 text-center text-sm font-bold text-white">
-        🔴 TEST: This is the NEW redesigned AI page (v2.1) — if you see this, the deploy worked!
-      </div>
-
       {/* Hero header */}
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 px-6 py-8 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full border-[12px] border-white/5" />
@@ -431,6 +426,12 @@ export default function AiFeaturesPage() {
                 Disabled
               </span>
             )}
+            <Link
+              href="/knowledge"
+              className="flex items-center gap-1.5 rounded-md border border-cyan-200 px-3 py-1.5 text-xs font-medium text-cyan-700 transition-colors hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-400 dark:hover:bg-cyan-900/20"
+            >
+              Open full page <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
         </div>
 
