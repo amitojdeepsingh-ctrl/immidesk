@@ -65,6 +65,16 @@ Now: booking → branded confirmation email w/ .ics calendar invite (src/lib/ics
 snake_case columns (schema drift vs other camelCase tables). Booking tab now leads with copy-link
 card for /book/{slug} (fetched from GET /api/organization); cal.com demoted to alternative.
 
+**CRITICAL DB fix — missing role grants (`ed95be3`)**: 13 tables (AvailabilityRule, Notification,
+Task, Payment, Consultation, Lead, PortalMessage, AiFeatureConfig, CaseTypeConfig,
+ImmigrationNews, RolePermission, NotificationPreference, portal_submissions) had NO
+service_role/anon/authenticated DML grants — any API touching them 500'd/returned empty
+(permission denied 42501). Surfaced when booking slots came back empty. Fixed live:
+GRANT select/insert/update/delete to all three roles on every public table;
+`prisma/migration-grants-align.sql` saved. Availability seeded for amitoj-singhs-workspace
+(org 23ca7eec…, user a62f6de9…): Mon–Fri 09:00–17:00 @30min — live slots verified (16 on Aug 25).
+Booking link: /book/amitoj-singhs-workspace.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
