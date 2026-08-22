@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,12 +19,14 @@ type UpdateFormValues = z.infer<typeof updateSchema>;
 interface AddUpdateFormProps {
   caseId: string;
   clientId: string;
-  onUpdate: () => void;
+  /** Optional extra callback after a successful save. */
+  onUpdate?: () => void;
 }
 
 export function AddUpdateForm({ caseId, clientId, onUpdate }: AddUpdateFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -54,7 +57,8 @@ export function AddUpdateForm({ caseId, clientId, onUpdate }: AddUpdateFormProps
       reset();
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-      onUpdate();
+      router.refresh();
+      onUpdate?.();
     } catch {
       // Error handled silently — form remains for retry
     } finally {

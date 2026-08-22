@@ -90,7 +90,7 @@ export default async function ClientUpdatesPage({ params }: PageProps) {
             <h2 className="mb-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
               Add Update
             </h2>
-            <AddUpdateForm caseId={activeCase.id as string} clientId={clientId} onUpdate={() => {}} />
+            <AddUpdateForm caseId={activeCase.id as string} clientId={clientId} />
           </section>
         </>
       )}
