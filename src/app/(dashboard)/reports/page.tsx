@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import {
   BarChart3, Download, FileText, Users, Briefcase, Calendar,
-  DollarSign, TrendingUp, Activity, UserCheck,
+  DollarSign, TrendingUp, UserCheck,
 } from "lucide-react";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -69,7 +69,6 @@ const EXPORT_TYPES = [
   { key: "clients", label: "Clients CSV", icon: Users },
   { key: "invoices", label: "Invoices CSV", icon: DollarSign },
   { key: "tasks", label: "Tasks CSV", icon: Calendar },
-  { key: "prospects", label: "Prospects CSV", icon: Activity },
   { key: "audit", label: "Audit Log CSV", icon: FileText },
 ] as const;
 

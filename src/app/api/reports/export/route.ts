@@ -4,7 +4,7 @@ import { requireAuth } from "@/lib/auth";
 import { errorResponse, handleApiError, AppError } from "@/lib/api/errors";
 import { z } from "zod";
 
-const exportTypeSchema = z.enum(["cases", "clients", "invoices", "tasks", "prospects", "audit"]);
+const exportTypeSchema = z.enum(["cases", "clients", "invoices", "tasks", "audit"]);
 
 function toCsvRow(values: unknown[]): string {
   return values
@@ -94,20 +94,6 @@ export async function GET(req: NextRequest) {
           ].join("\n");
         }
         filename = "tasks.csv";
-        break;
-      }
-      case "prospects": {
-        const { data } = await supabase
-          .from("IntakeSubmission")
-          .select("id, firstName, lastName, email, phone, nationality, programType, status, submittedAt")
-          .eq("organizationId", organization.id)
-          .order("submittedAt", { ascending: false });
-        const rows = data ?? [];
-        csv = [
-          toCsvRow(["ID", "First Name", "Last Name", "Email", "Phone", "Nationality", "Program Type", "Status", "Submitted At"]),
-          ...rows.map((r: Record<string, unknown>) => toCsvRow([r.id, r.first_name ?? r.firstName, r.last_name ?? r.lastName, r.email, r.phone ?? "", r.nationality ?? "", r.program_type ?? r.programType ?? "", r.status, r.submitted_at ?? r.submittedAt])),
-        ].join("\n");
-        filename = "prospects.csv";
         break;
       }
       case "audit": {

@@ -42,10 +42,6 @@ const EVENT_CATEGORIES: { label: string; events: NotificationEvent[] }[] = [
     ],
   },
   {
-    label: "Prospects",
-    events: ["PROSPECT_ASSIGNED", "FOLLOW_UP_REACHED"],
-  },
-  {
     label: "Billing",
     events: ["INVOICE_OVERDUE", "PAYMENT_RECEIVED"],
   },
