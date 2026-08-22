@@ -37,6 +37,13 @@ converted; layout/routing/APIs untouched; tsc+build verified.
   with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
   ("ADS Immigration <noreply@adsimmigration.com>", domain verified) in .env* AND Vercel prod.
 
+**CRS calculator completed + client-shareable (`725aa33`)**: engine fixed to official CRS —
+age 18/19 cells, French = second-official-language in CORE (cap 24/22), French-bonus English
+CLB≤4→+25, all-four-band CLB thresholds, NEW certificate-of-qualification combos (both transfer
+groups), NEW job offer (+50 TEER0123 / +200 group00), caps 50/50/100. Public `/crs-calculator`
+(no auth) has full inputs + lead capture via /api/intake/submit; dashboard /crs has same inputs +
+"Send to Client" copy-link card. 27 tests incl. new-rule coverage.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
