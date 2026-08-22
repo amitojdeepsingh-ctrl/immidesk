@@ -40,6 +40,10 @@
   STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_{SOLO,TEAM,FIRM}_PRICE_ID_USD in Vercel +
   add webhook endpoint https://immidesk.vercel.app/api/billing/webhook. Without keys → checkout
   returns 501 with clear message. Plans: $49 SOLO / $99 TEAM / $199 FIRM / Enterprise=mailto.
+- **Company Profile editor** (`a2557e1`): Settings → editable CompanyProfileForm (name, contact email,
+  phone, RCIC #, address, logo URL + preview) via PATCH /api/organization (owner/admin only).
+  New `Organization.email` column (migration-org-email.sql, applied live) = white-label Reply-To;
+  all client emails prefer org.email as Reply-To (sign-route previously wrongly used client's own email).
 - **Branded emails**: resend.ts `orgSender({name,email})` — From display = firm name over the
   platform verified domain + Reply-To = firm email. Applied to welcome, resend-links, agreement
   sign confirmation + next-steps emails. TRUE own-domain sending (per-org Resend domain verify)
