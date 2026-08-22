@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import {
+  ArrowLeft,
   BookOpen,
   Loader2,
   Search,
@@ -91,10 +92,15 @@ export default function KnowledgePage() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [activeGroupLabel, setActiveGroupLabel] = useState<string | null>(null);
 
   const send = async (q: string) => {
     if (!q.trim() || loading) return;
     setInput("");
+    if (activeGroupLabel === null) {
+      // First question from a topic card — remember which group to suggest next.
+      setActiveGroupLabel(TOPIC_GROUPS.find((g) => g.questions.includes(q))?.label ?? null);
+    }
     setMessages((prev) => [...prev, { role: "user", content: q }]);
     setLoading(true);
     try {
@@ -136,6 +142,18 @@ export default function KnowledgePage() {
             Grounded Q&amp;A on Canadian immigration — IRPA/IRPR, programs, requirements, timelines
           </p>
         </div>
+        {messages.length > 0 && (
+          <button
+            onClick={() => {
+              if (loading) return;
+              setMessages([]);
+              setActiveGroupLabel(null);
+            }}
+            className="ml-auto flex items-center gap-1.5 rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-50 disabled:opacity-40 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> All topics
+          </button>
+        )}
       </div>
 
       {/* Topic browser (only before first question) */}
@@ -223,6 +241,31 @@ export default function KnowledgePage() {
                 <div className="flex items-center gap-2 rounded-lg bg-zinc-100 px-3.5 py-2.5 text-sm text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" /> Searching knowledge base…
                 </div>
+              </div>
+            )}
+            {!loading && messages.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <span className="text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+                  Try:
+                </span>
+                {(() => {
+                  const asked = new Set(
+                    messages.filter((m) => m.role === "user").map((m) => m.content),
+                  );
+                  const group = TOPIC_GROUPS.find((g) => g.label === activeGroupLabel);
+                  const suggestions = (group?.questions ?? TOPIC_GROUPS.flatMap((g) => g.questions))
+                    .filter((q) => !asked.has(q))
+                    .slice(0, 6);
+                  return suggestions.map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => send(q)}
+                      className="rounded-full border border-zinc-200 px-3 py-1 text-xs text-zinc-500 transition-colors hover:border-zinc-400 hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+                    >
+                      {q}
+                    </button>
+                  ));
+                })()}
               </div>
             )}
           </div>
