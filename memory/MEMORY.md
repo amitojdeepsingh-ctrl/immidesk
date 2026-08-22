@@ -31,6 +31,20 @@
   with "Object not found"); Resend API key replaced + RESEND_FROM_EMAIL set
   ("ADS Immigration <noreply@adsimmigration.com>", domain verified) in .env* AND Vercel prod.
 
+## Commercialization (Aug 2026, `f7d3e23`)
+- **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
+- **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
+  customer from Subscription row) + `/api/billing/webhook` (signature-verified; syncs status/period;
+  Stripe v22: period fields live on `sub.items.data[0]`, NOT sub root). Billing page plan cards have
+  Upgrade buttons. TO GO LIVE: create 3 recurring Prices in Stripe dashboard, set env
+  STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_{SOLO,TEAM,FIRM}_PRICE_ID_USD in Vercel +
+  add webhook endpoint https://immidesk.vercel.app/api/billing/webhook. Without keys → checkout
+  returns 501 with clear message. Plans: $49 SOLO / $99 TEAM / $199 FIRM / Enterprise=mailto.
+- **Branded emails**: resend.ts `orgSender({name,email})` — From display = firm name over the
+  platform verified domain + Reply-To = firm email. Applied to welcome, resend-links, agreement
+  sign confirmation + next-steps emails. TRUE own-domain sending (per-org Resend domain verify)
+  is a future phase.
+
 ## Prior Session Fixes (Aug 17) — all deployed & verified
 1. Upload 422 VALIDATION_ERROR (nullish notes/applicantLabel) `9aee6ed`
 2. Upload 400 INVALID_PATH (UNSAFE_PATH_CHARS allow-list) `9aee6ed`
