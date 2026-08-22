@@ -15,13 +15,17 @@ export type CRSInput = {
   canadianEducation?: "none" | "oneYear" | "twoYear" | "phd";
   provincialNomination?: boolean;
   siblingInCanada?: boolean;
+  /** Valid job offer from a Canadian employer */
+  jobOffer?: "none" | "teer0123" | "teer00";
+  /** Provincial/territorial certificate of qualification in a skilled trade */
+  certificateOfQualification?: boolean;
 };
 
 export type CRSBreakdown = {
-  core: { age: number; education: number; language: number; canadianWork: number; total: number };
+  core: { age: number; education: number; language: number; secondLanguage: number; canadianWork: number; total: number };
   spouse: { education: number; language: number; work: number };
   skillTransferability: { educationAndWork: number; languageAndEducation: number; foreignWorkAndLanguage: number; foreignWorkAndCanadianWork: number; total: number };
-  additional: { canadianEducation: number; provincialNomination: number; french: number; secondLanguage: number; sibling: number; total: number };
+  additional: { canadianEducation: number; provincialNomination: number; french: number; secondLanguage: number; sibling: number; jobOffer: number; total: number };
   total: number;
 };
 
@@ -36,8 +40,9 @@ function eduIndex(level: string): number {
 // ─── Core / Human Capital ──────────────────────────────────────────────────
 
 function agePoints(age: number, hasSpouse: boolean): number {
+  // Official CRS grid — [with spouse, without spouse]
   const pts: Record<string, [number, number]> = {
-    "17": [0,0], "18": [90,90], "19": [105,105],
+    "17": [0,0], "18": [90,99], "19": [95,105],
     "20": [100,110], "21": [100,110], "22": [100,110], "23": [100,110],
     "24": [100,110], "25": [100,110], "26": [100,110], "27": [100,110],
     "28": [100,110], "29": [100,110],
@@ -87,6 +92,19 @@ function canadianWorkPoints(years: number, hasSpouse: boolean): number {
   return hasSpouse ? 70 : 80; // 5+ years
 }
 
+/** Second official language (core section) — per ability: CLB9+=6, CLB7-8=3, CLB5-6=1; capped at 24/22. */
+function secondOfficialLanguageCorePoints(lang: { speaking: number; listening: number; reading: number; writing: number } | undefined, hasSpouse: boolean): number {
+  if (!lang) return 0;
+  const perBand = [lang.speaking, lang.listening, lang.reading, lang.writing];
+  const p = (clb: number): number => {
+    if (clb >= 9) return 6;
+    if (clb >= 7) return 3;
+    if (clb >= 5) return 1;
+    return 0;
+  };
+  return Math.min(hasSpouse ? 22 : 24, perBand.reduce((s, c) => s + p(c), 0));
+}
+
 // ─── Spouse Factors ────────────────────────────────────────────────────────
 
 function spouseEducationPoints(level: string | undefined): number {
@@ -118,42 +136,65 @@ function spouseCanadianWorkPoints(years: number | undefined): number {
 
 // ─── Skill Transferability ─────────────────────────────────────────────────
 
+/** Official language threshold: "high" = CLB 9+ in ALL four abilities; "mid" = CLB 7+ in all four. */
+function langLevel(lang: { speaking: number; listening: number; reading: number; writing: number }): "high" | "mid" | "none" {
+  const bands = [lang.speaking, lang.listening, lang.reading, lang.writing];
+  if (bands.every((b) => b >= 9)) return "high";
+  if (bands.every((b) => b >= 7)) return "mid";
+  return "none";
+}
+
 function tEduCanWork(eduIndex: number, canYears: number): number {
   if (eduIndex < 2) return 0; // secondary or one-year: 0
+  const floorYears = Math.floor(canYears);
   if (eduIndex === 2) { // two-year
-    if (canYears >= 3) return 25;
-    if (canYears >= 2) return 13;
-    if (canYears >= 1) return 13;
-    return 0;
+    return floorYears >= 1 ? 25 : 0;
   }
   // bachelors, twoOrMore, masters, phd
-  if (canYears >= 3) return 50;
-  if (canYears >= 2) return 25;
-  if (canYears >= 1) return 13;
+  if (floorYears >= 2) return 50;
+  if (floorYears >= 1) return 25;
   return 0;
 }
 
 function tEduLang(eduIndex: number, lang: { speaking: number; listening: number; reading: number; writing: number }): number {
-  const avg = (lang.speaking + lang.listening + lang.reading + lang.writing) / 4;
-  if (avg < 7) return 0;
-  const high = avg >= 9;
   if (eduIndex <= 1) return 0; // secondary or less
-  if (eduIndex === 2) return high ? 25 : 13; // two-year
-  return high ? 50 : 25; // bachelors+
+  const level = langLevel(lang);
+  if (level === "high") return eduIndex === 2 ? 25 : 50;
+  if (level === "mid") return eduIndex === 2 ? 13 : 25;
+  return 0;
+}
+
+function tCertLang(cert: boolean, lang: { speaking: number; listening: number; reading: number; writing: number }): number {
+  if (!cert) return 0;
+  const level = langLevel(lang);
+  if (level === "high") return 50;
+  if (level === "mid") return 25;
+  return 0;
 }
 
 function tForeignWorkLang(forYears: number, lang: { speaking: number; listening: number; reading: number; writing: number }): number {
-  const avg = (lang.speaking + lang.listening + lang.reading + lang.writing) / 4;
-  if (avg < 7 || forYears < 1) return 0;
-  const high = avg >= 9;
-  if (forYears >= 3) return high ? 50 : 25;
-  return high ? 25 : 13; // 1-2 years
+  const floorYears = Math.floor(forYears);
+  if (floorYears < 1) return 0;
+  const level = langLevel(lang);
+  if (level === "high") return floorYears >= 3 ? 50 : 25;
+  if (level === "mid") return floorYears >= 3 ? 25 : 13;
+  return 0;
 }
 
 function tForeignWorkCanWork(forYears: number, canYears: number): number {
-  if (forYears < 1 || canYears < 1) return 0;
-  if (forYears >= 3) return canYears >= 2 ? 50 : 25;
-  return canYears >= 2 ? 25 : 13; // 1-2 years foreign
+  const f = Math.floor(forYears);
+  const c = Math.floor(canYears);
+  if (f < 1 || c < 1) return 0;
+  if (f >= 3) return c >= 2 ? 50 : 25;
+  return c >= 2 ? 25 : 13; // 1-2 years foreign
+}
+
+function tCertCanWork(cert: boolean, canYears: number): number {
+  if (!cert) return 0;
+  const c = Math.floor(canYears);
+  if (c >= 2) return 50;
+  if (c >= 1) return 25;
+  return 0;
 }
 
 // ─── Additional Points ─────────────────────────────────────────────────────
@@ -169,22 +210,23 @@ function provincialNominationPoints(nominated: boolean): number {
 function frenchBonus(french: { speaking: number; listening: number; reading: number; writing: number } | undefined, english: { speaking: number; listening: number; reading: number; writing: number }): number {
   if (!french) return 0;
   const allBands = [french.speaking, french.listening, french.reading, french.writing];
+  // NCLC 7+ in all four French abilities required
   if (allBands.some(b => b < 7)) return 0;
   const englishMin = Math.min(english.speaking, english.listening, english.reading, english.writing);
+  // English CLB 5+ in all four → 50; English CLB 4 or lower → 25
+  if (englishMin >= 7) return 50;
   if (englishMin >= 5) return 50;
-  if (englishMin >= 4) return 25;
-  return 0;
-}
-
-function secondLanguagePoints(lang: { speaking: number; listening: number; reading: number; writing: number } | undefined): number {
-  if (!lang) return 0;
-  return [lang.speaking, lang.listening, lang.reading, lang.writing]
-    .filter(c => c >= 5)
-    .reduce((s, c) => s + (c >= 9 ? 6 : c >= 7 ? 3 : 1), 0);
+  return 25;
 }
 
 function siblingPoints(sibling: boolean): number {
   return sibling ? 15 : 0;
+}
+
+function jobOfferPoints(offer: "none" | "teer0123" | "teer00" | undefined): number {
+  if (offer === "teer00") return 200;
+  if (offer === "teer0123") return 50;
+  return 0;
 }
 
 // ─── Main Calculator ───────────────────────────────────────────────────────
@@ -197,45 +239,59 @@ export function calculateCRS(input: CRSInput): CRSBreakdown {
   const coreAge = agePoints(input.age, hasSpouse);
   const coreEducation = educationPoints(input.levelOfEducation, hasSpouse);
   const coreLanguage = languagePoints(eng, hasSpouse);
+  // French acts as second official language when English is claimed first
+  const coreSecondLanguage = fre ? secondOfficialLanguageCorePoints(fre, hasSpouse) : 0;
   const coreCanadianWork = canadianWorkPoints(input.canadianWorkExperience, hasSpouse);
 
   const spouseEdu = spouseEducationPoints(hasSpouse ? input.spouseLevelOfEducation : undefined);
   const spouseLang = spouseLanguagePoints(hasSpouse ? input.spouseEnglishTest : undefined);
   const spouseWork = spouseCanadianWorkPoints(hasSpouse ? input.spouseCanadianWorkExperience : undefined);
 
-  const coreTotal = coreAge + coreEducation + coreLanguage + coreCanadianWork;
+  const coreTotal = coreAge + coreEducation + coreLanguage + coreSecondLanguage + coreCanadianWork;
 
-  // Skill transferability — two groups, each max 50, added together
+  // Skill transferability — two groups, each max 50, total max 100.
+  // Group A: education OR certificate-of-qualification × (language | Canadian work)
+  // Group B: foreign work × (language | Canadian work)
   const ei = eduIndex(input.levelOfEducation);
-  const group1 = Math.max(tEduCanWork(ei, input.canadianWorkExperience), tEduLang(ei, eng));
-  const group2 = Math.max(tForeignWorkLang(input.foreignWorkExperience, eng), tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience));
-  const transferTotal = Math.min(100, group1 + group2);
+  const cert = input.certificateOfQualification ?? false;
+  const groupA = Math.max(
+    tEduCanWork(ei, input.canadianWorkExperience),
+    tEduLang(ei, eng),
+    tCertLang(cert, eng),
+  );
+  const groupB = Math.max(
+    tForeignWorkLang(input.foreignWorkExperience, eng),
+    tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience),
+    tCertCanWork(cert, input.canadianWorkExperience),
+  );
+  const transferTotal = Math.min(50, groupA) + Math.min(50, groupB);
 
   const additionalCanadianEdu = canadianEducationPoints(input.canadianEducation ?? "none");
   const additionalPNP = provincialNominationPoints(input.provincialNomination ?? false);
   const additionalFrench = frenchBonus(fre, eng);
-  const additionalSecondLang = secondLanguagePoints(fre);
+  const additionalJobOffer = jobOfferPoints(input.jobOffer);
   const additionalSibling = siblingPoints(input.siblingInCanada ?? false);
-  const additionalTotal = additionalPNP + additionalCanadianEdu + additionalSecondLang + additionalFrench + additionalSibling;
+  const additionalTotal = additionalPNP + additionalCanadianEdu + additionalFrench + additionalJobOffer + additionalSibling;
 
   const total = coreTotal + spouseEdu + spouseLang + spouseWork + transferTotal + additionalTotal;
 
   return {
-    core: { age: coreAge, education: coreEducation, language: coreLanguage, canadianWork: coreCanadianWork, total: coreTotal },
+    core: { age: coreAge, education: coreEducation, language: coreLanguage, secondLanguage: coreSecondLanguage, canadianWork: coreCanadianWork, total: coreTotal },
     spouse: { education: spouseEdu, language: spouseLang, work: spouseWork },
     skillTransferability: {
-      educationAndWork: group1,
+      educationAndWork: groupA,
       languageAndEducation: tEduLang(ei, eng),
       foreignWorkAndLanguage: tForeignWorkLang(input.foreignWorkExperience, eng),
-      foreignWorkAndCanadianWork: tForeignWorkCanWork(input.foreignWorkExperience, input.canadianWorkExperience),
+      foreignWorkAndCanadianWork: groupB,
       total: transferTotal,
     },
     additional: {
       canadianEducation: additionalCanadianEdu,
       provincialNomination: additionalPNP,
       french: additionalFrench,
-      secondLanguage: additionalSecondLang,
+      secondLanguage: 0,
       sibling: additionalSibling,
+      jobOffer: additionalJobOffer,
       total: additionalTotal,
     },
     total,

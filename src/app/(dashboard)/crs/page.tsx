@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Calculator, Info } from "lucide-react";
+import { Calculator, Info, Copy, Check, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface CrsBreakdown {
-  core: { age: number; education: number; language: number; canadianWork: number; total: number };
+  core: { age: number; education: number; language: number; secondLanguage?: number; canadianWork: number; total: number };
   spouse: { education: number; language: number; work: number };
   skillTransferability: { educationAndWork: number; languageAndEducation: number; foreignWorkAndLanguage: number; foreignWorkAndCanadianWork: number; total: number };
-  additional: { canadianEducation: number; provincialNomination: number; french: number; secondLanguage: number; sibling: number; total: number };
+  additional: { canadianEducation: number; provincialNomination: number; french: number; secondLanguage: number; sibling: number; jobOffer?: number; total: number };
   total: number;
 }
 
@@ -31,6 +31,8 @@ const defaultForm = {
   canadianEducation: "none",
   provincialNomination: false,
   siblingInCanada: false,
+  jobOffer: "none" as "none" | "teer0123" | "teer00",
+  certificateOfQualification: false,
 };
 
 const CLB = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -220,6 +222,14 @@ export default function CrsPage() {
                   <option value="phd">PhD (+30)</option>
                 </select>
               </div>
+              <div>
+                <label className={lbl}>Valid Job Offer</label>
+                <select value={form.jobOffer} onChange={e => update("jobOffer", e.target.value as "none" | "teer0123" | "teer00")} className={"mt-1 " + inp}>
+                  <option value="none">None</option>
+                  <option value="teer0123">TEER 0, 1, 2 or 3 (+50)</option>
+                  <option value="teer00">TEER 0 — major group 00 (+200)</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -230,6 +240,7 @@ export default function CrsPage() {
               {[
                 { key: "provincialNomination" as const, label: "Provincial Nomination (+600)" },
                 { key: "siblingInCanada" as const, label: "Sibling in Canada (+15)" },
+                { key: "certificateOfQualification" as const, label: "Provincial Certificate of Qualification (skilled trade)" },
               ].map(({ key, label }) => (
                 <label key={key} className="flex items-center gap-2.5 cursor-pointer">
                   <input type="checkbox" checked={form[key]} onChange={e => update(key, e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
@@ -270,8 +281,42 @@ export default function CrsPage() {
               </div>
             </div>
           )}
+
+          {/* Share with client */}
+          <ShareCard />
         </div>
       </div>
+    </div>
+  );
+}
+
+function ShareCard() {
+  const [copied, setCopied] = useState(false);
+  const link = typeof window === "undefined" ? "/crs-calculator" : `${window.location.origin}/crs-calculator`;
+
+  return (
+    <div className="rounded-lg border border-brand-200 bg-brand-50/60 p-5 dark:border-brand-800/50 dark:bg-brand-500/5">
+      <h2 className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
+        <ExternalLink className="h-4 w-4 text-brand-600 dark:text-brand-400" />
+        Send to a Client
+      </h2>
+      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+        Clients can calculate their own CRS score on this public page — their contact info and
+        score are saved as a lead and appear under Leads.
+      </p>
+      <button
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(link);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+          } catch {}
+        }}
+        className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-md border border-brand-300 bg-white px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-50 dark:border-brand-700 dark:bg-transparent dark:text-brand-300 dark:hover:bg-brand-900/20"
+      >
+        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+        {copied ? "Link copied!" : "Copy client calculator link"}
+      </button>
     </div>
   );
 }

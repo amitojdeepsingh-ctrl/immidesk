@@ -18,6 +18,8 @@ const calculateSchema = z.object({
   canadianEducation: z.enum(["none","oneYear","twoYear","phd"]).optional().default("none"),
   provincialNomination: z.boolean().optional().default(false),
   siblingInCanada: z.boolean().optional().default(false),
+  jobOffer: z.enum(["none", "teer0123", "teer00"]).optional().default("none"),
+  certificateOfQualification: z.boolean().optional().default(false),
 });
 
 export async function POST(req: NextRequest) {

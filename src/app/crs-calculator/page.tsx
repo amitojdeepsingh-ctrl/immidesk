@@ -36,6 +36,8 @@ const defaultForm = {
   canadianEducation: "none" as CRSInput["canadianEducation"],
   provincialNomination: false,
   siblingInCanada: false,
+  jobOffer: "none" as "none" | "teer0123" | "teer00",
+  certificateOfQualification: false,
 };
 
 function buildCRSInput(form: typeof defaultForm): CRSInput {
@@ -54,6 +56,8 @@ function buildCRSInput(form: typeof defaultForm): CRSInput {
     canadianEducation: form.canadianEducation,
     provincialNomination: form.provincialNomination,
     siblingInCanada: form.siblingInCanada,
+    jobOffer: form.jobOffer,
+    certificateOfQualification: form.certificateOfQualification,
   };
 }
 
@@ -262,8 +266,20 @@ export default function CrsCalculatorPage() {
                   <option value="phd">PhD (+30)</option>
                 </select>
               </div>
+              <div>
+                <label className={lbl}>Valid Job Offer</label>
+                <select value={form.jobOffer} onChange={e => update("jobOffer", e.target.value as any)} className={inp}>
+                  <option value="none">None</option>
+                  <option value="teer0123">TEER 0, 1, 2 or 3 (+50)</option>
+                  <option value="teer00">TEER 0 — major group 00 (+200)</option>
+                </select>
+              </div>
             </div>
             <div className="mt-3 flex flex-wrap gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.certificateOfQualification} onChange={e => update("certificateOfQualification", e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
+                <span className="text-sm text-zinc-700 dark:text-zinc-300">Provincial Certificate of Qualification (skilled trade)</span>
+              </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={form.provincialNomination} onChange={e => update("provincialNomination", e.target.checked)} className="h-4 w-4 rounded border-zinc-300 text-zinc-900" />
                 <span className="text-sm text-zinc-700 dark:text-zinc-300">Provincial Nomination (+600)</span>

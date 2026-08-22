@@ -154,11 +154,59 @@ describe("calculateCRS", () => {
     expect(r.additional.french).toBe(25);
   });
 
-  it("Second language points for CLB 5+ (via french test)", () => {
+  it("french CLB 5+ counts as second official language in CORE (capped), not additional", () => {
     const r = calculateCRS(baseCandidate({
       frenchTest: { speaking: 5, listening: 5, reading: 5, writing: 5 },
     }));
-    expect(r.additional.secondLanguage).toBeGreaterThan(0);
+    expect(r.additional.secondLanguage).toBe(0);
+    expect(r.core.secondLanguage).toBe(4); // 1 pt per ability × 4
+    // capped at 24 without spouse
+    const maxed = calculateCRS(baseCandidate({
+      frenchTest: { speaking: 10, listening: 10, reading: 10, writing: 10 },
+    }));
+    expect(maxed.core.secondLanguage).toBeLessThanOrEqual(24);
+  });
+
+  it("age grid uses official values at the 18/19 boundary", () => {
+    // without spouse: 18 = 99, 19 = 105; with spouse: 18 = 90, 19 = 95
+    const noSpouse18 = calculateCRS(baseCandidate({ age: 18 }));
+    const noSpouse19 = calculateCRS(baseCandidate({ age: 19 }));
+    expect(noSpouse18.core.age).toBe(99);
+    expect(noSpouse19.core.age).toBe(105);
+    const withSpouse19 = calculateCRS(baseCandidate({
+      age: 19,
+      hasSpouse: true,
+      spouseEnglishTest: { speaking: 5, listening: 5, reading: 5, writing: 5 },
+    }));
+    expect(withSpouse19.core.age).toBe(95);
+  });
+
+  it("job offer adds 50 for TEER 0-3 and 200 for major group 00", () => {
+    const none = calculateCRS(baseCandidate({}));
+    const t123 = calculateCRS(baseCandidate({ jobOffer: "teer0123" }));
+    const t00 = calculateCRS(baseCandidate({ jobOffer: "teer00" }));
+    expect(t123.total - none.total).toBe(50);
+    expect(t00.total - none.total).toBe(200);
+  });
+
+  it("certificate of qualification pairs with language and canadian work in transferability", () => {
+    // No education beyond secondary, strong language, cert → cert×language combo applies
+    const withCert = calculateCRS(baseCandidate({
+      levelOfEducation: "secondary",
+      englishTest: { speaking: 9, listening: 9, reading: 9, writing: 9 },
+      certificateOfQualification: true,
+    }));
+    expect(withCert.skillTransferability.educationAndWork).toBeGreaterThan(0);
+    // cert × Canadian work: 3+ years → 50
+    const certCanWork = calculateCRS(baseCandidate({
+      levelOfEducation: "secondary",
+      englishTest: { speaking: 4, listening: 4, reading: 4, writing: 4 },
+      canadianWorkExperience: 3,
+      certificateOfQualification: true,
+    }));
+    expect(certCanWork.skillTransferability.foreignWorkAndCanadianWork).toBe(50);
+    // transferability total never exceeds 100
+    expect(withCert.skillTransferability.total).toBeLessThanOrEqual(100);
   });
 
   it("highly competitive candidate scores high (with PNP)", () => {
