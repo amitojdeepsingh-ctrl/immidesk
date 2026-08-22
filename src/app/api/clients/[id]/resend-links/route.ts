@@ -6,7 +6,7 @@ import { CASE_TYPE_LABELS } from "@/lib/checklists";
 import { sendEmail } from "@/lib/email/resend";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   try {
@@ -58,11 +58,12 @@ export async function POST(
 
     const agreementId = agreements[0].id;
 
-    // Generate fresh 60-day tokens
+    // Generate fresh 60-day tokens (links resolve against the live origin)
+    const origin = new URL(req.url).origin;
     const portalToken = generatePortalToken(clientId, c.id, organization.id, 60);
     const agToken = generateAgreementToken(agreementId, clientId, organization.id, 60);
-    const portal = portalUrl(portalToken);
-    const agreement = agreementUrl(agToken);
+    const portal = portalUrl(portalToken, origin);
+    const agreement = agreementUrl(agToken, origin);
     const serviceLabel = CASE_TYPE_LABELS[c.caseType] ?? c.caseType;
 
     const result = await sendEmail({

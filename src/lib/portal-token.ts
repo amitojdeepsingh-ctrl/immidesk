@@ -1,7 +1,6 @@
 import { createHmac, timingSafeEqual } from "crypto";
 
 const SECRET = process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? "fallback-dev-secret";
-const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] ?? "http://localhost:3000";
 
 // ─── Portal Token (client intake + document upload) ────────────────────────
 
@@ -62,10 +61,37 @@ export function verifyAgreementToken(token: string): AgreementTokenPayload | nul
   return p;
 }
 
-export function portalUrl(token: string) {
-  return `${APP_URL}/portal/${token}`;
+/**
+ * Resolve the public app base URL for emailed links.
+ * Preference: the live request origin (always correct per-environment),
+ * then NEXT_PUBLIC_APP_URL, then the production domain.
+ */
+export function resolveAppUrl(requestOrigin?: string): string {
+  if (requestOrigin && /^https?:\/\//.test(requestOrigin)) return requestOrigin.replace(/\/$/, "");
+  const envUrl = process.env["NEXT_PUBLIC_APP_URL"];
+  if (envUrl && /^https?:\/\//.test(envUrl)) return envUrl.replace(/\/$/, "");
+  return "https://immidesk.vercel.app";
 }
 
-export function agreementUrl(token: string) {
-  return `${APP_URL}/agreement/${token}`;
+function url(path: string, token: string, requestOrigin?: string): string {
+  return `${resolveAppUrl(requestOrigin)}${path}/${token}`;
+}
+
+/** Full client portal (tabs: overview, checklist/upload, messages). */
+export function portalUrl(token: string, requestOrigin?: string) {
+  return url("/portal", token, requestOrigin);
+}
+
+/** Dedicated Personal Information Sheet (intake wizard). */
+export function intakeUrl(token: string, requestOrigin?: string) {
+  return url("/intake", token, requestOrigin);
+}
+
+/** Dedicated document upload page (with applicant selector). */
+export function uploadUrl(token: string, requestOrigin?: string) {
+  return url("/upload", token, requestOrigin);
+}
+
+export function agreementUrl(token: string, requestOrigin?: string) {
+  return url("/agreement", token, requestOrigin);
 }

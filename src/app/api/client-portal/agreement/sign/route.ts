@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
-import { verifyAgreementToken } from "@/lib/portal-token";
+import { verifyAgreementToken, generatePortalToken, intakeUrl, uploadUrl } from "@/lib/portal-token";
 import { sendEmail } from "@/lib/email/resend";
 import { generateAgreementPdf } from "@/lib/pdf/generator";
 import { headers } from "next/headers";
@@ -169,6 +169,64 @@ export async function POST(req: NextRequest) {
         <p>— ${org.name}</p>
       `,
     }).catch(e => console.warn("Client confirmation email failed:", e));
+
+    // ── Next-steps email: Personal Information Sheet + document upload ──────
+    // Fresh 60-day portal token so the client can start intake immediately.
+    try {
+      const origin = new URL(req.url).origin;
+      const { data: latestCase } = await db
+        .from("Case")
+        .select("id")
+        .eq("clientId", payload.clientId)
+        .eq("organizationId", payload.organizationId)
+        .order("createdAt", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (latestCase?.id) {
+        const portalToken = generatePortalToken(payload.clientId, latestCase.id, payload.organizationId, 60);
+        const intake = intakeUrl(portalToken, origin);
+        const upload = uploadUrl(portalToken, origin);
+
+      await sendEmail({
+        to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
+        subject: `Next Steps — Your Information Sheet & Documents (${org.name})`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a">
+            <h2 style="font-size:20px;font-weight:700;margin-bottom:4px">Hi ${client.firstName},</h2>
+            <p style="color:#555;margin-top:0">Now that your agreement is signed, we can begin preparing your file. Please complete these two steps as soon as possible:</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0">
+              <tr>
+                <td style="padding:16px;background:#f4f4f5;border-radius:8px">
+                  <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#09090b">① Personal Information Sheet</p>
+                  <p style="margin:0 0 12px;font-size:13px;color:#555">Fill out your secure online information form. If you have a spouse, common-law partner, or dependent children, you will be able to enter their details in the same form — a separate sheet is needed for each dependant aged 19+ who is applying.</p>
+                  <a href="${intake}" style="display:inline-block;background:#09090b;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600">Complete Your Information Sheet &rarr;</a>
+                </td>
+              </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0">
+              <tr>
+                <td style="padding:16px;background:#f4f4f5;border-radius:8px">
+                  <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:#09090b">② Upload Your Documents</p>
+                  <p style="margin:0 0 12px;font-size:13px;color:#555">Upload your passports, IDs, education records, and all supporting documents through your secure document portal. You can return anytime to add more files.</p>
+                  <a href="${upload}" style="display:inline-block;background:#09090b;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600">Open Document Upload &rarr;</a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="font-size:13px;color:#555">If any of your personal circumstances change during processing, please let us know right away.</p>
+            <hr style="border:none;border-top:1px solid #e5e5e5;margin:24px 0"/>
+            <p style="font-size:11px;color:#888;margin:0">${org.name} · Immigration Consulting Services</p>
+            <p style="font-size:11px;color:#aaa;margin:4px 0 0">These links are valid for 60 days. Contact us if you need new ones.</p>
+          </div>
+        `,
+      }).catch(e => console.warn("Client next-steps email failed:", e));
+      }
+    } catch (e) {
+      console.warn("Next-steps email build failed:", e);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
