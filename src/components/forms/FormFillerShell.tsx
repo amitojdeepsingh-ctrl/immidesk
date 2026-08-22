@@ -15,6 +15,8 @@ interface FormFillerShellProps {
   templateId: string;
   fields: FormField[];
   initialData: PrefillData;
+  /** Server-computed suggestions from the client's PIS intake (not yet saved). */
+  prefillSuggestions?: PrefillData;
   clientId?: string;
   caseId?: string;
   submissionId?: string;
@@ -28,15 +30,21 @@ export function FormFillerShell({
   templateId,
   fields,
   initialData,
+  prefillSuggestions,
   clientId,
   caseId,
   submissionId: initialSubmissionId,
   clientName,
 }: FormFillerShellProps) {
-  const [prefilledData, setPrefilledData] = useState<PrefillData>(initialData);
+  const [prefilledData, setPrefilledData] = useState<PrefillData>(
+    prefillSuggestions && Object.keys(prefillSuggestions).length > 0
+      ? { ...prefillSuggestions, ...initialData }
+      : initialData,
+  );
   const [submissionId, setSubmissionId] = useState<string | undefined>(initialSubmissionId);
   const [isSaving, setIsSaving] = useState(false);
   const [isPrefilling, setIsPrefilling] = useState(false);
+  const hasSuggestions = !!prefillSuggestions && Object.keys(prefillSuggestions).length > 0;
 
   const handleFieldUpdate = useCallback(
     (key: string, value: string | number | boolean | null) => {

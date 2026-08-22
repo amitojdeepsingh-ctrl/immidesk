@@ -69,7 +69,7 @@ export async function POST(
     const serviceLabel = CASE_TYPE_LABELS[c.caseType] ?? c.caseType;
 
     const result = await sendEmail({
-      ...orgSender({ name: organization.name, email: (organization as unknown as { email?: string | null }).email ?? undefined }),
+      ...orgSender({ name: organization.name, email: (organization as unknown as { email?: string | null }).email ?? undefined, settings: organization.settings }),
       to: { email: client.email, name: `${client.firstName} ${client.lastName}` },
       subject: `Your ${serviceLabel} Application — Links & Next Steps`,
       html: `

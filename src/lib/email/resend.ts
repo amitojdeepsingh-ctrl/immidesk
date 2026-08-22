@@ -71,20 +71,42 @@ export function platformFromAddress(): string {
   return DEFAULT_FROM;
 }
 
+function platformMailbox(): string {
+  return DEFAULT_FROM.match(/<([^>]+)>/)?.[1] ?? DEFAULT_FROM;
+}
+
+/** Extract the organization's Resend-verified sending domain, if any. */
+export function verifiedSendingDomain(org: { settings?: unknown } | null | undefined): string | null {
+  const sd = ((org?.settings as Record<string, unknown> | null)?.sendingDomain ?? null) as
+    | { status?: string; domain?: string }
+    | null;
+  if (sd && sd.status === "verified" && sd.domain && /^[a-z0-9.-]+\.[a-z]{2,}$/.test(sd.domain)) {
+    return sd.domain;
+  }
+  return null;
+}
+
 /**
  * White-label identity for a subscriber's company:
- *  - From display name = the company's name (sent over the platform's
- *    verified domain, since arbitrary domains cannot send without DNS setup)
- *  - Reply-To = the company's own email so client replies land in their inbox
+ *  - If the firm has a Resend-verified domain: From = noreply@theirdomain.com
+ *    (fully own-domain sending).
+ *  - Otherwise: From display name = the company's name over the platform's
+ *    verified domain, with Reply-To = the company's email so client replies
+ *    land in their inbox.
  */
-export function orgSender(org: { name: string; email?: string | null }): {
-  from: string;
-  replyTo?: string;
-} {
-  const platformAddr = DEFAULT_FROM.match(/<([^>]+)>/)?.[1] ?? DEFAULT_FROM;
+export function orgSender(
+  org: { name: string; email?: string | null; settings?: unknown },
+): { from: string; replyTo?: string } {
   const safeName = (org.name || "Immigration Services").replace(/"/g, "");
+  const domain = verifiedSendingDomain(org);
+  if (domain) {
+    return {
+      from: `${safeName} <noreply@${domain}>`,
+      replyTo: org.email ?? undefined,
+    };
+  }
   return {
-    from: `${safeName} <${platformAddr}>`,
+    from: `${safeName} <${platformMailbox()}>`,
     replyTo: org.email ?? undefined,
   };
 }

@@ -21,3 +21,8 @@ __pycache__/
 
 .vercel
 .env*
+
+# playwright
+e2e-results/
+playwright-report/
+test-results/

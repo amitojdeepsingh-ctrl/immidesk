@@ -65,6 +65,52 @@ export default async function FormFillerPage({ params, searchParams }: PageProps
     }
   }
 
+  // ── Auto-fill suggestions from the client's PIS intake + Client record ──
+  // Only for fields the user hasn't already saved in a submission.
+  let prefillSuggestions: PrefillData = {};
+  if (clientId && Object.keys(initialData).length < fields.length) {
+    const [pisRes, clientRes] = await Promise.all([
+      supabase
+        .from("IMMFormSubmission")
+        .select("filledData, template:IMMFormTemplate(formCode)")
+        .eq("caseId", caseId ?? "")
+        .order("createdAt", { ascending: true }),
+      supabase
+        .from("Client")
+        .select("*")
+        .eq("id", clientId)
+        .eq("organizationId", organization.id)
+        .single(),
+    ]);
+
+    const profile: Record<string, unknown> = { ...(clientRes.data ?? {}) };
+    for (const row of pisRes.data ?? []) {
+      const tmpl = Array.isArray(row.template) ? row.template[0] : row.template;
+      const fc = (tmpl as { formCode?: string } | null)?.formCode;
+      if (fc !== "IMM_PIS") continue; // only the Personal Information Sheet feeds forms
+      const d = (row.filledData ?? {}) as Record<string, unknown>;
+      for (const [k, v] of Object.entries(d)) {
+        if (["education", "employment", "travel", "addressHistory", "statutory", "_meta"].includes(k)) continue;
+        if (v === null || v === undefined || v === "" || typeof v === "object") continue;
+        profile[k] = v;
+      }
+    }
+
+    try {
+      const { prefillForm } = await import("@/lib/ai/form-filler");
+      const suggestions = await prefillForm(
+        fields,
+        profile as Record<string, string | number | boolean | null | undefined>,
+      );
+      // Never override data the user already saved
+      prefillSuggestions = Object.fromEntries(
+        Object.entries(suggestions).filter(([k]) => initialData[k] === undefined || initialData[k] === ""),
+      );
+    } catch (e) {
+      console.warn("PIS prefill failed:", e);
+    }
+  }
+
   return (
     <FormFillerShell
       formCode={template.formCode}
@@ -73,6 +119,7 @@ export default async function FormFillerPage({ params, searchParams }: PageProps
       templateId={template.id}
       fields={fields}
       initialData={initialData}
+      prefillSuggestions={prefillSuggestions}
       clientId={clientId}
       caseId={caseId}
       submissionId={submissionId}
