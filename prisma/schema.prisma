@@ -154,6 +154,7 @@ model Organization {
   name                   String
   slug                   String   @unique
   email                  String?
+  website                String?
   ciccRegistrationNumber String?  @unique
   addressLine1           String?
   addressLine2           String?

@@ -32,6 +32,7 @@ export default async function SettingsPage() {
             name: organization.name,
             email: (organization as unknown as { email?: string | null }).email ?? null,
             phone: organization.phone,
+            website: (organization as unknown as { website?: string | null }).website ?? null,
             ciccRegistrationNumber: organization.ciccRegistrationNumber,
             addressLine1: organization.addressLine1,
             addressLine2: organization.addressLine2,

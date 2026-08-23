@@ -6,6 +6,7 @@ export interface OrgBranding {
   logoUrl?: string | null;
   phone?: string | null;
   email?: string | null;
+  website?: string | null;
 }
 
 const DEFAULT_ORG_SLUG = process.env["PLATFORM_ORG_SLUG"] ?? "amitoj-singhs-workspace";
@@ -16,7 +17,7 @@ export async function getOrgBranding(slug?: string): Promise<OrgBranding | undef
     const effective = slug && /^[a-z0-9-]{2,}$/i.test(slug) ? slug : DEFAULT_ORG_SLUG;
     const { data: org } = await db
       .from("Organization")
-      .select("name, slug, email, phone, logoUrl")
+      .select("name, slug, email, phone, logoUrl, website")
       .eq("slug", effective)
       .maybeSingle();
     if (!org) return undefined;
@@ -26,6 +27,7 @@ export async function getOrgBranding(slug?: string): Promise<OrgBranding | undef
       logoUrl: org.logoUrl,
       phone: org.phone,
       email: org.email,
+      website: org.website,
     };
   } catch {
     return undefined;
@@ -66,6 +68,11 @@ export function OrgBrandHeader({ branding }: { branding: OrgBranding }) {
               ✉️ {branding.email}
             </a>
           )}
+          {branding.website && (
+            <a href={branding.website.startsWith("http") ? branding.website : `https://${branding.website}`} target="_blank" rel="noopener noreferrer" className="text-zinc-500 hover:underline dark:text-zinc-400">
+              🌐 {branding.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+            </a>
+          )}
         </div>
       </div>
     </header>
@@ -87,6 +94,11 @@ export function OrgBrandFooter({ branding, disclaimer }: { branding: OrgBranding
           {branding.email && (
             <a href={`mailto:${branding.email}`} className="hover:underline">
               ✉️ {branding.email}
+            </a>
+          )}
+          {branding.website && (
+            <a href={branding.website.startsWith("http") ? branding.website : `https://${branding.website}`} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              🌐 {branding.website.replace(/^https?:\/\//, "").replace(/\/$/, "")}
             </a>
           )}
         </p>
