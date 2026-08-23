@@ -75,6 +75,12 @@ GRANT select/insert/update/delete to all three roles on every public table;
 (org 23ca7eec…, user a62f6de9…): Mon–Fri 09:00–17:00 @30min — live slots verified (16 on Aug 25).
 Booking link: /book/amitoj-singhs-workspace.
 
+**Consultations = PHONE calls, not video (`3c4dc0c`)**: booking now REQUIRES client phone;
+confirmation email says "You will receive a call from RCIC <consultant name>" + echoes the number
++ "prepare your questions"; ICS retitled Phone Consultation (location=phone); success screen
+matches; consultant notify includes number to dial. /join/[id] guest video page kept for legacy
+bookings only.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
