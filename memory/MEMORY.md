@@ -81,6 +81,16 @@ confirmation email says "You will receive a call from RCIC <consultant name>" + 
 matches; consultant notify includes number to dial. /join/[id] guest video page kept for legacy
 bookings only.
 
+**Branded public calculator + client checklists (`0732c0a`+`c4e83c2`)**: shared OrgBrand
+header/footer component (logo/name/phone/email from Organization via ?org=slug, default
+PLATFORM_ORG_SLUG env → amitoj-singhs-workspace). /crs-calculator now branded per firm
+(WhatsApp-friendly <title> via generateMetadata); dashboard CRS share link auto-appends ?org=.
+NEW /checklist?org=&type= public page: client-safe checklists (src/lib/client-checklists.ts —
+all 18 case types + PGWP, ZERO form numbers/NOC/LMIA codes, emoji bullets), type picker,
+tickable items, Share via WhatsApp (wa.me pre-filled w/ text+link), Copy-as-text, Copy-link.
+Portal docs tab swapped to client-safe lists. GOTCHA: interactive bits (onChange/checkbox) must
+live in client components — caused 2 RSC 500s (Updates page, checklist page).
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
