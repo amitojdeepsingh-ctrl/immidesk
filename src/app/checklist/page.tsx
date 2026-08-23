@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CLIENT_CHECKLISTS, CLIENT_CHECKLIST_LABELS, clientChecklistAsText } from "@/lib/client-checklists";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
 import { getOrgBranding, OrgBrandHeader, OrgBrandFooter } from "@/components/branding/OrgBrand";
-import { ChecklistShareButtons } from "./share-buttons";
+import { ChecklistShareButtons, TypePicker, ChecklistItems } from "./share-buttons";
 
 interface PageProps {
   searchParams: Promise<{ org?: string; type?: string }>;
@@ -47,22 +47,14 @@ export default async function ChecklistPage({ searchParams }: PageProps) {
           <label className="mb-1.5 block text-xs font-medium text-zinc-500 dark:text-zinc-400">
             Application type
           </label>
-          <select
+          <TypePicker
             value={type}
-            onChange={(e) => {
-              const params = new URLSearchParams();
-              if (slug) params.set("org", slug);
-              params.set("type", e.target.value);
-              window.location.href = `/checklist?${params.toString()}`;
-            }}
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-brand-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-50"
-          >
-            {Object.keys(CLIENT_CHECKLISTS).map((key) => (
-              <option key={key} value={key}>
-                {ALL_LABELS[key] ?? key.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+            slug={slug}
+            options={Object.keys(CLIENT_CHECKLISTS).map((key) => ({
+              value: key,
+              label: ALL_LABELS[key] ?? key.replace(/_/g, " "),
+            }))}
+          />
           <p className="mt-2 text-xs text-zinc-400">
             Not sure which applies to you? Message us — we will confirm the right category for your goals.
           </p>
@@ -75,20 +67,7 @@ export default async function ChecklistPage({ searchParams }: PageProps) {
             Clear scans are fine to start — keep originals safe. Tick items as you collect them.
           </p>
           <ul className="space-y-2.5">
-            {items.map((item) => (
-              <li key={item} className="flex items-start gap-2.5 rounded-md bg-zinc-50 px-3 py-2.5 dark:bg-zinc-800/60">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-zinc-300 accent-[#35599C]"
-                  onChange={(e) => {
-                    const el = e.currentTarget.parentElement!;
-                    el.style.opacity = e.currentTarget.checked ? "0.55" : "1";
-                    el.style.textDecoration = e.currentTarget.checked ? "line-through" : "none";
-                  }}
-                />
-                <span className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">{item}</span>
-              </li>
-            ))}
+            <ChecklistItems items={items} />
           </ul>
         </div>
 
