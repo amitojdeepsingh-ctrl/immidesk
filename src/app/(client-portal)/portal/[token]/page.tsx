@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { verifyPortalToken } from "@/lib/portal-token";
-import { CHECKLISTS, CASE_TYPE_LABELS } from "@/lib/checklists";
+import { CLIENT_CHECKLISTS } from "@/lib/client-checklists";
+import { CASE_TYPE_LABELS } from "@/lib/checklists";
 import { PortalView } from "./portal-view";
 
 interface PageProps {
@@ -64,7 +65,7 @@ export default async function ClientPortalPage({ params }: PageProps) {
   const client = Array.isArray(caseRecord.client) ? caseRecord.client[0] : caseRecord.client;
   const org = Array.isArray(caseRecord.organization) ? caseRecord.organization[0] : caseRecord.organization;
 
-  const checklist = CHECKLISTS[caseRecord.caseType] ?? CHECKLISTS.OTHER;
+  const checklist = CLIENT_CHECKLISTS[caseRecord.caseType] ?? CLIENT_CHECKLISTS.OTHER;
   const caseLabel = CASE_TYPE_LABELS[caseRecord.caseType] ?? caseRecord.caseType;
 
   const serializedDocs = (existingDocs ?? []).map((d: Record<string, unknown>) => ({

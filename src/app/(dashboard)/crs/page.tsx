@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calculator, Info, Copy, Check, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -292,7 +292,18 @@ export default function CrsPage() {
 
 function ShareCard() {
   const [copied, setCopied] = useState(false);
-  const link = typeof window === "undefined" ? "/crs-calculator" : `${window.location.origin}/crs-calculator`;
+  const [slug, setSlug] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/organization")
+      .then(r => r.json())
+      .then(j => { if (j?.data?.slug) setSlug(j.data.slug); })
+      .catch(() => {});
+  }, []);
+
+  const link = typeof window === "undefined"
+    ? "/crs-calculator"
+    : `${window.location.origin}/crs-calculator${slug ? `?org=${slug}` : ""}`;
 
   return (
     <div className="rounded-lg border border-brand-200 bg-brand-50/60 p-5 dark:border-brand-800/50 dark:bg-brand-500/5">
