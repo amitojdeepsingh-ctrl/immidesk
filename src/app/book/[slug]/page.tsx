@@ -56,7 +56,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
   };
 
   const book = async () => {
-    if (!selectedSlot || !email) return;
+    if (!selectedSlot || !email || !phone) return;
     setSending(true);
     setError("");
     try {
@@ -87,7 +87,9 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
         <div className="max-w-md text-center">
           <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
           <h1 className="mt-4 text-lg font-semibold text-zinc-900 dark:text-zinc-50">Consultation Booked!</h1>
-          <p className="mt-2 text-sm text-zinc-500">We&apos;ll send a confirmation to {email}. You&apos;ll receive a video link before the meeting.</p>
+          <p className="mt-2 text-sm text-zinc-500">
+            A confirmation has been sent to {email}. <strong>You will receive a phone call from your RCIC at the scheduled time</strong> — please have your questions ready so we can answer them all.
+          </p>
         </div>
       </div>
     );
@@ -208,11 +210,14 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
                   className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" placeholder="Your name" /></div>
                 <div><label className="text-xs font-medium text-zinc-500">Email <span className="text-red-500">*</span></label><input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" placeholder="your@email.com" /></div>
-                <div><label className="text-xs font-medium text-zinc-500">Phone</label><input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
+                <div><label className="text-xs font-medium text-zinc-500">Phone number we should call <span className="text-red-500">*</span></label><input type="tel" value={phone} onChange={e => setPhone(e.target.value)}
                   className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50" placeholder="+1 (604) 555-0123" /></div>
               </div>
               {error && <p className="mt-3 text-xs text-red-500">{error}</p>}
-              <button onClick={book} disabled={sending || !name || !email}
+              <p className="mt-3 rounded-md bg-brand-50 px-3 py-2 text-xs text-brand-800 dark:bg-brand-900/20 dark:text-brand-200">
+                📞 This is a phone consultation — your RCIC will call you at the scheduled time. Please prepare your questions in advance.
+              </p>
+              <button onClick={book} disabled={sending || !name || !email || !phone}
                 className="mt-4 flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 py-2.5 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-50 dark:bg-brand-500 dark:text-white">
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                 {sending ? "Booking..." : "Confirm Booking"}

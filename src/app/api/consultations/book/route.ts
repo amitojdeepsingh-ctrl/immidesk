@@ -10,8 +10,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { slug, name, email, phone, startTime, endTime, consultantId, title } = body;
 
-    if (!slug || !name || !email || !startTime || !endTime || !consultantId) {
-      return errorResponse("MISSING_FIELDS", "Missing required fields", null, 400);
+    if (!slug || !name || !email || !phone || !startTime || !endTime || !consultantId) {
+      return errorResponse("MISSING_FIELDS", "Missing required fields (phone is required — the RCIC calls you)", null, 400);
     }
 
     const db = getSupabaseAdmin();
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         .select("name, email")
         .eq("id", consultantId)
         .maybeSingle();
-      const meetingUrl = `${appUrl}/join/${consultation.id}`;
+      const rcicName = consultant?.name ? `RCIC ${consultant.name}` : org.name;
       const startLocal = new Date(startTime).toLocaleString("en-CA", {
         dateStyle: "full",
         timeStyle: "short",
@@ -73,12 +73,12 @@ export async function POST(req: NextRequest) {
 
       const ics = buildIcs({
         uid: `${consultation.id}@immigdesk`,
-        title: `${org.name} — Consultation`,
-        description: `Your consultation with ${consultant?.name ?? org.name}. Join online: ${meetingUrl}`,
-        location: meetingUrl,
+        title: `${org.name} — Phone Consultation`,
+        description: `You will receive a phone call from ${rcicName}. Prepare your questions so they can be answered.`,
+        location: "Phone call — we will call the number you provided",
         start: startTime,
         end: endTime,
-        organizerName: org.name,
+        organizerName: rcicName,
         organizerEmail: sender.from.match(/<(.+)>/)?.[1] ?? undefined,
         attendeeName: name,
         attendeeEmail: email,
@@ -91,15 +91,20 @@ export async function POST(req: NextRequest) {
         html: `
           <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a">
             <h2 style="font-size:20px;font-weight:700;margin-bottom:4px">You're booked, ${name}!</h2>
-            <p style="color:#555">Your consultation with <strong>${consultant?.name ?? org.name}</strong> at <strong>${org.name}</strong> is confirmed.</p>
+            <p style="color:#555">Your consultation is confirmed for:</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0">
               <tr><td style="padding:14px;background:#f4f4f5;border-radius:8px">
                 <p style="margin:0 0 6px;font-size:14px"><strong>📅 ${startLocal}</strong></p>
-                <p style="margin:0;font-size:13px;color:#555">${title ?? "Immigration consultation"} · online meeting</p>
+                <p style="margin:0;font-size:13px;color:#555">${title ?? "Immigration consultation"} · phone consultation</p>
               </td></tr>
             </table>
-            <p><a href="${meetingUrl}" style="display:inline-block;background:#35599C;color:#fff;text-decoration:none;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600">Join Your Online Meeting &rarr;</a></p>
-            <p style="font-size:12px;color:#888">The same link works on the day of your meeting. The attached calendar file adds this to Outlook, Google or Apple Calendar.</p>
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0">
+              <tr><td style="padding:16px;background:#eef3fb;border-radius:8px;border-left:4px solid #35599C">
+                <p style="margin:0 0 6px;font-size:14px"><strong>📞 You will receive a call from ${rcicName}.</strong></p>
+                <p style="margin:0;font-size:13px;color:#444">We will call you at <strong>${phone}</strong> at the scheduled time. Please prepare your questions in advance so they can all be answered during the call.</p>
+              </td></tr>
+            </table>
+            <p style="font-size:12px;color:#888">The attached calendar file adds this to Outlook, Google or Apple Calendar with a reminder one hour before.</p>
             <hr style="border:none;border-top:1px solid #e5e5e5;margin:20px 0"/>
             <p style="font-size:11px;color:#888">${org.name} · Immigration Consulting Services</p>
           </div>
@@ -118,7 +123,7 @@ export async function POST(req: NextRequest) {
         await sendEmail({
           to: { email: consultant.email, name: consultant.name ?? "" },
           subject: `New Booking — ${name}, ${startLocal}`,
-          html: `<p>${name} (${email}${phone ? `, ${phone}` : ""}) booked a consultation for <strong>${startLocal}</strong>.</p><p>Manage it in ImmigDesk → Consultations.</p>`,
+          html: `<p>${name} booked a phone consultation for <strong>${startLocal}</strong>.</p><p>Call them at <strong>${phone}</strong> (email: ${email}).</p><p>Manage it in ImmigDesk → Consultations.</p>`,
         }).catch(() => {});
       }
     } catch (e) {
