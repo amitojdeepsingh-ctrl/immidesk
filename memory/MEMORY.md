@@ -91,6 +91,13 @@ tickable items, Share via WhatsApp (wa.me pre-filled w/ text+link), Copy-as-text
 Portal docs tab swapped to client-safe lists. GOTCHA: interactive bits (onChange/checkbox) must
 live in client components — caused 2 RSC 500s (Updates page, checklist page).
 
+**Branding completeness (`0904aeb`)**: organization-logos bucket now PUBLIC; POST
+/api/organization/logo uploads logo → stable public URL on Organization.logoUrl; Company Profile
+gained Website field + logo file upload; brand header/footer show 🌐 website; Organization.website
+column added (migration-org-website.sql). ADS org seeded: email noreply@adsimmigration.com +
+website adsimmigration.com; PHONE + LOGO still null — user must set in Settings (phone unknown,
+logo file not provided).
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
