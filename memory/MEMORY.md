@@ -98,6 +98,11 @@ column added (migration-org-website.sql). ADS org seeded: email noreply@adsimmig
 website adsimmigration.com; PHONE + LOGO still null — user must set in Settings (phone unknown,
 logo file not provided).
 
+**Dashboard Checklists page (`587da8a`)**: sidebar "Checklists" → /checklists grid of all 20
+client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; client picker
+personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
+case per client).
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
