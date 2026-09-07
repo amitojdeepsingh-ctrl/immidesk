@@ -3,11 +3,22 @@ import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { successResponse, errorResponse, handleApiError } from "@/lib/api/errors";
 import { sendEmail, orgSender } from "@/lib/email/resend";
 import { buildIcs } from "@/lib/ics";
-import { resolveAppUrl } from "@/lib/portal-token";
+import { formatPacific, pacificBookingInstant } from "@/lib/consultation-time";
+import { z } from "zod";
+
+const bookingSchema = z.object({
+  slug: z.string().min(1).max(150),
+  name: z.string().trim().min(1).max(150),
+  email: z.string().trim().email().max(254),
+  phone: z.string().trim().min(7).max(40),
+  startTime: z.string(), endTime: z.string(),
+  consultantId: z.string().min(1).max(100),
+  title: z.string().trim().max(200).optional(),
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body = bookingSchema.parse(await req.json());
     const { slug, name, email, phone, startTime, endTime, consultantId, title } = body;
 
     if (!slug || !name || !email || !phone || !startTime || !endTime || !consultantId) {
@@ -24,15 +35,44 @@ export async function POST(req: NextRequest) {
 
     if (!org) return errorResponse("NOT_FOUND", "Organization not found", null, 404);
 
-    const { data: existing } = await db
+    let startUtc: string;
+    let endUtc: string;
+    try {
+      startUtc = pacificBookingInstant(startTime);
+      endUtc = pacificBookingInstant(endTime);
+    } catch {
+      return errorResponse("INVALID_TIME", "Choose a valid Pacific appointment time", null, 422);
+    }
+    if (startUtc <= new Date().toISOString() || endUtc <= startUtc || startTime.slice(0, 10) !== endTime.slice(0, 10)) {
+      return errorResponse("INVALID_TIME", "Choose a future appointment on the same day", null, 422);
+    }
+    const { data: consultant, error: consultantError } = await db.from("User")
+      .select("id, name, email").eq("id", consultantId).eq("organizationId", org.id).maybeSingle();
+    if (consultantError) throw consultantError;
+    if (!consultant) return errorResponse("NOT_FOUND", "Consultant not found", null, 404);
+    const { data: rule, error: ruleError } = await db.from("AvailabilityRule").select("*")
+      .eq("organization_id", org.id).eq("user_id", consultantId).eq("is_active", true)
+      .eq("day_of_week", new Date(`${startTime.slice(0, 10)}T12:00:00Z`).getUTCDay()).maybeSingle();
+    if (ruleError) throw ruleError;
+    const minutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3, 5));
+    const startMinute = minutes(startTime.slice(11));
+    const endMinute = minutes(endTime.slice(11));
+    if (!rule || rule.slot_duration <= 0 || startMinute < minutes(rule.start_time) || endMinute > minutes(rule.end_time)
+      || endMinute - startMinute !== rule.slot_duration || (startMinute - minutes(rule.start_time)) % rule.slot_duration !== 0) {
+      return errorResponse("INVALID_SLOT", "This appointment is outside the consultant's availability", null, 422);
+    }
+
+    const { data: existing, error: overlapError } = await db
       .from("Consultation")
       .select("id")
       .eq("consultant_id", consultantId)
-      .eq("start_time", startTime)
-      .eq("status", "SCHEDULED")
-      .maybeSingle();
+      .lt("start_time", endUtc)
+      .gt("end_time", startUtc)
+      .in("status", ["SCHEDULED", "IN_PROGRESS"])
+      .limit(1);
+    if (overlapError) throw overlapError;
 
-    if (existing) return errorResponse("SLOT_TAKEN", "This time slot is already booked", null, 409);
+    if (existing?.length) return errorResponse("SLOT_TAKEN", "This time slot is already booked", null, 409);
 
     const roomName = `consultation_${org.id}_${Date.now()}`;
 
@@ -45,30 +85,30 @@ export async function POST(req: NextRequest) {
         lead_name: name,
         lead_email: email,
         lead_phone: phone ?? null,
-        start_time: startTime,
-        end_time: endTime,
+        start_time: startUtc,
+        end_time: endUtc,
         status: "SCHEDULED",
         room_name: roomName,
       })
       .select()
       .single();
 
+    if (error?.code === "23P01") return errorResponse("SLOT_TAKEN", "This time slot is already booked", null, 409);
     if (error) throw error;
+
+    // ── Bell notification for the consultant ────────────────────────────────
+    const { error: notificationError } = await db.from("Notification").insert({
+      userId: consultantId,
+      title: `New booking — ${name}`,
+      message: `Phone consultation: ${formatPacific(startUtc)}.`,
+      link: `/consultations/${consultation.id}`,
+    });
+    if (notificationError) console.error("Booking notification failed", notificationError.code);
 
     // ── Confirmation + calendar invite to the client ────────────────────────
     try {
-      const origin = new URL(req.url).origin;
-      const appUrl = resolveAppUrl(origin);
-      const { data: consultant } = await db
-        .from("User")
-        .select("name, email")
-        .eq("id", consultantId)
-        .maybeSingle();
       const rcicName = consultant?.name ? `RCIC ${consultant.name}` : org.name;
-      const startLocal = new Date(startTime).toLocaleString("en-CA", {
-        dateStyle: "full",
-        timeStyle: "short",
-      });
+      const startLocal = formatPacific(startUtc);
       const sender = orgSender({ name: org.name, email: org.email ?? undefined, settings: org.settings });
 
       const ics = buildIcs({
@@ -76,8 +116,8 @@ export async function POST(req: NextRequest) {
         title: `${org.name} — Phone Consultation`,
         description: `You will receive a phone call from ${rcicName}. Prepare your questions so they can be answered.`,
         location: "Phone call — we will call the number you provided",
-        start: startTime,
-        end: endTime,
+        start: startUtc,
+        end: endUtc,
         organizerName: rcicName,
         organizerEmail: sender.from.match(/<(.+)>/)?.[1] ?? undefined,
         attendeeName: name,

@@ -30,6 +30,7 @@ export interface SendEmailParams {
   replyTo?: string;
   tags?: { name: string; value: string }[];
   scheduledAt?: string; // ISO 8601 for scheduled delivery
+  idempotencyKey?: string;
   attachments?: {
     filename: string;
     content: Buffer | string;
@@ -148,7 +149,7 @@ export async function sendEmail(
           : a.content.toString("base64"),
         content_type: a.contentType,
       })),
-    });
+    }, params.idempotencyKey ? { idempotencyKey: params.idempotencyKey } : undefined);
 
     if (error) {
       console.error("[Resend] Send failed:", error);

@@ -44,7 +44,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
 
   const selectDate = (day: number) => {
     const date = new Date(calStart.getFullYear(), calStart.getMonth(), day);
-    const dateStr = date.toISOString().slice(0, 10);
+    const dateStr = `${calStart.getFullYear()}-${String(calStart.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
     setSelectedDate(dateStr);
     loadSlots(dateStr);
     setStep("time");
@@ -103,7 +103,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
       <div className="mx-auto max-w-2xl px-4 py-12">
         <div className="mb-8 text-center">
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">Book a Consultation</h1>
-          <p className="mt-1 text-sm text-zinc-500">Choose a time that works for you</p>
+          <p className="mt-1 text-sm text-zinc-500">All appointments use Pacific Time (PST/PDT), regardless of your location.</p>
         </div>
 
         {/* Progress */}
@@ -201,7 +201,7 @@ export default function BookConsultationPage({ params }: { params: Promise<{ slu
                   <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
                     {new Date(selectedSlot.date).toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
                   </p>
-                  <p className="text-xs text-zinc-500">{selectedSlot.startTime} — {selectedSlot.endTime}</p>
+                  <p className="text-xs text-zinc-500">{selectedSlot.startTime} — {selectedSlot.endTime} <span className="text-zinc-400">(Pacific Time)</span></p>
                   {selectedSlot.consultantName && <p className="text-xs text-zinc-500 mt-1">with {selectedSlot.consultantName}</p>}
                 </div>
               )}

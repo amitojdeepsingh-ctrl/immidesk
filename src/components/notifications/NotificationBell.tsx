@@ -72,8 +72,11 @@ export function NotificationBell() {
 
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen(!open)} className="relative rounded-md p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300">
+      <button type="button" aria-label={`Notifications, ${unreadCount} unread`} aria-expanded={open}
+        onClick={() => { setOpen(!open); fetchNotifications(); }}
+        className="relative flex min-h-11 items-center gap-2 rounded-md border border-brand-200 bg-brand-50 px-3 text-brand-700 hover:bg-brand-100 dark:border-brand-700 dark:bg-brand-900 dark:text-brand-100">
         <Bell className="h-5 w-5" />
+        <span className="text-sm font-medium">Notifications</span>
         {unreadCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[14px] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-bold text-white">
             {unreadCount > 9 ? "9+" : unreadCount}

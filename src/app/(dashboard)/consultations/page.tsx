@@ -314,12 +314,13 @@ export default function ConsultationsPage() {
                       <CalendarIcon className="h-3 w-3" />{" "}
                       {new Date(c.start_time).toLocaleDateString("en-US", {
                         weekday: "short", month: "short", day: "numeric", year: "numeric",
+                        timeZone: "America/Los_Angeles",
                       })}
                     </p>
                     <p className="flex items-center gap-1.5">
                       <Clock className="h-3 w-3" />{" "}
-                      {new Date(c.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} —{" "}
-                      {new Date(c.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(c.start_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: "America/Los_Angeles" })} —{" "}
+                      {new Date(c.end_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: "America/Los_Angeles" })} (PT)
                     </p>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { successResponse, errorResponse, handleApiError } from "@/lib/api/errors";
+import { pacificBookingInstant } from "@/lib/consultation-time";
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,11 +19,12 @@ export async function GET(req: NextRequest) {
 
     if (!org) return errorResponse("NOT_FOUND", "Organization not found", null, 404);
 
-    const { data: rules } = await getSupabaseAdmin()
+    const { data: rules, error: rulesError } = await getSupabaseAdmin()
       .from("AvailabilityRule")
       .select("*, user:User(id, name)")
       .eq("organization_id", org.id)
       .eq("is_active", true);
+    if (rulesError) throw rulesError;
 
     if (!rules || rules.length === 0) {
       return successResponse({ slots: [], consultants: [] });
@@ -37,7 +39,10 @@ export async function GET(req: NextRequest) {
     let slots: Array<{ date: string; startTime: string; endTime: string; consultantId: string; consultantName: string }> = [];
 
     if (date) {
-      const dayOfWeek = new Date(date).getDay();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(new Date(`${date}T12:00:00Z`).getTime())) {
+        return errorResponse("INVALID_DATE", "Choose a valid date", null, 422);
+      }
+      const dayOfWeek = new Date(`${date}T12:00:00Z`).getUTCDay();
 
       for (const rule of rules) {
         if (rule.day_of_week !== dayOfWeek) continue;
@@ -47,6 +52,7 @@ export async function GET(req: NextRequest) {
         const startMin = startH * 60 + startM;
         const endMin = endH * 60 + endM;
         const dur = rule.slot_duration ?? 30;
+        if (dur <= 0 || !Number.isFinite(dur)) continue;
 
         const consultant = consultantMap.get(rule.user_id);
 
@@ -66,15 +72,22 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // Filter out past time slots if date is today
-      const now = new Date();
-      if (date === now.toISOString().slice(0, 10)) {
-        const currentMin = now.getHours() * 60 + now.getMinutes();
-        slots = slots.filter(s => {
-          const [sh, sm] = s.startTime.split(":").map(Number);
-          return sh * 60 + sm > currentMin;
-        });
-      }
+      const dayStart = pacificBookingInstant(`${date}T00:00:00`);
+      const nextDate = new Date(`${date}T12:00:00Z`);
+      nextDate.setUTCDate(nextDate.getUTCDate() + 1);
+      const dayEnd = pacificBookingInstant(`${nextDate.toISOString().slice(0, 10)}T00:00:00`);
+      const { data: bookings, error: bookingsError } = await getSupabaseAdmin().from("Consultation")
+        .select("consultant_id, start_time, end_time").eq("organization_id", org.id)
+        .in("status", ["SCHEDULED", "IN_PROGRESS"]).lt("start_time", dayEnd).gt("end_time", dayStart);
+      if (bookingsError) throw bookingsError;
+      slots = slots.filter(slot => {
+        try {
+          const start = Date.parse(pacificBookingInstant(`${date}T${slot.startTime}:00`));
+          const end = Date.parse(pacificBookingInstant(`${date}T${slot.endTime}:00`));
+          return start > Date.now() && !(bookings ?? []).some(b => b.consultant_id === slot.consultantId
+            && Date.parse(b.start_time) < end && Date.parse(b.end_time) > start);
+        } catch { return false; }
+      });
     }
 
     return successResponse({ slots, consultants });
