@@ -103,6 +103,28 @@ client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; clie
 personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
 case per client).
 
+**Booking alerts + Pacific Time + 30-min reminders (`c4a3e63`)**:
+- Bell alert on every booking (Notification row for consultant); bell button made
+  prominent (branded pill, aria, sticky topbar)
+- **All booking times are Pacific** (America/Los_Angeles w/ DST) regardless of client
+  location — `pacificBookingInstant` validates and converts; nonexistent spring-forward
+  times rejected; slots page filters in PST; booking page labels "(Pacific Time)"
+- **30-min reminder emails** via protected cron endpoint:
+  `POST /api/cron/consultation-reminders` (Bearer `CONSULTATION_REMINDER_SECRET`)
+  → DB `claim_consultation_reminders()` RPC (row-level `FOR UPDATE SKIP LOCKED` + 5-min
+  lease) → recheck status → send branded reminder → mark `reminded_start_time` →
+  release lease. Resend `idempotencyKey` prevents duplicates. 600ms throttle.
+  Migration: `prisma/migration-consultation-reminders.sql` (APPLIED LIVE — btree_gist,
+  exclusion constraint `consultation_no_overlap`, claim function, reminded_start_time
+  + reminder_claimed_at columns). Secret set on Vercel prod.
+- Booking validation: zod schema, consultant existence, availability-rule check,
+  overlap exclusion constraint (DB-level double-booking prevention)
+- Tests: 4 Pacific-time conversion tests (winter/summer/spring-forward/reject)
+- **TO GO LIVE with reminders**: set up external cron (cron-job.org or similar)
+  hitting `https://immidesk.vercel.app/api/cron/consultation-reminders` every minute
+  with header `Authorization: Bearer <CONSULTATION_REMINDER_SECRET>`. Secret is in
+  local `.env`; rotate on Vercel if needed.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
