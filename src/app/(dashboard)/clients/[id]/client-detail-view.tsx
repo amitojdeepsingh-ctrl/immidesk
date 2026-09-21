@@ -524,7 +524,12 @@ export function ClientDetailView({ client }: ClientDetailViewProps) {
                       </span>
                     </td>
                     <td className="px-4 py-2.5 font-medium text-zinc-900 dark:text-zinc-50">
-                      {intakeName(fi.filledData) || "—"}
+                      <Link
+                        href={`/clients/${client.id}/application?submission=${fi.id}`}
+                        className="hover:text-brand-600 hover:underline dark:hover:text-brand-400"
+                      >
+                        {intakeName(fi.filledData) || "—"}
+                      </Link>
                     </td>
                     <td className="px-4 py-2.5">
                       {intakeWillApply(fi.filledData) ? (
