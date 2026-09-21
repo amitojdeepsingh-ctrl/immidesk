@@ -176,6 +176,22 @@ export function PisAnswersView({ applicantLabel, formName, status, updatedAt, fi
     rows: section.fields.filter(({ key }) => !isEmpty(filledData[key])),
   })).filter((s) => s.rows.length > 0);
 
+  // Coverage — makes thin submissions self-evident (client left fields blank)
+  // instead of looking like a broken view.
+  const flatAnswered = sections.reduce((n, s) => n + s.rows.length, 0);
+  const flatTotal = PIS_SECTIONS.reduce((n, s) => n + s.fields.length, 0);
+  const statutoryAnswers =
+    typeof filledData.statutory === "object" && filledData.statutory !== null
+      ? (filledData.statutory as Record<string, { answer?: string }>)
+      : {};
+  const statutoryAnswered = Object.values(statutoryAnswers).filter(
+    (a) => a?.answer === "Yes" || a?.answer === "No",
+  ).length;
+  const repeaterEntries = Object.keys(REPEATER_LAYOUTS).reduce((n, key) => {
+    const rows = filledData[key];
+    return n + (Array.isArray(rows) ? rows.filter((r) => typeof r === "object" && r !== null && !isEmpty(r)).length : 0);
+  }, 0);
+
   return (
     <div className="space-y-5 rounded-lg border border-brand-200 bg-brand-50/50 p-4 dark:border-brand-900 dark:bg-brand-950/20">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -187,6 +203,11 @@ export function PisAnswersView({ applicantLabel, formName, status, updatedAt, fi
             {formName}
             {typeof meta.programType === "string" && meta.programType ? ` · ${meta.programType.replace(/_/g, " ")}` : ""}
             {updatedAt ? ` · Updated ${new Date(updatedAt).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" })}` : ""}
+          </p>
+          <p className="mt-0.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            {flatAnswered + statutoryAnswered} of {flatTotal + STATUTORY_QUESTIONS.length} questions answered
+            {repeaterEntries > 0 ? ` · ${repeaterEntries} history ${repeaterEntries === 1 ? "entry" : "entries"}` : ""}
+            {flatAnswered + statutoryAnswered < 10 ? " — client left most fields blank" : ""}
           </p>
         </div>
         <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
