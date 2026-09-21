@@ -118,6 +118,9 @@ case per client).
   `/clients/{id}/application?submission=<id>` which renders a read-only answers
   panel (all filled fields incl. repeaters/statutory); form names in the
   application table link the same way.
+- Readable answers (`f42da3d`): `PisAnswersView` renders submissions as the
+  form itself — PIS_SECTIONS order with real labels, empties hidden, repeater
+  cards (ids hidden), statutory 1–18 with full question text and Yes highlighted.
 
 **Booking alerts + Pacific Time + 30-min reminders (`c4a3e63`)**:
 - Bell alert on every booking (Notification row for consultant); bell button made
