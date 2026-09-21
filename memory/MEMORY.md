@@ -103,6 +103,18 @@ client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; clie
 personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
 case per client).
 
+**Intake submission alerts (`992ed7f`)**:
+- Root cause found: `POST /api/client-portal/intake` saved PIS submissions
+  silently — no bell, no email, no activity. (Krishan Sharma's 4 COMPLETE
+  submissions + SIGNED agreement were safe in DB; the firm just was never told.)
+- Fix: on FIRST submission the route now creates a Notification row for every
+  org team member + sends a branded firm email linking to
+  `/clients/{id}/application`. Re-submits (client edits) do not re-notify.
+  Verified live with scratch client: POST 200 `isNew:true`, Notification row
+  correct, scratch data cleaned up.
+- View client answers: `/clients/{id}/application` (IMM submissions block) or
+  `/forms/[code]?caseId=…`. Case detail page does NOT show form submissions yet.
+
 **Booking alerts + Pacific Time + 30-min reminders (`c4a3e63`)**:
 - Bell alert on every booking (Notification row for consultant); bell button made
   prominent (branded pill, aria, sticky topbar)
