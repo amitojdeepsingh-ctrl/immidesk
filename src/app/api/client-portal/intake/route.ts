@@ -19,6 +19,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { verifyPortalToken } from "@/lib/portal-token";
 import { PIS_SECTIONS, type ApplicantDraft } from "@/lib/intake/pis-schema";
+import { sendEmail, orgSender } from "@/lib/email/resend";
 
 const PIS_FORM_CODE = "IMM_PIS";
 
@@ -131,7 +132,7 @@ export async function POST(req: NextRequest) {
       })),
     ];
 
-    const saved: Array<{ applicantLabel: string; willApply: boolean; submissionId: string | null }> = [];
+    const saved: Array<{ applicantLabel: string; willApply: boolean; submissionId: string | null; isNew: boolean }> = [];
 
     for (const applicant of applicants) {
       const a = applicant as ApplicantDraft & { role: "PRIMARY" | "SPOUSE" | "CHILD" };
@@ -173,7 +174,7 @@ export async function POST(req: NextRequest) {
             updatedAt: new Date().toISOString(),
           })
           .eq("id", existingSub.id);
-        saved.push({ applicantLabel: label, willApply: !!a.willApply, submissionId: existingSub.id });
+        saved.push({ applicantLabel: label, willApply: !!a.willApply, submissionId: existingSub.id, isNew: false });
       } else {
         const { data: newSub, error: insertErr } = await supabase
           .from("IMMFormSubmission")
@@ -190,7 +191,7 @@ export async function POST(req: NextRequest) {
           .select("id")
           .single();
         if (insertErr) throw new Error(`Failed to save ${label}: ${insertErr.message}`);
-        saved.push({ applicantLabel: label, willApply: !!a.willApply, submissionId: newSub?.id ?? null });
+        saved.push({ applicantLabel: label, willApply: !!a.willApply, submissionId: newSub?.id ?? null, isNew: true });
       }
     }
 
@@ -200,6 +201,50 @@ export async function POST(req: NextRequest) {
       .update({ status: "DOCUMENT_COLLECTION", updatedAt: new Date().toISOString() })
       .eq("id", caseId)
       .eq("status", "INTAKE");
+
+    // ── Notify the firm (bell + email) on FIRST submission only ────────────
+    // Re-submits are client edits to existing data and must not spam.
+    // Best-effort: notification failures never fail the intake response.
+    if (saved.some((s) => s.isNew)) {
+      try {
+        const [{ data: kase }, { data: client }, { data: org }, { data: team }] = await Promise.all([
+          supabase.from("Case").select("title, organizationId").eq("id", caseId).maybeSingle(),
+          supabase.from("Client").select("firstName, lastName").eq("id", payload.clientId).maybeSingle(),
+          supabase.from("Organization").select("name, email, settings").eq("id", payload.organizationId).maybeSingle(),
+          supabase.from("User").select("id, name, email").eq("organizationId", payload.organizationId),
+        ]);
+        const clientName = [client?.firstName, client?.lastName].filter(Boolean).join(" ") || "A client";
+        const labels = saved.map((s) => s.applicantLabel).join(", ");
+        const appUrl = `/clients/${payload.clientId}/application`;
+
+        // Bell notifications for every team member in the org
+        for (const member of team ?? []) {
+          const { error: notifErr } = await supabase.from("Notification").insert({
+            userId: member.id,
+            title: `New intake forms: ${clientName}`,
+            message: `${clientName} submitted the Personal Information Sheet (${labels}). View in ${kase?.title ?? "their case"}.`,
+            link: appUrl,
+          });
+          if (notifErr) console.warn("client-portal/intake notification failed:", notifErr.message);
+        }
+
+        // Branded email to the firm (org email, else first team member)
+        const recipients = (team ?? []).map((m) => m.email).filter(Boolean);
+        const firmEmail = org?.email || recipients[0];
+        if (firmEmail) {
+          const sender = orgSender({ name: org?.name ?? "ImmigDesk", email: org?.email, settings: org?.settings });
+          await sendEmail({
+            ...sender,
+            to: { email: firmEmail },
+            subject: `New intake forms submitted — ${clientName}`,
+            text: `Hi ${org?.name ?? "team"},\n\n${clientName} just submitted the Personal Information Sheet (${labels}) for case "${kase?.title ?? caseId}".\n\nReview the answers in ImmigDesk: ${appUrl}\n\n— ImmigDesk`,
+            html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1a1a1a"><h2 style="font-size:18px;font-weight:700">New intake forms submitted</h2><p><strong>${clientName}</strong> just submitted the Personal Information Sheet (${labels}) for case <strong>${kase?.title ?? caseId}</strong>.</p><p><a href="${appUrl}" style="display:inline-block;background:#0f3b63;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600">Review answers</a></p><p style="font-size:12px;color:#888">— ImmigDesk</p></div>`,
+          });
+        }
+      } catch (notifyErr) {
+        console.warn("client-portal/intake notify failed:", notifyErr instanceof Error ? notifyErr.message : String(notifyErr));
+      }
+    }
 
     return NextResponse.json({ ok: true, applicants: saved });
   } catch (err: unknown) {
