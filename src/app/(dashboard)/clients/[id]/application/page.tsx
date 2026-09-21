@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { CaseTypeLabel, IMMFormStatus } from "@/types";
 import type { CaseType, IMMFormStatus as IMMFormStatusType } from "@/types";
 import { SOPViewer } from "@/components/application/SOPViewer";
+import { PisAnswersView } from "@/components/application/PisAnswersView";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -150,44 +151,13 @@ export default async function ClientApplicationPage({ params, searchParams }: Pa
         </div>
 
         {focusedSubmission && (
-          <div className="rounded-lg border border-brand-200 bg-brand-50/50 p-4 dark:border-brand-900 dark:bg-brand-950/20">
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-                {focusedSubmission.applicantLabel === "PRIMARY"
-                  ? "Main applicant"
-                  : focusedSubmission.applicantLabel === "SPOUSE"
-                    ? "Spouse"
-                    : focusedSubmission.applicantLabel.startsWith("CHILD#")
-                      ? `Child ${focusedSubmission.applicantLabel.split("#")[1]}`
-                      : focusedSubmission.applicantLabel}
-                {" — "}
-                {focusedSubmission.formName}
-              </h3>
-              <div className="flex items-center gap-2">
-                <FormStatusBadge status={focusedSubmission.status as IMMFormStatusType} />
-                <Link
-                  href={`/clients/${clientId}/application`}
-                  className="text-xs font-medium text-zinc-500 hover:text-zinc-700 hover:underline dark:text-zinc-400 dark:hover:text-zinc-200"
-                >
-                  Clear
-                </Link>
-              </div>
-            </div>
-            <dl className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
-              {Object.entries(focusedSubmission.filledData)
-                .filter(([k]) => k !== "_meta")
-                .map(([key, value]) => (
-                  <div key={key} className="flex flex-col gap-0.5 border-b border-zinc-100 pb-1.5 dark:border-zinc-800">
-                    <dt className="text-[11px] font-medium uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
-                      {humanizeFieldKey(key)}
-                    </dt>
-                    <dd className="text-sm text-zinc-800 dark:text-zinc-200">
-                      <AnswerValue value={value} />
-                    </dd>
-                  </div>
-                ))}
-            </dl>
-          </div>
+          <PisAnswersView
+            applicantLabel={focusedSubmission.applicantLabel}
+            formName={focusedSubmission.formName}
+            status={focusedSubmission.status}
+            updatedAt={focusedSubmission.updatedAt}
+            filledData={focusedSubmission.filledData}
+          />
         )}
 
         {serializedCase && immFormSubmissions.length > 0 ? (
@@ -240,51 +210,6 @@ export default async function ClientApplicationPage({ params, searchParams }: Pa
       </section>
     </div>
   );
-}
-
-function humanizeFieldKey(key: string): string {
-  return key
-    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function AnswerValue({ value }: { value: unknown }) {
-  if (value === null || value === undefined || value === "") return <span className="text-zinc-400">—</span>;
-  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
-    return <>{String(value)}</>;
-  }
-  if (Array.isArray(value)) {
-    if (value.length === 0) return <span className="text-zinc-400">—</span>;
-    return (
-      <ul className="list-disc space-y-1 pl-4">
-        {value.map((item, i) => (
-          <li key={i}>
-            {typeof item === "object" && item !== null ? (
-              <span>
-                {Object.entries(item as Record<string, unknown>)
-                  .filter(([, v]) => v !== null && v !== undefined && v !== "")
-                  .map(([k, v]) => `${humanizeFieldKey(k)}: ${typeof v === "object" ? JSON.stringify(v) : String(v)}`)
-                  .join(" · ")}
-              </span>
-            ) : (
-              String(item)
-            )}
-          </li>
-        ))}
-      </ul>
-    );
-  }
-  if (typeof value === "object") {
-    const entries = Object.entries(value as Record<string, unknown>).filter(([, v]) => v !== null && v !== undefined && v !== "");
-    if (entries.length === 0) return <span className="text-zinc-400">—</span>;
-    return (
-      <span>
-        {entries.map(([k, v]) => `${humanizeFieldKey(k)}: ${typeof v === "object" ? JSON.stringify(v) : String(v)}`).join(" · ")}
-      </span>
-    );
-  }
-  return <>{String(value)}</>;
 }
 
 function FormStatusBadge({ status }: { status: IMMFormStatusType }) {  const colors: Record<IMMFormStatusType, string> = {
