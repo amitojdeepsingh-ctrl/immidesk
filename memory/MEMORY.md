@@ -114,6 +114,10 @@ case per client).
   correct, scratch data cleaned up.
 - View client answers: `/clients/{id}/application` (IMM submissions block) or
   `/forms/[code]?caseId=…`. Case detail page does NOT show form submissions yet.
+- Family & Intake names are clickable (`944f420`): each links to
+  `/clients/{id}/application?submission=<id>` which renders a read-only answers
+  panel (all filled fields incl. repeaters/statutory); form names in the
+  application table link the same way.
 
 **Booking alerts + Pacific Time + 30-min reminders (`c4a3e63`)**:
 - Bell alert on every booking (Notification row for consultant); bell button made
