@@ -103,6 +103,21 @@ client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; clie
 personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
 case per client).
 
+**Retainer v2.0 with financial-document clauses (`1c6be96`, `8b2ff7b`)**:
+- Source: `C:\My Immi Files\Application Canadsa\C11\C11 Requirements\02_Retainer_Addendum_Financial_Documents.docx`
+- Added sections E–J to BOTH copies of the retainer (`src/lib/pdf/agreement-template.ts`
+  for PDFs, `(client-portal)/agreement/[token]/agreement-view.tsx` for signing):
+  E financial documents/client confirmation, F client review before submission,
+  G scope of document review (not a bank confirmation/audit/valuation),
+  H concerns + unresolved inconsistencies, I no guarantee of outcome,
+  J professional obligations preserved. Former E–M renumbered K–S.
+- Regulator corrected ICCRC → CICC; CIC/HRSDC → IRCC/CBSA/ESDC; Code of Ethics
+  article numbers dropped; representation end point now "final decision" (covers
+  work permits, not just COPR/visa). Version stamped 2.0 in doc + generated PDFs.
+- Full reference text: `docs/retainer-agreement-v2.md`. 5 template tests.
+- CICC street address/toll-free deliberately replaced with "as published at
+  www.college-ic.ca" — verify before printing if a postal address is required.
+
 **Intake submission alerts (`992ed7f`)**:
 - Root cause found: `POST /api/client-portal/intake` saved PIS submissions
   silently — no bell, no email, no activity. (Krishan Sharma's 4 COMPLETE
