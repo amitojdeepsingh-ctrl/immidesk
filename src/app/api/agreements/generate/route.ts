@@ -1,5 +1,5 @@
-// ---------------------------------------------------------------------------
-// POST /api/agreements/generate Ã¢â‚¬â€ Generate a service agreement PDF
+﻿// ---------------------------------------------------------------------------
+// POST /api/agreements/generate ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Generate a service agreement PDF
 // ---------------------------------------------------------------------------
 // Auth: Session required. Scoped to user''s organization.
 // Generates a PDF service agreement, stores it, and returns the agreement
@@ -20,7 +20,7 @@ import { generateAgreementPdf } from "@/lib/pdf/generator";
 import type { AgreementTemplateData } from "@/lib/pdf/agreement-template";
 import { nanoid } from "nanoid";
 
-// --- POST Ã¢â‚¬â€ Generate Agreement --------------------------------------------
+// --- POST ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Generate Agreement --------------------------------------------
 
 /**
  * POST /api/agreements/generate
@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
       meta: {
         agreementNumber,
         generatedAt,
-        version: "1.0.0",
+        version: "2.0",
       },
     };
 

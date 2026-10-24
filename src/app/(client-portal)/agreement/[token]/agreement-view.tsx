@@ -129,6 +129,9 @@ export function AgreementView({
 
           <h2 className="mb-1 text-center text-lg font-bold uppercase tracking-wide text-zinc-900 dark:text-zinc-50">Retainer Agreement</h2>
           {rcicNumber && <p className="mb-2 text-center text-xs text-zinc-500">RCIC Membership Number: {rcicNumber}</p>}
+          <p className="mb-4 text-center text-xs text-zinc-400">
+            Retainer version 2.0 · includes the Financial Documents and Client Responsibilities Addendum
+          </p>
 
           {/* Application type — prominent */}
           <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 px-5 py-3 text-center dark:border-zinc-700 dark:bg-zinc-800">
@@ -139,7 +142,7 @@ export function AgreementView({
           <p className="mb-6">
             <strong>{clientFullName}</strong>{client.address ? ` of ${client.address}` : ""} (Hereinafter &ldquo;Applicant&rdquo;) and,{" "}
             <strong>{rcicName}</strong> (Hereinafter &ldquo;Consultant&rdquo;), a Regulated Canadian Immigration Consultant, Member of the
-            Immigration Consultants of Canada Regulatory Council (ICCRC){rcicNumber ? `, Membership No ${rcicNumber}` : ""} carrying on the
+            College of Immigration and Citizenship Consultants (CICC){rcicNumber ? `, Membership No ${rcicNumber}` : ""} carrying on the
             practice of Immigration Consulting at <strong>{orgName}</strong>{orgAddress ? ` at ${orgAddress}` : ""}.
           </p>
 
@@ -155,8 +158,8 @@ export function AgreementView({
               <li>To assist with the preparation, if required, for an interview with CIC or a Visa office in consideration of the application.</li>
               <li>To represent Applicant and family members in respect of the above application before the Minister, Officer, or the Immigration and Refugee Board as necessary to follow up with the processing office to minimize delays and to comply with any additional documentation requests.</li>
               <li>To keep Applicant informed by telephone, fax, email or other means of communication as agreed on the current status of the application.</li>
-              <li>To act with due diligence in the above application and to act within the bounds of Canadian Immigration laws and ICCRC&rsquo;s Rules of Conduct to obtain the best result possible for the Applicant.</li>
-              <li>This agreement is considered closed / RCIC&rsquo;s representation of the Applicant ceases at the time of the issuance of COPR and Immigrant Visa.</li>
+              <li>To act with due diligence in the above application and to act within the bounds of Canadian Immigration laws and the College of Immigration and Citizenship Consultants&rsquo; Code of Professional Conduct to obtain the best result possible for the Applicant.</li>
+              <li>This agreement is considered closed / RCIC&rsquo;s representation of the Applicant ceases when the final decision on the application identified in this agreement is issued.</li>
             </ol>
             <p className="mt-3 italic text-zinc-500">The Applicant acknowledges that the Consultant will not provide advice regarding the tax laws of any country, employment or business opportunities.</p>
           </Section>
@@ -202,7 +205,61 @@ export function AgreementView({
             </ol>
           </Section>
 
-          <Section title="E. Interview">
+          <Section title="E. Financial Documents and Client Confirmation">
+            <ol className="list-decimal space-y-2 pl-5">
+              <li>The Applicant confirms that all financial records, statements, proof of funds, corporate records, and third-party documents used in the application were provided by the Applicant, or were received by the Applicant from the person or organization identified in the document.</li>
+              <li>The Applicant confirms that, to the best of the Applicant&rsquo;s knowledge, these documents are genuine, complete, accurate, current, and unchanged as of the date this agreement is signed.</li>
+              <li>The Applicant confirms that the Applicant has not knowingly altered, edited, or arranged for any other person to alter the documents or the information shown in them.</li>
+              <li>The Applicant will promptly disclose any missing pages, translation issues, unusual transactions, loans, gifts, transfers, or any other fact that may affect how a document is read.</li>
+              <li>The Applicant will promptly identify any document that is incomplete, altered, unavailable, outdated, incorrectly translated, or not confirmed by the Applicant.</li>
+              <li>The Applicant will promptly report any error in a document, and any change to the information it contains.</li>
+            </ol>
+          </Section>
+
+          <Section title="F. Client Review Before Submission">
+            <ol className="list-decimal space-y-2 pl-5">
+              <li>Before submission, the Consultant will provide the Applicant with the application forms, supporting documents, translations, and submission letter for review.</li>
+              <li>The Applicant will review these materials and confirm in writing that the information is complete and accurate to the best of the Applicant&rsquo;s knowledge.</li>
+              <li>The Consultant may rely on that written confirmation when submitting the application.</li>
+              <li>Where the Applicant does not provide the written confirmation, or the Applicant identifies an error, the Consultant may delay submission until the matter is resolved. Delay under this section is not a breach of this agreement.</li>
+            </ol>
+          </Section>
+
+          <Section title="G. Scope of Document Review">
+            <ol className="list-decimal space-y-2 pl-5">
+              <li>The Consultant will review documents for relevance, consistency, completeness, and presentation within the agreed scope of services.</li>
+              <li>The Consultant&rsquo;s review is not a bank confirmation, forensic examination, audit, valuation, or independent authentication of a document&rsquo;s origin or contents.</li>
+              <li>The Consultant does not verify the authenticity of every financial, corporate, employment, or third-party record supplied by the Applicant.</li>
+              <li>The Applicant remains responsible for the truth, accuracy, and completeness of all information and documents submitted on the Applicant&rsquo;s behalf.</li>
+            </ol>
+          </Section>
+
+          <Section title="H. Concerns and Unresolved Inconsistencies">
+            <ol className="list-decimal space-y-2 pl-5">
+              <li>
+                If a material concern about a document or about information in the application remains unresolved, the Consultant may:
+                <ul className="mt-1 list-[lower-alpha] space-y-1 pl-5">
+                  <li>pause preparation of the application;</li>
+                  <li>request further information, documents, or a written explanation;</li>
+                  <li>decline to use or rely on a document;</li>
+                  <li>decline to submit the application; or</li>
+                  <li>withdraw as representative where required or permitted by the Consultant&rsquo;s professional obligations and by law.</li>
+                </ul>
+              </li>
+              <li>The Consultant will tell the Applicant in writing what the concern is and what is needed to resolve it.</li>
+              <li>Delay caused by an unresolved concern is not a breach of this agreement and does not create a right to a refund of fees for services already rendered.</li>
+            </ol>
+          </Section>
+
+          <Section title="I. No Guarantee of Outcome">
+            <p>The decision on an application rests with the government authority. Nothing in this agreement, and nothing in the Consultant&rsquo;s review of documents, confirms or guarantees that an application will be approved, that processing will follow a particular timeline, or that any particular result will be obtained.</p>
+          </Section>
+
+          <Section title="J. Professional Obligations Preserved">
+            <p>Nothing in this agreement limits the Consultant&rsquo;s duties under applicable law, the College of Immigration and Citizenship Consultants&rsquo; Code of Professional Conduct, privacy obligations, conflict of interest rules, or the Consultant&rsquo;s obligation to withdraw where required. Where any term of this agreement conflicts with those duties, those duties prevail.</p>
+          </Section>
+
+          <Section title="K. Interview">
             <p className="mb-2">The Applicant acknowledges and agrees that:</p>
             <ol className="list-decimal space-y-2 pl-5">
               <li>An Officer may require an appearance at an interview.</li>
@@ -210,57 +267,57 @@ export function AgreementView({
             </ol>
           </Section>
 
-          <Section title="F. Termination">
+          <Section title="L. Termination">
             <p className="mb-2">The Applicant acknowledges and agrees that:</p>
             <ol className="list-decimal space-y-2 pl-5">
-              <li>This Agreement is considered terminated upon completion of tasks identified under section A (1–10) of this agreement.</li>
-              <li>This Agreement is considered terminated if material changes occur to the Client(s) application or eligibility, which make it impossible to proceed with services detailed in section A (1–10) of this Agreement.</li>
+              <li>This Agreement is considered terminated upon completion of tasks identified under section A of this agreement.</li>
+              <li>This Agreement is considered terminated if material changes occur to the Client(s) application or eligibility, which make it impossible to proceed with services detailed in section A of this Agreement.</li>
               <li><strong>Obligatory Withdrawal</strong> — An Immigration Consultant shall sever the consultant-client relationship or withdraw as representative if: (a) discharged by the Client; (b) instructed by the Client to do something illegal or in contravention to any rules; (c) the Immigration Consultant&rsquo;s continued involvement will place the Immigration Consultant in a conflict of interest; or (d) the Immigration Consultant is not competent to handle the matter.</li>
               <li><strong>Optional Withdrawal</strong> — An Immigration Consultant may sever the consultant-client relationship if there has been a serious loss of confidence, such as where: (a) the Client has deceived the Immigration Consultant; (b) the Client has refused to give adequate instructions; or (c) the Client has refused to accept and act upon the Consultant&rsquo;s advice on a significant point.</li>
-              <li><strong>Residual Right to Withdrawal</strong> — In situations not covered by articles F1 and F2, the Consultant may withdraw only if the withdrawal will not be unfair to the Applicant and is not done for an improper purpose.</li>
+              <li><strong>Residual Right to Withdrawal</strong> — In situations not covered by articles L3 and L4, the Consultant may withdraw only if the withdrawal will not be unfair to the Applicant and is not done for an improper purpose.</li>
               <li><strong>Withdrawal for Non-Payment</strong> — After reasonable notice, if the Applicant fails to provide funds on account for disbursements or fees, the Consultant may withdraw unless serious prejudice to the Applicant would result.</li>
               <li>Should the Applicant wish to withdraw the application, notice must be provided to the Consultant in writing, and all fees paid to the Consultant for services already rendered will be forfeited.</li>
             </ol>
           </Section>
 
-          <Section title="G. Confidentiality">
-            <p className="mb-2">All information and documentation reviewed by the RCIC, required by CIC and all other governing bodies, and used for the preparation of the application will not be divulged to any third party, other than agents and employees, without prior consent, except as demanded by law. The RCIC and all agents and employees are also bound by the confidentiality requirements of Article 8.1 and 8.5 of the Code of Professional Ethics.</p>
+          <Section title="M. Confidentiality">
+            <p className="mb-2">All information and documentation reviewed by the RCIC, required by IRCC and all other governing bodies, and used for the preparation of the application will not be divulged to any third party, other than agents and employees, without prior consent, except as demanded by law. The RCIC and all agents and employees are also bound by the confidentiality requirements of the College of Immigration and Citizenship Consultants&rsquo; Code of Professional Conduct.</p>
             <p className="mb-2">The Client(s) agree to the use of electronic communication and storage of confidential information. The RCIC will use his/her best efforts to maintain a high degree of security for electronic communication and information storage.</p>
             <p>The Applicant acknowledges and agrees that the Consultant may consult about the Applicant&rsquo;s case with other Immigration consultants or persons with specific expertise in immigration law or government affairs, in order to maximise the quality of advice available to the Applicant.</p>
           </Section>
 
-          <Section title="H. Circumstances Beyond the Control of the Consultant">
+          <Section title="N. Circumstances Beyond the Control of the Consultant">
             <p>The Consultant will not be responsible for retroactive changes to any Immigration Act or Regulation, delays by authorities, closure of Visa offices / Consulates / High Commissions / Embassies, change of Federal or Provincial Immigration Regulations, Acts of God and any acts beyond the Consultant&rsquo;s control.</p>
           </Section>
 
-          <Section title="I. Complaints / Disputes">
-            <p className="mb-2">{rcicName} is a member in good standing of the Immigration Consultants of Canada Regulatory Council (ICCRC), and as such, is bound by its By-laws, Code of Professional Ethics, and associated Regulations.</p>
+          <Section title="O. Complaints / Disputes">
+            <p className="mb-2">{rcicName} is a member in good standing of the College of Immigration and Citizenship Consultants (CICC), and as such, is bound by its By-laws, Code of Professional Conduct, and associated Regulations.</p>
             <p className="mb-2">Any complaints the Applicant has with respect to services provided by the Consultant shall be addressed as follows:</p>
             <ol className="list-decimal space-y-1 pl-5">
               <li>The Applicant shall make a complaint in writing to the Consultant.</li>
               <li>The Consultant shall respond to the substance of the complaint within 30 days.</li>
+              <li>If the matter is not resolved, the Applicant may contact the College at the address, telephone number, and website published at www.college-ic.ca.</li>
             </ol>
-            <p className="mt-3 text-zinc-500">ICCRC Contact: 5500 North Service Rd., Suite 1002, Burlington, ON, L7L 6W6 · Toll free: 1-877-836-7543 · www.iccrc-crcic.ca</p>
           </Section>
 
-          <Section title="J. Force Majeure">
+          <Section title="P. Force Majeure">
             <p>The RCIC&rsquo;s failure to perform any term of this Retainer Agreement as a result of conditions beyond his/her control such as, but not limited to, governmental restrictions or subsequent legislation, war, strikes, or acts of God, shall not be deemed a breach of this Agreement.</p>
           </Section>
 
-          <Section title="K. Change Policy">
+          <Section title="Q. Change Policy">
             <p>The Client(s) acknowledge that if the RCIC is asked to act on the Client(s) behalf on matters other than those outlined above, or because of a material change in the Client(s) circumstances, or because of material facts not disclosed at the outset of the application, or because of a change in government legislation regarding the processing of immigration-related applications, the Agreement can be modified accordingly upon mutual agreement.</p>
           </Section>
 
-          <Section title="L. Other">
+          <Section title="R. Other">
             <ol className="list-decimal space-y-2 pl-5">
-              <li>In the event Citizenship and Immigration Canada (CIC) or Human Resources Skills and Development Canada (HRSDC) or PNP should contact the Client(s) directly, the Client(s) are instructed to notify the RCIC immediately.</li>
+              <li>In the event Immigration, Refugees and Citizenship Canada (IRCC), the Canada Border Services Agency, the Department of Employment and Social Development Canada, or a Provincial Nominee Program should contact the Client(s) directly, the Client(s) are instructed to notify the RCIC immediately.</li>
               <li>The Client(s) are to immediately advise the RCIC of any change in the marital, family, or civil status or change of physical address or contact information for any person included in the application.</li>
               <li>The Client(s) understand that they must be accurate and honest in the information they provide and that any inaccuracies may void this Agreement, or seriously affect the outcome of the application or the retention of any status they may obtain.</li>
               <li>In the event of a joint retainer agreement, the Client(s) understand that no information received in connection with the matter from one Client can be treated as confidential so far as any of the other Clients are concerned, and that if a conflict develops that cannot be resolved, the RCIC may have to withdraw completely.</li>
             </ol>
           </Section>
 
-          <Section title="M. Governing Law">
+          <Section title="S. Governing Law">
             <ol className="list-decimal space-y-1 pl-5">
               <li>This agreement is governed by the law of British Columbia in relation to any necessary arbitration.</li>
               <li>The interpretation of this agreement will be based on the language of English.</li>
