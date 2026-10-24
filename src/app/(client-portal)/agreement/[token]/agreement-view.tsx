@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { CheckCircle2, Pen, RotateCcw, Loader2, Printer } from "lucide-react";
 import { CASE_TYPE_LABELS } from "@/lib/checklists";
+import { ServiceTypeLabel } from "@/types";
 
 interface Client {
   firstName: string;
@@ -40,7 +41,10 @@ export function AgreementView({
 
   const clientFullName = `${client.firstName} ${client.lastName}`;
   const fmtFee = new Intl.NumberFormat("en-CA", { style: "currency", currency: feeCurrency }).format(feeAmount);
-  const serviceLabel = CASE_TYPE_LABELS[serviceType] ?? serviceType;
+  const serviceLabel =
+    CASE_TYPE_LABELS[serviceType] ??
+    (ServiceTypeLabel as Record<string, string>)[serviceType] ??
+    serviceType.replace(/_/g, " ");
   const today = new Date().toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
   const fmtDate = (iso: string) => new Date(iso).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" });
 
