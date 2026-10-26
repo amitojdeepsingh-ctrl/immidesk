@@ -115,6 +115,11 @@ case per client).
   article numbers dropped; representation end point now "final decision" (covers
   work permits, not just COPR/visa). Version stamped 2.0 in doc + generated PDFs.
 - Full reference text: `docs/retainer-agreement-v2.md`. 5 template tests.
+- Section E rewritten in active voice (`0221eb6`) to match house style: opens
+  with "The Applicant acknowledges and agrees that:" (same lead as D/K/L) and
+  each undertaking makes the Applicant the actor (provided / has not altered /
+  will disclose / will identify / will report). House style for obligations is
+  "The Applicant acknowledges and agrees that:" + numbered active clauses.
 - CICC street address/toll-free deliberately replaced with "as published at
   www.college-ic.ca" — verify before printing if a postal address is required.
 
