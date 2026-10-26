@@ -148,16 +148,13 @@ The Client(s) acknowledge that the granting of a visa or status and the time req
     // ── E. Financial Documents and Client Confirmation ─────────────────────
     {
       heading: "E. FINANCIAL DOCUMENTS AND CLIENT CONFIRMATION",
-      body: `1. The Applicant confirms that all financial records, statements, proof of funds, corporate records, and third-party documents used in the application were provided by the Applicant, or were received by the Applicant from the person or organization identified in the document.
+      body: `The Applicant acknowledges and agrees that:
 
-2. The Applicant confirms that, to the best of the Applicant's knowledge, these documents are genuine, complete, accurate, current, and unchanged as of the date this agreement is signed.
-
-3. The Applicant confirms that the Applicant has not knowingly altered, edited, or arranged for any other person to alter the documents or the information shown in them.
-
-4. The Applicant will promptly disclose any missing pages, translation issues, unusual transactions, loans, gifts, transfers, or any other fact that may affect how a document is read.
-
-5. The Applicant will promptly identify any document that is incomplete, altered, unavailable, outdated, incorrectly translated, or not confirmed by the Applicant.
-
+1. The Applicant provided all financial records, statements, proof of funds, corporate records, and third-party documents used in the application, either directly or through the person or organization identified in the document.
+2. To the best of the Applicant's knowledge, each document is genuine, complete, accurate, current, and unaltered as of the date of signing this agreement.
+3. The Applicant has not altered, edited, or arranged for any other person to alter any document or the information shown in it.
+4. The Applicant will promptly disclose any missing page, translation issue, unusual transaction, loan, gift, transfer, or any other fact that may affect how a document is read.
+5. The Applicant will promptly identify any document that is incomplete, altered, unavailable, outdated, or incorrectly translated, and any document that the Applicant cannot confirm.
 6. The Applicant will promptly report any error in a document, and any change to the information it contains.`,
     },
 
