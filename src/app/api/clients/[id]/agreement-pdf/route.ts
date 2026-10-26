@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/lib/auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { generateAgreementPdf } from "@/lib/pdf/generator";
@@ -11,9 +11,9 @@ const SERVICE_TYPE_LABELS: Record<string, string> = {
   EXPRESS_ENTRY: "Express Entry",
   FAMILY_SPONSORSHIP: "Family Sponsorship",
   CITIZENSHIP: "Citizenship Application",
-  RESTORATION_VISITOR: "Restoration of Status – Visitor",
-  RESTORATION_WORKER: "Restoration of Status – Worker",
-  RESTORATION_STUDENT: "Restoration of Status – Student",
+  RESTORATION_VISITOR: "Restoration of Status â€“ Visitor",
+  RESTORATION_WORKER: "Restoration of Status â€“ Worker",
+  RESTORATION_STUDENT: "Restoration of Status â€“ Student",
   PRRA: "Pre-Removal Risk Assessment (PRRA)",
   REFUGEE: "Refugee Protection",
   HUMANITARIAN: "Humanitarian & Compassionate",
@@ -63,7 +63,7 @@ export async function GET(
       }
     }
 
-    // Use DB-stored signature (most reliable — set at sign time)
+    // Use DB-stored signature (most reliable â€” set at sign time)
     // Fall back to storage fetch for agreements signed before this column was added
     let signatureDataUrl: string | undefined = (agreement as Record<string, unknown>).signatureDataUrl as string | undefined;
 
@@ -128,7 +128,7 @@ export async function GET(
       meta: {
         agreementNumber: agreement.id.slice(0, 8).toUpperCase(),
         generatedAt: signedDate,
-        version: "1.0",
+        version: "2.0",
       },
     });
 
