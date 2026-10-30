@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { FileText, Upload } from "lucide-react";
 import { DocumentList } from "@/components/documents/DocumentList";
-import { UploadZone } from "@/components/documents/UploadZone";
+import { DirectUploadZone } from "@/components/documents/DirectUploadZone";
 import { AcknowledgementPanel, type AcknowledgementRow } from "@/components/documents/AcknowledgementPanel";
 import { getPresignedDownloadUrl, StorageBuckets } from "@/lib/storage";
 import { acknowledgementUrl, generateAcknowledgementToken } from "@/lib/portal-token";
@@ -161,14 +161,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
             </Link>
           </div>
         ) : (
-          <UploadZone
-            cases={caseOptions}
-            onUpload={async (file, category, caseId, notes) => {
-              "use server";
-              const { uploadDocumentAction } = await import("@/lib/document-actions");
-              return uploadDocumentAction(file, category, caseId, notes, organization.id);
-            }}
-          />
+          <DirectUploadZone cases={caseOptions} />
         )}
       </section>
 
