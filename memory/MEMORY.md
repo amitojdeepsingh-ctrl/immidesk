@@ -120,6 +120,14 @@ case per client).
   POST `/api/client-portal/acknowledgement/sign` (token).
 - Live-verified: 1-page 45,427-byte source → 2-page 46,892-byte signed PDF,
   signed doc filed, bell notification created.
+- Upload path (`80e1ebf`): merged PDFs go browser → Supabase Storage via a signed
+  upload URL (`POST /api/acknowledgements/merged/upload-url`), then attach registers
+  the document. Server Actions cap bodies at 1 MB (`bodySizeLimit`), which produced
+  "An unexpected response was received from the server." Verified live with a 1.87 MB
+  PDF: upload 200, attach 201, combined 6 pages.
+- STILL OPEN: the general "Upload New Documents" zone (`uploadDocumentAction`) uses a
+  Server Action, so ordinary uploads over 1 MB hit the same limit. Migrate it to the
+  signed-upload path when touched.
 - Columns added live: `sourceDocumentId`, `sourceDocumentName`, `unsignedDocumentId`,
   `signedDocumentId` (`prisma/migration-acknowledgement-attached-doc.sql`).
 
