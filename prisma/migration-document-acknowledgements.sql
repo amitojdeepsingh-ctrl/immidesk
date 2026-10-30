@@ -41,6 +41,28 @@ CREATE INDEX IF NOT EXISTS "DocumentAcknowledgement_clientId_idx"
 CREATE INDEX IF NOT EXISTS "DocumentAcknowledgement_status_idx"
   ON public."DocumentAcknowledgement" (status);
 
+-- Foreign keys are required for PostgREST to resolve the
+-- client / case / organization embeddings used by the portal queries.
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'DocumentAcknowledgement_organizationId_fkey') THEN
+    ALTER TABLE public."DocumentAcknowledgement"
+      ADD CONSTRAINT "DocumentAcknowledgement_organizationId_fkey"
+      FOREIGN KEY ("organizationId") REFERENCES public."Organization"(id) ON DELETE CASCADE;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'DocumentAcknowledgement_clientId_fkey') THEN
+    ALTER TABLE public."DocumentAcknowledgement"
+      ADD CONSTRAINT "DocumentAcknowledgement_clientId_fkey"
+      FOREIGN KEY ("clientId") REFERENCES public."Client"(id) ON DELETE CASCADE;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'DocumentAcknowledgement_caseId_fkey') THEN
+    ALTER TABLE public."DocumentAcknowledgement"
+      ADD CONSTRAINT "DocumentAcknowledgement_caseId_fkey"
+      FOREIGN KEY ("caseId") REFERENCES public."Case"(id) ON DELETE SET NULL;
+  END IF;
+END $$;
+
+NOTIFY pgrst, 'reload schema';
+
 -- Service-role only. Forced RLS with no policies denies every other role,
 -- matching the deny-all posture applied to the rest of the schema.
 ALTER TABLE public."DocumentAcknowledgement" ENABLE ROW LEVEL SECURITY;
