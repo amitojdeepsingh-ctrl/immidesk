@@ -14,7 +14,7 @@
 import { NextRequest } from "next/server";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { requireAuth } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { successResponse, errorResponse, handleApiError, AppError } from "@/lib/api/errors";
 import {
@@ -33,7 +33,9 @@ const attachSchema = z.object({ documentId: z.string().min(1) });
 
 export async function POST(req: NextRequest) {
   try {
-    const { organization, prismaUser } = await requireAuth();
+    const user = await getCurrentUser();
+    if (!user) return errorResponse("UNAUTHORIZED", "Sign in to continue", null, 401);
+    const { organization, prismaUser } = user;
     const parsed = attachSchema.safeParse(await req.json());
     if (!parsed.success) {
       return errorResponse("VALIDATION_ERROR", "Choose the merged PDF to attach the page to", null, 422);
