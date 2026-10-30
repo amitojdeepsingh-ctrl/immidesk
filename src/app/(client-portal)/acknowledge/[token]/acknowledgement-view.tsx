@@ -1,8 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCircle2, FileText, Loader2, Pen, Printer, RotateCcw, ShieldCheck } from "lucide-react";
-import type { AcknowledgementClause, AcknowledgementItem } from "@/lib/document-acknowledgement";
+import { CheckCircle2, FileText, Loader2, Pen, Printer, RotateCcw } from "lucide-react";
 
 interface AcknowledgementViewProps {
   token: string;
@@ -12,12 +11,11 @@ interface AcknowledgementViewProps {
   status: string;
   signedAt: string | null;
   printedName: string | null;
-  clientNote: string | null;
-  items: AcknowledgementItem[];
-  clauses: AcknowledgementClause[];
+  statement: string[];
+  documents: string[];
+  caseTitle: string | null;
   clientName: string;
   clientEmail: string;
-  caseTitle: string | null;
   org: {
     name: string;
     email: string | null;
@@ -34,15 +32,14 @@ function fmtDate(iso: string | null): string {
 
 export function AcknowledgementView(props: AcknowledgementViewProps) {
   const {
-    token, acknowledgementId, title, statementVersion, status, signedAt, printedName,
-    clientNote, items, clauses, clientName, caseTitle, org,
+    token, acknowledgementId, statementVersion, status, signedAt, printedName,
+    statement, documents, caseTitle, clientName, clientEmail, org,
   } = props;
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [drawing, setDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
-  const [nameInput, setNameInput] = useState("");
-  const [noteInput, setNoteInput] = useState("");
+  const [nameInput, setNameInput] = useState(clientName);
   const [confirmed, setConfirmed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(status === "SIGNED");
@@ -104,7 +101,6 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
           acknowledgementId,
           signatureData,
           printedName: nameInput.trim(),
-          clientNote: noteInput.trim() || null,
         }),
       });
       const json = await res.json();
@@ -124,9 +120,8 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
           <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-emerald-500" />
           <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">Acknowledgement signed</h1>
           <p className="mt-2 text-sm text-zinc-500">
-            Thank you, {printedName ?? clientName}. You confirmed {items.length} document
-            {items.length === 1 ? "" : "s"} for {org.name}
-            {signedAt ? ` on ${fmtDate(signedAt)}` : ""}.
+            Thank you, {printedName ?? nameInput}. Your signature has been added to the acknowledgement page
+            {signedAt ? ` (${fmtDate(signedAt)})` : ""}.
           </p>
           <p className="mt-4 text-xs text-zinc-400">
             A signed copy is on file with your consultant. You can close this page.
@@ -142,7 +137,7 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
         <div className="mx-auto flex max-w-3xl items-center justify-between">
           <div>
             <p className="text-xs font-medium text-zinc-500">{org.name}</p>
-            <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Document Acknowledgement</h1>
+            <h1 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">Acknowledgement of documents</h1>
           </div>
           <button
             onClick={() => window.print()}
@@ -156,7 +151,7 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
       <div className="mx-auto max-w-3xl px-4 py-8 print:px-0 print:py-0">
         <div className="rounded-xl border border-zinc-200 bg-white px-8 py-10 text-sm leading-relaxed text-zinc-800 shadow-sm print:rounded-none print:border-none print:shadow-none dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
           <h2 className="text-center text-lg font-bold uppercase tracking-wide text-zinc-900 dark:text-zinc-50">
-            Document Acknowledgement
+            Acknowledgement of Documents
           </h2>
           <p className="mt-1 text-center text-xs text-zinc-500">
             {org.name}
@@ -166,69 +161,59 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
             <p className="mt-4 text-center text-sm font-medium text-zinc-700 dark:text-zinc-300">{caseTitle}</p>
           )}
 
-          <div className="mt-6 rounded-lg border border-zinc-200 bg-zinc-50 px-5 py-4 dark:border-zinc-700 dark:bg-zinc-800/60">
-            <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Client</p>
-            <p className="mt-0.5 text-base font-semibold text-zinc-900 dark:text-zinc-50">{clientName}</p>
-            <p className="text-xs text-zinc-500">{props.clientEmail}</p>
-          </div>
-
-          <ol className="mt-6 list-decimal space-y-2 pl-5">
-            {clauses.map((c) => (
-              <li key={c.number}>{c.text}</li>
+          <div className="mt-6 space-y-4">
+            {statement.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
             ))}
-          </ol>
+          </div>
 
           <h3 className="mt-7 font-bold text-zinc-900 dark:text-zinc-50">
-            Documents covered ({items.length})
+            Documents attached ({documents.length})
           </h3>
-          <div className="mt-2 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800">
-                  <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">#</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">Document</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">Category</th>
-                  <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">Uploaded</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                {items.map((item, i) => (
-                  <tr key={item.documentId}>
-                    <td className="px-3 py-2 text-zinc-400">{i + 1}</td>
-                    <td className="px-3 py-2 font-medium text-zinc-900 dark:text-zinc-50">{item.name}</td>
-                    <td className="px-3 py-2 text-zinc-500">{item.category.replace(/_/g, " ")}</td>
-                    <td className="px-3 py-2 text-zinc-500">
-                      {item.uploadedAt ? new Date(item.uploadedAt).toLocaleDateString("en-CA") : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ul className="mt-2 list-disc space-y-1 pl-5">
+            {documents.map((name) => (
+              <li key={name}>{name}</li>
+            ))}
+          </ul>
 
-          <div className="mt-6 border-t border-zinc-200 pt-5 dark:border-zinc-700">
-            <p className="mb-2 flex items-center gap-1.5 font-semibold text-zinc-900 dark:text-zinc-50">
-              <ShieldCheck className="h-4 w-4" /> Signed
-            </p>
-            <div className="grid grid-cols-2 gap-8">
+          <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+            <div className="space-y-6">
               <div>
-                <p className="font-medium">{clientName} (client)</p>
-                <div className="mt-6 border-b border-zinc-400" />
-                <p className="mt-1 text-xs text-zinc-500">Signature</p>
+                <p className="text-xs text-zinc-500">Client name</p>
+                <p className="min-h-[1.6rem] text-base font-medium text-zinc-900 dark:text-zinc-50">
+                  {status === "SIGNED" ? printedName : ""}
+                </p>
+                <div className="mt-1 border-b border-zinc-400" />
               </div>
               <div>
-                <p className="font-medium">Date</p>
-                <div className="mt-6 border-b border-zinc-400" />
-                <p className="mt-1 text-xs text-zinc-500">Signed electronically</p>
+                <p className="text-xs text-zinc-500">Signature</p>
+                <div className="mt-1 min-h-[3rem] border-b border-zinc-400" />
+              </div>
+              <div className="grid grid-cols-2 gap-8">
+                <div>
+                  <p className="text-xs text-zinc-500">Date</p>
+                  <p className="min-h-[1.6rem] text-sm">{status === "SIGNED" ? fmtDate(signedAt) : ""}</p>
+                  <div className="mt-1 border-b border-zinc-400" />
+                </div>
+                <div>
+                  <p className="text-xs text-zinc-500">Client email</p>
+                  <p className="min-h-[1.6rem] text-sm">{clientEmail}</p>
+                  <div className="mt-1 border-b border-zinc-400" />
+                </div>
               </div>
             </div>
           </div>
+
+          <p className="mt-8 flex items-center gap-1.5 text-xs text-zinc-500">
+            <FileText className="h-3.5 w-3.5" />
+            The acknowledgement page is appended to the end of the documents listed above.
+          </p>
         </div>
 
         <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-6 print:hidden dark:border-zinc-800 dark:bg-zinc-900">
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-50">
-              <Pen className="h-4 w-4" /> Confirm and sign
+              <Pen className="h-4 w-4" /> Sign here
             </div>
             {hasSignature && (
               <button onClick={clearCanvas} className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-600">
@@ -238,24 +223,12 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
           </div>
 
           <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Type your full name
+            Client name
           </label>
           <input
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
-            placeholder={clientName}
-            className="mb-3 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-          />
-
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Disclosures or notes (optional)
-          </label>
-          <textarea
-            value={noteInput}
-            onChange={(e) => setNoteInput(e.target.value)}
-            rows={2}
-            placeholder="e.g. Bank statement for March has a missing page; gift from my father in 2025."
-            className="mb-3 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+            className="mb-4 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
           />
 
           <canvas
@@ -281,10 +254,7 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
               onChange={(e) => setConfirmed(e.target.checked)}
               className="mt-0.5 h-4 w-4"
             />
-            <span>
-              I have read the statement above and confirm that the {items.length} document
-              {items.length === 1 ? "" : "s"} listed are the documents I provided.
-            </span>
+            <span>I confirm the statement above and that the documents listed are the documents I provided.</span>
           </label>
 
           {error && <p className="mt-2 text-xs text-red-500">{error}</p>}
@@ -296,23 +266,16 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
           >
             {submitting ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Submitting…
+                <Loader2 className="h-4 w-4 animate-spin" /> Signing…
               </>
             ) : (
-              "Sign and confirm documents"
+              "Sign acknowledgement"
             )}
           </button>
           <p className="mt-3 text-center text-xs text-zinc-400">
-            Your signature, name, date, and IP address are recorded with the document list.
+            Your name, signature, date and IP address are recorded on the acknowledgement page.
           </p>
         </div>
-
-        {clientNote && status === "SIGNED" && (
-          <div className="mt-4 flex items-start gap-2 rounded-lg border border-zinc-200 bg-white p-4 text-xs text-zinc-600 print:hidden dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
-            <FileText className="mt-0.5 h-3.5 w-3.5" />
-            <span>Disclosure on file: {clientNote}</span>
-          </div>
-        )}
       </div>
     </div>
   );

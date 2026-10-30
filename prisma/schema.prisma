@@ -823,6 +823,12 @@ model DocumentAcknowledgement {
   case             Case?                            @relation(fields: [caseId], references: [id], onDelete: SetNull)
   title            String                           @default("Document Acknowledgement")
   status           DocumentAcknowledgementStatus    @default(PENDING)
+  /// The merged PDF the acknowledgement page was appended to
+  sourceDocumentId   String?
+  sourceDocumentName String?
+  /// Generated copies: page appended unsigned, then stamped once signed
+  unsignedDocumentId String?
+  signedDocumentId   String?
   /// Snapshot of the documents presented for signature at send time
   items            Json                             @default("[]")
   itemCount        Int                              @default(0)

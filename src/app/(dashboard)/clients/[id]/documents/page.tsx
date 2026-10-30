@@ -87,7 +87,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
 
   const { data: acknowledgements } = await supabase
     .from("DocumentAcknowledgement")
-    .select("id, status, itemCount, createdAt, signedAt, viewedAt, printedName, pdfStoragePath")
+    .select("id, status, itemCount, createdAt, signedAt, viewedAt, printedName, pdfStoragePath, sourceDocumentName")
     .eq("clientId", clientId)
     .eq("organizationId", organization.id)
     .order("createdAt", { ascending: false })
@@ -115,6 +115,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
         signedAt: row.signedAt ? new Date(row.signedAt as string).toISOString() : null,
         printedName: (row.printedName as string | null) ?? null,
         viewedAt: row.viewedAt ? new Date(row.viewedAt as string).toISOString() : null,
+        sourceDocumentName: (row.sourceDocumentName as string | null) ?? null,
         url:
           row.status === "SIGNED"
             ? null
@@ -125,6 +126,10 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
       };
     }),
   );
+
+  const pdfDocuments = documentsWithUrls
+    .filter((doc) => doc.mimeType === "application/pdf" || doc.name.toLowerCase().endsWith(".pdf"))
+    .map((doc) => ({ id: doc.id, name: doc.name }));
 
   return (
     <div className="space-y-6">
@@ -187,11 +192,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
         />
       </section>
 
-      <AcknowledgementPanel
-        clientId={clientId}
-        documentCount={documentsWithUrls.length}
-        rows={acknowledgementRows}
-      />
+      <AcknowledgementPanel pdfDocuments={pdfDocuments} rows={acknowledgementRows} />
     </div>
   );
 }

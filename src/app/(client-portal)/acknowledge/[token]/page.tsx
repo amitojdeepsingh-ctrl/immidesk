@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
 import { verifyAcknowledgementToken } from "@/lib/portal-token";
 import {
-  buildAcknowledgementClauses,
+  acknowledgementStatement,
   type AcknowledgementItem,
 } from "@/lib/document-acknowledgement";
 import { AcknowledgementView } from "./acknowledgement-view";
@@ -34,7 +34,8 @@ export default async function AcknowledgementPage({ params }: PageProps) {
     db
       .from("DocumentAcknowledgement")
       .select(`
-        id, title, status, items, itemCount, statementVersion, signedAt, printedName, clientNote,
+        id, title, status, items, itemCount, statementVersion, signedAt, printedName,
+        sourceDocumentName,
         client:Client!inner(id, firstName, lastName, email),
         case:Case(id, title, caseType)
       `)
@@ -43,7 +44,7 @@ export default async function AcknowledgementPage({ params }: PageProps) {
       .single(),
     db
       .from("Organization")
-      .select("name, email, phone, addressLine1, city, province, postalCode, ciccRegistrationNumber, settings")
+      .select("name, email, phone, addressLine1, city, province, postalCode, ciccRegistrationNumber")
       .eq("id", payload.organizationId)
       .single(),
   ]);
@@ -56,8 +57,8 @@ export default async function AcknowledgementPage({ params }: PageProps) {
 
   const items = (Array.isArray(ack.items) ? ack.items : []) as AcknowledgementItem[];
   const clientName = `${client.firstName} ${client.lastName}`;
+  const firmName = org?.name ?? "Immigration Services";
 
-  // Record the first view so the firm can see the client opened the link.
   if (ack.status === "PENDING") {
     await db
       .from("DocumentAcknowledgement")
@@ -75,17 +76,15 @@ export default async function AcknowledgementPage({ params }: PageProps) {
       status={ack.status}
       signedAt={ack.signedAt}
       printedName={ack.printedName}
-      clientNote={ack.clientNote}
-      items={items}
-      clauses={buildAcknowledgementClauses({
-        clientName,
-        applicationLabel: (kase?.caseType as string | null) ?? null,
-      })}
+      statement={acknowledgementStatement(firmName)}
+      documents={
+        ack.sourceDocumentName ? [ack.sourceDocumentName as string] : items.map((i) => i.name)
+      }
+      caseTitle={(kase?.title as string | null) ?? null}
       clientName={clientName}
       clientEmail={client.email}
-      caseTitle={(kase?.title as string | null) ?? null}
       org={{
-        name: org?.name ?? "Immigration Services",
+        name: firmName,
         email: (org?.email as string | null) ?? null,
         phone: (org?.phone as string | null) ?? null,
         address: [org?.addressLine1, org?.city, org?.province, org?.postalCode]
