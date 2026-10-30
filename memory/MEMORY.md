@@ -128,8 +128,11 @@ case per client).
   "An unexpected response was received from the server." `serverActions.bodySizeLimit`
   is 4 MB as a backstop. Verified live: 1.87 MB merged PDF (upload 200, attach 201,
   6-page combined) and 1.61 MB general upload (sign 200, storage 200, register 201).
-- If a user still sees that error, they are on a stale bundle from before the action
-  was removed — hard refresh.
+- Client can read the file before signing (`0bb6516`, `e19a5b0`):
+  `GET /api/client-portal/acknowledgement/document?token=…` verifies the token and
+  302s to a 15-minute signed URL (the path never reaches the page). Page has
+  View documents (inline iframe), Open in a new tab, and Download (`&download=1`).
+  Verified live on a real client link: page 200 + 302 → 200 application/pdf, 5.3 MB.
 - Columns added live: `sourceDocumentId`, `sourceDocumentName`, `unsignedDocumentId`,
   `signedDocumentId` (`prisma/migration-acknowledgement-attached-doc.sql`).
 
