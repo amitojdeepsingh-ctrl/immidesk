@@ -196,17 +196,7 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
         pdfDocuments={pdfDocuments}
         rows={acknowledgementRows}
         cases={caseOptions}
-        uploadMergedPdf={async (file, caseId) => {
-          "use server";
-          const { uploadDocumentAction } = await import("@/lib/document-actions");
-          return uploadDocumentAction(
-            file,
-            "OTHER",
-            caseId,
-            "Merged document set sent for acknowledgement.",
-            organization.id,
-          );
-        }}
+        clientId={clientId}
       />
     </div>
   );

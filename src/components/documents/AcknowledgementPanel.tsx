@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { CheckCircle2, Clock, Copy, Download, FileSignature, Loader2, Mail, Send, Upload } from "lucide-react";
 
@@ -32,7 +33,7 @@ interface Props {
   pdfDocuments: PdfDocumentOption[];
   rows: AcknowledgementRow[];
   cases: CaseOptionLite[];
-  uploadMergedPdf: (file: File, caseId: string) => Promise<string>;
+  clientId: string;
 }
 
 function fmt(iso: string | null): string {
@@ -40,7 +41,7 @@ function fmt(iso: string | null): string {
   return new Date(iso).toLocaleDateString("en-CA", { year: "numeric", month: "short", day: "numeric" });
 }
 
-export function AcknowledgementPanel({ pdfDocuments, rows, cases, uploadMergedPdf }: Props) {
+export function AcknowledgementPanel({ pdfDocuments, rows, cases, clientId }: Props) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -59,16 +60,48 @@ export function AcknowledgementPanel({ pdfDocuments, rows, cases, uploadMergedPd
     setError(null);
     setLatest(null);
     try {
-      let documentId = selected;
+      const payload: Record<string, unknown> = {};
+
       if (file) {
+        setStage("Preparing upload…");
+        const urlRes = await fetch("/api/acknowledgements/merged/upload-url", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            clientId,
+            caseId,
+            fileName: file.name,
+            sizeBytes: file.size,
+          }),
+        });
+        const urlJson = await urlRes.json();
+        if (!urlRes.ok) throw new Error(urlJson.error?.message ?? "Could not prepare the upload");
+
         setStage("Uploading the merged PDF…");
-        documentId = await uploadMergedPdf(file, caseId);
+        const supabase = createClient();
+        const { error: uploadError } = await supabase.storage
+          .from(urlJson.data.bucket)
+          .uploadToSignedUrl(urlJson.data.path, urlJson.data.token, file, {
+            contentType: "application/pdf",
+          });
+        if (uploadError) throw new Error(uploadError.message);
+
+        payload.uploaded = {
+          path: urlJson.data.path,
+          fileName: urlJson.data.fileName,
+          sizeBytes: file.size,
+          clientId,
+          caseId,
+        };
+      } else {
+        payload.documentId = selected;
       }
+
       setStage("Appending the acknowledgement page…");
       const res = await fetch("/api/acknowledgements/attach", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ documentId }),
+        body: JSON.stringify(payload),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error?.message ?? "Could not attach the acknowledgement page");

@@ -29,7 +29,39 @@ import {
   type AcknowledgementItem,
 } from "@/lib/document-acknowledgement";
 
-const attachSchema = z.object({ documentId: z.string().min(1) });
+type SourceDoc = {
+  id: string;
+  name: string;
+  category: string;
+  storagePath: string;
+  mimeType: string;
+  caseId: string | null;
+  clientId: string | null;
+};
+
+type ClientRow = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  organizationId: string;
+};
+const attachSchema = z
+  .object({
+    documentId: z.string().min(1).optional(),
+    uploaded: z
+      .object({
+        path: z.string().min(1),
+        fileName: z.string().min(1),
+        sizeBytes: z.number().int().positive(),
+        clientId: z.string().min(1),
+        caseId: z.string().min(1),
+      })
+      .optional(),
+  })
+  .refine((v) => Boolean(v.documentId) !== Boolean(v.uploaded), {
+    message: "Provide either documentId or uploaded",
+  });
 
 export async function POST(req: NextRequest) {
   try {
@@ -43,17 +75,61 @@ export async function POST(req: NextRequest) {
 
     const db = getSupabaseAdmin();
 
-    const { data: source, error: sourceErr } = await db
-      .from("Document")
-      .select("id, name, category, storagePath, mimeType, caseId, clientId, client:Client!inner(id, firstName, lastName, email, organizationId)")
-      .eq("id", parsed.data.documentId)
-      .single();
+    let source: SourceDoc | null = null;
+    let client: ClientRow | null = null;
 
-    const client = source ? (Array.isArray(source.client) ? source.client[0] : source.client) : null;
-    if (sourceErr || !source || !client || client.organizationId !== organization.id) {
-      return errorResponse("NOT_FOUND", "Document not found", null, 404);
+    if (parsed.data.uploaded) {
+      const { path, fileName, sizeBytes, clientId, caseId } = parsed.data.uploaded;
+      if (!path.startsWith(`${organization.id}/cases/`)) {
+        return errorResponse("INVALID_PATH", "Upload path does not belong to this organization", null, 422);
+      }
+      const [{ data: clientRow }, { data: caseRow }] = await Promise.all([
+        db.from("Client").select("id, firstName, lastName, email, organizationId").eq("id", clientId).maybeSingle(),
+        db.from("Case").select("id, clientId, organizationId").eq("id", caseId).maybeSingle(),
+      ]);
+      if (!clientRow || clientRow.organizationId !== organization.id) {
+        return errorResponse("NOT_FOUND", "Client not found", null, 404);
+      }
+      if (!caseRow || caseRow.organizationId !== organization.id || caseRow.clientId !== clientId) {
+        return errorResponse("NOT_FOUND", "Case not found", null, 404);
+      }
+
+      const { data: registered, error: regErr } = await db
+        .from("Document")
+        .insert({
+          caseId,
+          clientId,
+          uploadedById: prismaUser.id,
+          name: fileName,
+          storagePath: path,
+          mimeType: "application/pdf",
+          sizeBytes,
+          category: "OTHER",
+          notes: "Merged document set sent for acknowledgement.",
+        })
+        .select("id, name, category, storagePath, mimeType, caseId, clientId")
+        .single();
+      if (regErr || !registered) {
+        throw new AppError("DB_ERROR", regErr?.message ?? "Could not register the uploaded PDF", 500);
+      }
+      source = registered as SourceDoc;
+      client = clientRow as ClientRow;
+    } else {
+      const { data: found, error: sourceErr } = await db
+        .from("Document")
+        .select("id, name, category, storagePath, mimeType, caseId, clientId, client:Client!inner(id, firstName, lastName, email, organizationId)")
+        .eq("id", parsed.data.documentId as string)
+        .single();
+
+      client = found ? (Array.isArray(found.client) ? found.client[0] : found.client) : null;
+      if (sourceErr || !found || !client || client.organizationId !== organization.id) {
+        return errorResponse("NOT_FOUND", "Document not found", null, 404);
+      }
+      source = found as unknown as SourceDoc;
     }
-    if (source.mimeType !== "application/pdf" || !(source.name as string).toLowerCase().endsWith(".pdf")) {
+
+    if (!source || !client) return errorResponse("NOT_FOUND", "Document not found", null, 404);
+    if (source.mimeType !== "application/pdf" || !source.name.toLowerCase().endsWith(".pdf")) {
       return errorResponse("NOT_PDF", "The acknowledgement page can only be attached to a PDF", null, 422);
     }
 
