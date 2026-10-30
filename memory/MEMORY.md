@@ -103,23 +103,28 @@ client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; clie
 personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
 case per client).
 
-**Document acknowledgement (`06ac893`, `c2f931f`, `5c901fc`)**:
-- Client signs an itemized statement confirming they provided the listed documents.
-  Firm sends from Client → Documents tab → "Request acknowledgement" (emails a
-  30-day link; all documents on file are snapshotted at send time).
-- Client page `/acknowledge/[token]`: 8 clauses (source of docs, accuracy, no
-  alteration, disclosures, duty to report, limited review scope, IRPA s.40
-  misrepresentation warning, no guarantee), document table, optional disclosure
-  box, typed name + drawn signature.
-- On signing: signature + IP + UA + timestamp recorded, signed PDF filed to
-  `client-documents/{org}/acknowledgements/{id}/`, bell + email to every team
-  member, confirmation email to client.
-- Table `DocumentAcknowledgement` (forced RLS, service-role only) with a trigger
-  `protect_signed_acknowledgement` that blocks any change to a signed record.
-  Migration: `prisma/migration-document-acknowledgements.sql` (APPLIED LIVE).
-  FKs are required — PostgREST embeddings fail without them.
-- Gotcha: jspdf-autotable v5 removed `doc.autoTable()`; use
-  `import { autoTable } from "jspdf-autotable"` then `autoTable(doc, opts)`.
+**Document acknowledgement v2 — page appended to merged PDF (`3f3e537`, `3584d1f`, `f565c27`)**:
+- Firm uploads the merged PDF, picks it on Client → Documents → "Acknowledgement page",
+  clicks "Add page & send": system appends ONE page to their PDF and emails the
+  client a 30-day signing link.
+- Page carries the firm's approved statement verbatim (confirm documents provided →
+  reviewed copies → authorize submission), the attached document list, and
+  Client name / Signature / Date fields.
+- Signing stamps typed name + drawn signature + date onto that page, files
+  "… — signed acknowledgement.pdf" as a Document, records IP/UA/timestamp,
+  bell + email to the firm, confirmation email to the client.
+- Builder: `src/lib/pdf/acknowledgement-page.ts` (pdf-lib, keeps all source pages;
+  works with no source). pdf-lib rejects cross-realm Buffers → always copy to
+  `new Uint8Array(buf)` before `PDFDocument.load`.
+- Endpoints: POST `/api/acknowledgements/attach` (session, 401 when signed out),
+  POST `/api/client-portal/acknowledgement/sign` (token).
+- Live-verified: 1-page 45,427-byte source → 2-page 46,892-byte signed PDF,
+  signed doc filed, bell notification created.
+- Columns added live: `sourceDocumentId`, `sourceDocumentName`, `unsignedDocumentId`,
+  `signedDocumentId` (`prisma/migration-acknowledgement-attached-doc.sql`).
+
+**Document acknowledgement v1 (superseded, `06ac893`)** — separate 8-clause page,
+replaced by the merged-PDF model above.
 
 **Retainer v2.0 with financial-document clauses (`1c6be96`, `8b2ff7b`)**:
 - Source: `C:\My Immi Files\Application Canadsa\C11\C11 Requirements\02_Retainer_Addendum_Financial_Documents.docx`
