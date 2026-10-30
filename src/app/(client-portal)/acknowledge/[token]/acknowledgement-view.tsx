@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCircle2, FileText, Loader2, Pen, Printer, RotateCcw } from "lucide-react";
+import { CheckCircle2, Download, ExternalLink, Eye, FileText, Loader2, Pen, Printer, RotateCcw } from "lucide-react";
 
 interface AcknowledgementViewProps {
   token: string;
@@ -13,6 +13,7 @@ interface AcknowledgementViewProps {
   printedName: string | null;
   statement: string[];
   documents: string[];
+  documentsUrl: string;
   caseTitle: string | null;
   clientName: string;
   clientEmail: string;
@@ -33,8 +34,10 @@ function fmtDate(iso: string | null): string {
 export function AcknowledgementView(props: AcknowledgementViewProps) {
   const {
     token, acknowledgementId, statementVersion, status, signedAt, printedName,
-    statement, documents, caseTitle, clientName, clientEmail, org,
+    statement, documents, documentsUrl, caseTitle, clientName, clientEmail, org,
   } = props;
+
+  const [showDocuments, setShowDocuments] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [drawing, setDrawing] = useState(false);
@@ -175,6 +178,48 @@ export function AcknowledgementView(props: AcknowledgementViewProps) {
               <li key={name}>{name}</li>
             ))}
           </ul>
+
+          <div className="mt-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 print:hidden dark:border-zinc-700 dark:bg-zinc-800/60">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400">
+              Open the file and check that the pages inside are yours before you sign.
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <button
+                onClick={() => setShowDocuments((v) => !v)}
+                className="inline-flex items-center gap-1.5 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
+              >
+                <Eye className="h-3.5 w-3.5" />
+                {showDocuments ? "Hide documents" : "View documents"}
+              </button>
+              <a
+                href={documentsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-white dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+              >
+                <ExternalLink className="h-3.5 w-3.5" /> Open in a new tab
+              </a>
+              <a
+                href={`${documentsUrl}&download=1`}
+                className="inline-flex items-center gap-1.5 rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-white dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-700"
+              >
+                <Download className="h-3.5 w-3.5" /> Download
+              </a>
+            </div>
+
+            {showDocuments && (
+              <div className="mt-3 overflow-hidden rounded-md border border-zinc-300 bg-white dark:border-zinc-600 dark:bg-zinc-900">
+                <iframe
+                  src={documentsUrl}
+                  title="Documents attached to this acknowledgement"
+                  className="h-[70vh] w-full"
+                />
+                <p className="border-t border-zinc-200 px-3 py-2 text-[11px] text-zinc-500 dark:border-zinc-700">
+                  If the file does not display here, use &ldquo;Open in a new tab&rdquo; above.
+                </p>
+              </div>
+            )}
+          </div>
 
           <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-700">
             <div className="space-y-6">

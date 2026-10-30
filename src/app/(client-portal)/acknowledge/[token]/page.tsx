@@ -80,6 +80,7 @@ export default async function AcknowledgementPage({ params }: PageProps) {
       documents={
         ack.sourceDocumentName ? [ack.sourceDocumentName as string] : items.map((i) => i.name)
       }
+      documentsUrl={`/api/client-portal/acknowledgement/document?token=${encodeURIComponent(token)}`}
       caseTitle={(kase?.title as string | null) ?? null}
       clientName={clientName}
       clientEmail={client.email}
