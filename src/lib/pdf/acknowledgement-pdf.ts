@@ -7,7 +7,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 import type { AcknowledgementClause, AcknowledgementItem } from "@/lib/document-acknowledgement";
 
 const PAGE_MARGIN = 20;
@@ -141,8 +141,8 @@ export function generateAcknowledgementPdf(data: AcknowledgementPdfData): Buffer
     item.uploadedAt ? new Date(item.uploadedAt).toLocaleDateString("en-CA") : "—",
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (doc as any).autoTable({
+  let tableEnd = y;
+  autoTable(doc, {
     startY: y,
     head: [["#", "Document", "Category", "Applicant", "Uploaded"]],
     body: rows.length > 0 ? rows : [["—", "No documents listed", "—", "—", "—"]],
@@ -152,9 +152,10 @@ export function generateAcknowledgementPdf(data: AcknowledgementPdfData): Buffer
     columnStyles: { 0: { cellWidth: 8 }, 4: { cellWidth: 24 } },
     theme: "grid",
   });
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  y = ((doc as any).lastAutoTable?.finalY ?? y) + 8;
+  tableEnd = ((doc as any).lastAutoTable?.finalY as number | undefined) ?? y;
+
+  y = tableEnd + 8;
 
   // ── Client note ──────────────────────────────────────────────────────────
   if (ack.clientNote) {
