@@ -103,6 +103,24 @@ client-safe checklists; per-type Open/WhatsApp/Copy-text/Copy-link buttons; clie
 personalizes greeting + flags client's case-type card (GET /api/clients/case-types = latest
 case per client).
 
+**Document acknowledgement (`06ac893`, `c2f931f`, `5c901fc`)**:
+- Client signs an itemized statement confirming they provided the listed documents.
+  Firm sends from Client → Documents tab → "Request acknowledgement" (emails a
+  30-day link; all documents on file are snapshotted at send time).
+- Client page `/acknowledge/[token]`: 8 clauses (source of docs, accuracy, no
+  alteration, disclosures, duty to report, limited review scope, IRPA s.40
+  misrepresentation warning, no guarantee), document table, optional disclosure
+  box, typed name + drawn signature.
+- On signing: signature + IP + UA + timestamp recorded, signed PDF filed to
+  `client-documents/{org}/acknowledgements/{id}/`, bell + email to every team
+  member, confirmation email to client.
+- Table `DocumentAcknowledgement` (forced RLS, service-role only) with a trigger
+  `protect_signed_acknowledgement` that blocks any change to a signed record.
+  Migration: `prisma/migration-document-acknowledgements.sql` (APPLIED LIVE).
+  FKs are required — PostgREST embeddings fail without them.
+- Gotcha: jspdf-autotable v5 removed `doc.autoTable()`; use
+  `import { autoTable } from "jspdf-autotable"` then `autoTable(doc, opts)`.
+
 **Retainer v2.0 with financial-document clauses (`1c6be96`, `8b2ff7b`)**:
 - Source: `C:\My Immi Files\Application Canadsa\C11\C11 Requirements\02_Retainer_Addendum_Financial_Documents.docx`
 - Added sections E–J to BOTH copies of the retainer (`src/lib/pdf/agreement-template.ts`
