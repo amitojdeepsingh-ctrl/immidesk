@@ -5,7 +5,9 @@ import Link from "next/link";
 import { FileText, Upload } from "lucide-react";
 import { DocumentList } from "@/components/documents/DocumentList";
 import { UploadZone } from "@/components/documents/UploadZone";
+import { AcknowledgementPanel, type AcknowledgementRow } from "@/components/documents/AcknowledgementPanel";
 import { getPresignedDownloadUrl, StorageBuckets } from "@/lib/storage";
+import { acknowledgementUrl, generateAcknowledgementToken } from "@/lib/portal-token";
 import type { DocumentItem } from "@/components/documents/DocumentList";
 import type { CaseOption } from "@/components/documents/UploadZone";
 import type { DocumentCategory } from "@/types";
@@ -83,6 +85,47 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
 
   const clientName = `${client.firstName} ${client.lastName}`;
 
+  const { data: acknowledgements } = await supabase
+    .from("DocumentAcknowledgement")
+    .select("id, status, itemCount, createdAt, signedAt, viewedAt, printedName, pdfStoragePath")
+    .eq("clientId", clientId)
+    .eq("organizationId", organization.id)
+    .order("createdAt", { ascending: false })
+    .limit(20);
+
+  const acknowledgementRows: AcknowledgementRow[] = await Promise.all(
+    (acknowledgements ?? []).map(async (row: Record<string, unknown>) => {
+      let pdfUrl: string | null = null;
+      if (row.status === "SIGNED" && row.pdfStoragePath) {
+        try {
+          const { data } = await getPresignedDownloadUrl({
+            bucket: StorageBuckets.CLIENT_DOCUMENTS,
+            path: row.pdfStoragePath as string,
+            expiresIn: 600,
+          });
+          pdfUrl = data?.signedUrl ?? null;
+        } catch {}
+      }
+      return {
+        id: row.id as string,
+        status: row.status as string,
+        itemCount: (row.itemCount as number) ?? 0,
+        createdAt:
+          typeof row.createdAt === "string" ? row.createdAt : new Date(row.createdAt as Date).toISOString(),
+        signedAt: row.signedAt ? new Date(row.signedAt as string).toISOString() : null,
+        printedName: (row.printedName as string | null) ?? null,
+        viewedAt: row.viewedAt ? new Date(row.viewedAt as string).toISOString() : null,
+        url:
+          row.status === "SIGNED"
+            ? null
+            : acknowledgementUrl(
+                generateAcknowledgementToken(row.id as string, clientId, organization.id, 30),
+              ),
+        pdfUrl,
+      };
+    }),
+  );
+
   return (
     <div className="space-y-6">
       <div>
@@ -143,6 +186,12 @@ export default async function ClientDocumentsPage({ params }: PageProps) {
           }}
         />
       </section>
+
+      <AcknowledgementPanel
+        clientId={clientId}
+        documentCount={documentsWithUrls.length}
+        rows={acknowledgementRows}
+      />
     </div>
   );
 }

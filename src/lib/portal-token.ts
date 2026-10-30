@@ -95,3 +95,31 @@ export function uploadUrl(token: string, requestOrigin?: string) {
 export function agreementUrl(token: string, requestOrigin?: string) {
   return url("/agreement", token, requestOrigin);
 }
+
+// ─── Document Acknowledgement Token ────────────────────────────────────────
+
+export interface AcknowledgementTokenPayload {
+  acknowledgementId: string;
+  clientId: string;
+  organizationId: string;
+  expiresAt: number;
+}
+
+export function generateAcknowledgementToken(
+  acknowledgementId: string,
+  clientId: string,
+  organizationId: string,
+  days = 30,
+): string {
+  return sign({ acknowledgementId, clientId, organizationId, expiresAt: Math.floor(Date.now() / 1000) + days * 86400 });
+}
+
+export function verifyAcknowledgementToken(token: string): AcknowledgementTokenPayload | null {
+  const p = verify<AcknowledgementTokenPayload>(token);
+  if (!p?.acknowledgementId || !p?.clientId || !p?.organizationId) return null;
+  return p;
+}
+
+export function acknowledgementUrl(token: string, requestOrigin?: string) {
+  return url("/acknowledge", token, requestOrigin);
+}
