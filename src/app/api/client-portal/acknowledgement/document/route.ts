@@ -37,9 +37,14 @@ export async function GET(req: NextRequest) {
     .maybeSingle();
   if (!doc?.storagePath) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
+  const wantsDownload = req.nextUrl.searchParams.get("download") === "1";
   const { data: signed, error } = await db.storage
     .from("client-documents")
-    .createSignedUrl(doc.storagePath as string, 900);
+    .createSignedUrl(
+      doc.storagePath as string,
+      900,
+      wantsDownload ? { download: String(doc.name ?? "documents.pdf") } : undefined,
+    );
   if (error || !signed?.signedUrl) {
     return NextResponse.json({ error: "Could not open the document" }, { status: 500 });
   }
