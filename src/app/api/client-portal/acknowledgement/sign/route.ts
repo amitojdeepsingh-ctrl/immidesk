@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
 
       // File the signed copy alongside the client's documents.
       const baseName = ack.sourceDocumentName
-        ? String(ack.sourceDocumentName).replace(/\.pdf$/i, "")
+        ? String(ack.sourceDocumentName).replace(/\.pdf$/i, "").trim()
         : `Documents — ${clientName}`;
       const { data: sourceMeta } = ack.sourceDocumentId
         ? await db.from("Document").select("caseId, clientId, category").eq("id", ack.sourceDocumentId).maybeSingle()

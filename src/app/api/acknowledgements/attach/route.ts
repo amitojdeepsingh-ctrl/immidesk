@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
       .upload(storagePath, combined, { contentType: "application/pdf", upsert: true });
     if (uploadErr) throw new AppError("STORAGE_ERROR", "Could not save the combined PDF", 500);
 
-    const baseName = (source.name as string).replace(/\.pdf$/i, "");
+    const baseName = (source.name as string).replace(/\.pdf$/i, "").trim();
     const { data: combinedDoc, error: docErr } = await db
       .from("Document")
       .insert({
