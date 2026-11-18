@@ -111,7 +111,7 @@ export const agreementGenerateSchema = z.object({
   caseId: z.string().optional().nullable(),
   title: z.string().min(3, "Title must be at least 3 characters").max(200),
   description: z.string().max(5000).optional().nullable(),
-  serviceType: z.enum(["consultation", "representation", "document_review", "form_filing", "full_service", "other"]),
+  serviceType: z.enum(["consultation", "representation", "document_review", "form_filing", "full_service", "c11_work_permit", "other"]),
   feeAmount: z.number().min(0, "Fee must be 0 or greater").max(999999),
   feeCurrency: z.string().length(3, "Currency must be a 3-letter code").default("CAD"),
   feeStructure: z.enum(["flat", "hourly", "milestone", "retainer"]),

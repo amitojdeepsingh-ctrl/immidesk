@@ -328,7 +328,8 @@ Any complaints the Applicant has with respect to services provided by the Consul
 function formatServiceType(type: string): string {
   const labels: Record<string, string> = {
     WORK_PERMIT: "Work Permit Application",
-    STUDY_PERMIT: "Study Permit Application",
+    C11_WORK_PERMIT: "C11 Work Permit Application",
+    c11_work_permit: "C11 Work Permit Application",
     VISITOR_VISA: "Visitor Visa Application",
     PERMANENT_RESIDENCE: "Permanent Residence Application",
     EXPRESS_ENTRY: "Express Entry Application",

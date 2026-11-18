@@ -471,6 +471,7 @@ export const ServiceType = {
   FORM_FILING: "form_filing",
   FULL_SERVICE: "full_service",
   OTHER: "other",
+  C11_WORK_PERMIT: "c11_work_permit",
 } as const;
 export type ServiceType = (typeof ServiceType)[keyof typeof ServiceType];
 
@@ -481,6 +482,7 @@ export const ServiceTypeLabel: Record<ServiceType, string> = {
   form_filing: "Form Filing",
   full_service: "Full Service",
   other: "Other",
+  c11_work_permit: "C11 Work Permit",
 };
 
 export interface AgreementFormData {
