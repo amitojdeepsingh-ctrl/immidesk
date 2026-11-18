@@ -24,5 +24,6 @@ export function acknowledgementStatement(firmName: string): string[] {
     `I confirm that I provided the documents listed below and attached to this acknowledgment to ${firmName} for use in preparing and submitting my visa application.`,
     "I have reviewed the attached copies and confirm that they accurately reflect the documents I supplied. I have disclosed any alterations, omissions, or information that requires correction or explanation.",
     `I authorize ${firmName} to submit these documents to the relevant immigration authorities in connection with my application.`,
+    "I confirm that the attached documents are genuine and that the information they contain is true, complete and accurate to the best of my knowledge. I have disclosed any concerns about their source or authenticity and will promptly notify ADS Immigration if I discover any error or misleading information.",
   ];
 }

@@ -68,6 +68,7 @@ The Applicant acknowledges and agrees that:
 1. The government of Canada imposes non-refundable processing cost recovery fees for the application. The Applicant is responsible for paying all required processing fees — federal, provincial, Department of Human Resources, or other government department fees — incurred in order to process the application.
 2. The Applicant will be responsible for all costs related to medical examinations, police certificates, language assessments and other required expenditures.
 3. All aforementioned costs are in addition to the Consultant's fees, as stated in Section B.
+4. If document concerns require services or third-party expenses outside the agreed scope, the Consultant will explain the proposed work and obtain the Applicant's written agreement to any additional fees or disbursements before incurring them.
 
 ## D. Applicant Responsibilities
 
@@ -75,6 +76,9 @@ The Applicant acknowledges and agrees that:
 2. Applicant also acknowledges that any inaccuracies or omissions and misrepresentation of information or documentation may seriously affect the application and may lead to possible prosecution by Immigration Canada.
 3. The Applicant agrees to keep the Consultant informed in relation to any changes or updated information regarding residential address, contact number, employment status, marital status.
 4. The Applicant acknowledges that if the Applicant fails or neglects to contact the Consultant as requested, or ignores or fails to respond to requests for required information or documentation within 60 days, the Consultant may terminate this agreement and all fees paid will be forfeited.
+5. The Applicant will disclose any known error, alteration, omission or concern about a document's source or accuracy, including documents obtained through relatives, agents or other third parties, and will promptly advise the Consultant of any material change or correction required before or after submission.
+6. The Applicant will explain the source of supporting documents and will provide originals, institution-generated records or other supporting evidence reasonably requested. The Applicant authorizes the Consultant to make enquiries reasonably necessary for the application with relevant issuing institutions or professionals, subject to applicable privacy requirements and any further consent required, and only information necessary for the enquiry will be disclosed.
+7. The Consultant may copy, scan, combine, paginate, bookmark or compress documents for submission while preserving their substantive contents. The Consultant will not change financial figures, dates, account details, signatures or other substantive information in supporting records. Corrections to issuer-generated documents must be obtained from the issuer.
 
 ## E. Financial Documents and Client Confirmation
 
@@ -85,7 +89,7 @@ The Applicant acknowledges and agrees that:
 3. The Applicant has not altered, edited, or arranged for any other person to alter any document or the information shown in it.
 4. The Applicant will promptly disclose any missing page, translation issue, unusual transaction, loan, gift, transfer, or any other fact that may affect how a document is read.
 5. The Applicant will promptly identify any document that is incomplete, altered, unavailable, outdated, or incorrectly translated, and any document that the Applicant cannot confirm.
-6. The Applicant will promptly report any error in a document, and any change to the information it contains.
+6. The Applicant will promptly report any error in a document, and any change to the information it contains, before or after submission.
 
 ## F. Client Review Before Submission
 
@@ -93,13 +97,15 @@ The Applicant acknowledges and agrees that:
 2. The Applicant will review these materials and confirm in writing that the information is complete and accurate to the best of the Applicant's knowledge.
 3. The Consultant may rely on that written confirmation when submitting the application.
 4. Where the Applicant does not provide the written confirmation, or the Applicant identifies an error, the Consultant may delay submission until the matter is resolved. Delay under this section is not a breach of this agreement.
+5. Before submission, the Applicant will receive the application and supporting-document list for review. The Applicant agrees to identify errors, omissions or documents they do not recognize and to provide written confirmation that the application accurately reflects their circumstances. Client approval does not relieve the Consultant of their professional obligations.
 
 ## G. Scope of Document Review
 
-1. The Consultant will review documents for relevance, consistency, completeness, and presentation within the agreed scope of services.
+1. The Consultant will review documents for relevance, consistency, completeness, and presentation within the agreed scope of services, including apparent inconsistencies relevant to the application.
 2. The Consultant's review is not a bank confirmation, forensic examination, audit, valuation, or independent authentication of a document's origin or contents.
 3. The Consultant does not verify the authenticity of every financial, corporate, employment, or third-party record supplied by the Applicant.
-4. The Applicant remains responsible for the truth, accuracy, and completeness of all information and documents submitted on the Applicant's behalf.
+4. Further information, replacement documents or independent confirmation may be requested where reasonably necessary.
+5. The Applicant remains responsible for the truth, accuracy, and completeness of all information and documents submitted on the Applicant's behalf.
 
 ## H. Concerns and Unresolved Inconsistencies
 
@@ -111,6 +117,7 @@ The Applicant acknowledges and agrees that:
    e. withdraw as representative where required or permitted by the Consultant's professional obligations and by law.
 2. The Consultant will tell the Applicant in writing what the concern is and what is needed to resolve it.
 3. Delay caused by an unresolved concern is not a breach of this agreement and does not create a right to a refund of fees for services already rendered.
+4. If a material concern arises about the accuracy, completeness or authenticity of information or documents, the Consultant will explain the concern and request clarification or supporting evidence. The Consultant may defer submission or decline to rely on the affected material while the concern remains unresolved, explain reasonably foreseeable deadline consequences, and advise the Applicant of available lawful options. Any withdrawal or termination will comply with applicable professional requirements.
 
 ## I. No Guarantee of Outcome
 
