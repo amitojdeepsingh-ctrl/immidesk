@@ -200,6 +200,8 @@ replaced by the merged-PDF model above.
   with header `Authorization: Bearer <CONSULTATION_REMINDER_SECRET>`. Secret is in
   local `.env`; rotate on Vercel if needed.
 
+**C11 Work Permit service type (`e1df2a4`)**: added to `ServiceType` enum, `ServiceTypeLabel`, the zod validation enum, `formatServiceType` (PDF retainer) and `CASE_TYPE_LABELS` (client signing page). Verified live on the agreement page.
+
 ## Commercialization (Aug 2026, `f7d3e23`)
 - **Signup** collects company phone + RCIC number → Organization.phone / ciccRegistrationNumber.
 - **Stripe billing LIVE-CAPABLE**: `/api/billing/checkout` (Checkout subscription; reuses Stripe
